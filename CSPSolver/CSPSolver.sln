@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPSolver", "CSPSolver.csproj", "{509C1A45-257C-4CCB-AB2B-3D98465116CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPSolverTests", "..\CSPSolverTests\CSPSolverTests.csproj", "{AD5172FC-A112-4251-9829-E050FE2FF687}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{509C1A45-257C-4CCB-AB2B-3D98465116CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509C1A45-257C-4CCB-AB2B-3D98465116CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509C1A45-257C-4CCB-AB2B-3D98465116CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509C1A45-257C-4CCB-AB2B-3D98465116CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5172FC-A112-4251-9829-E050FE2FF687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5172FC-A112-4251-9829-E050FE2FF687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5172FC-A112-4251-9829-E050FE2FF687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5172FC-A112-4251-9829-E050FE2FF687}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F228B004-004C-4774-8B94-C6E2EC242787}
+	EndGlobalSection
+EndGlobal
