@@ -9,5 +9,11 @@ namespace CSPSolver.common
         int GetDomainMax(IState state);
 
         int GetDomainMin(IState state);
+
+        bool HasSmallDomain();
+
+        bool SetMax(IState state, int max);
+
+        bool SetMin(IState state, int min);
     }
 }
