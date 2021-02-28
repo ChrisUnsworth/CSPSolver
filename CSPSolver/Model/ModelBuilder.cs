@@ -24,7 +24,7 @@ namespace CSPSolver.Model
         public IVariable AddIntVar(int min, int max)
         {
             var size = max - min;
-            var intVar = new IntDomainVar(min, size, _sb.AddDomain(size));
+            var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
             return intVar;
         }
@@ -35,7 +35,7 @@ namespace CSPSolver.Model
             var intVars = new List<IVariable>();
             foreach (var _ in Enumerable.Repeat(0, count))
             {
-                var intVar = new IntDomainVar(min, size, _sb.AddDomain(size));
+                var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
                 _variables.Add(intVar);
                 intVars.Add(intVar);
             }

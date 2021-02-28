@@ -1,24 +1,25 @@
-﻿using CSPSolver.common;
-using CSPSolver.Variable;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
+using CSPSolver.common;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Equal
 {
     public class EqualIntDomainSameMin : IConstraint
     {
-        private IntDomainVar _var1;
-        private IntDomainVar _var2;
+        private ISmallIntVar _var1;
+        private ISmallIntVar _var2;
 
-        public EqualIntDomainSameMin(IntDomainVar var1, IntDomainVar var2) => (_var1, _var2) = (var1, var2);
+        public EqualIntDomainSameMin(ISmallIntVar var1, ISmallIntVar var2) => (_var1, _var2) = (var1, var2);
 
         public IEnumerable<IVariable> Variables => new List<IVariable>() { _var1, _var2};
 
         public IEnumerable<IVariable> Propagate(IState state)
         {
-            var d1 = _var1.GetDomain(state);
-            var d2 = _var2.GetDomain(state);
+            var (d1, _, _) = _var1.GetDomain(state);
+            var (d2, _, _) = _var2.GetDomain(state);
             var newD = d1 & d2;
             var result = new List<IVariable>();
 

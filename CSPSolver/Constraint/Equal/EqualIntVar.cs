@@ -1,23 +1,30 @@
 ﻿using CSPSolver.common;
+using CSPSolver.Variable;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CSPSolver.Constraint.Equal
 {
-    public class EqualIntVar : IConstraint
+    public readonly struct EqualIntVar : IConstraint
     {
+        private readonly IIntVar _var1;
+        private readonly IIntVar _var2;
 
-        public EqualIntVar(IIntVar var1, IIntVar var2)
-        {
+        public EqualIntVar(IIntVar var1, IIntVar var2) => (_var1, _var2) = (var1, var2);
 
-        }
-
-        public IEnumerable<IVariable> Variables => throw new NotImplementedException();
+        public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2};
 
         public IEnumerable<IVariable> Propagate(IState state)
         {
-            throw new NotImplementedException();
+            if (_var1.TryGetValue(state, out int val1)) return _var2.SetValue(state, val1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();
+            if (_var2.TryGetValue(state, out int val2)) return _var1.SetValue(state, val2) ? new IVariable[] { _var1 } : Enumerable.Empty<IVariable>();
+
+            var v1Reduced = _var1.SetMax(state, _var2.GetDomainMax(state)) || _var1.SetMin(state, _var2.GetDomainMin(state));
+            var v2Reduced = false;
+
+
         }
     }
 }
