@@ -47,30 +47,79 @@ namespace CSPSolverTests.Variables
             Assert.AreEqual(min, v.GetDomainMin(s));
             Assert.IsFalse(v.SetMin(s, min));
             Assert.AreEqual(min, v.GetDomainMin(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
             Assert.IsFalse(v.isEmpty(s));
 
             var lowerMin = 3;
             Assert.IsFalse(v.SetMin(s, lowerMin));
             Assert.AreEqual(min, v.GetDomainMin(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
             Assert.IsFalse(v.isEmpty(s));
 
             min = 7;
             Assert.IsTrue(v.SetMin(s, min));
             Assert.AreEqual(min, v.GetDomainMin(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
             Assert.IsFalse(v.isEmpty(s));
 
             lowerMin = 6;
             Assert.IsFalse(v.SetMin(s, lowerMin));
             Assert.AreEqual(min, v.GetDomainMin(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
             Assert.IsFalse(v.isEmpty(s));
 
-            min = 9;
+            min = 14;
             Assert.IsTrue(v.SetMin(s, min));
             Assert.AreEqual(min, v.GetDomainMin(s));
             Assert.IsFalse(v.isEmpty(s));
+            Assert.IsTrue(v.TryGetValue(s, out int val));
+            Assert.AreEqual(min, val);
 
-            min = 20;
+            min = 15;
             Assert.IsTrue(v.SetMin(s, min));
+            Assert.IsTrue(v.isEmpty(s));
+        }
+
+        [TestMethod]
+        public void GetSetDomainMaxTest()
+        {
+            var min = 5;
+            var size = 10;
+            var max = min + size - 1;
+
+            var (s, v) = GetVar(min, size);
+
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsFalse(v.SetMax(s, max + 1));
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.isEmpty(s));
+
+            Assert.IsFalse(v.SetMax(s, max));
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.isEmpty(s));
+
+            max = 10;
+            Assert.IsTrue(v.SetMax(s, max));
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.isEmpty(s));
+
+            Assert.IsFalse(v.SetMax(s, max));
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.isEmpty(s));
+
+            max = 5;
+            Assert.IsTrue(v.SetMax(s, max));
+            Assert.AreEqual(max, v.GetDomainMax(s));
+            Assert.IsTrue(v.TryGetValue(s, out int val));
+            Assert.AreEqual(max, val);
+            Assert.IsFalse(v.isEmpty(s));
+
+            max = 4;
+            Assert.IsTrue(v.SetMax(s, max));
             Assert.IsTrue(v.isEmpty(s));
         }
     }

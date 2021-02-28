@@ -47,10 +47,9 @@ namespace CSPSolver.Variable
         {
             var oldD = state.GetDomain(StateRef, Size);
             var newD = (int)Math.Pow(2, value - Min);
-            state.SetDomain(StateRef, Size, newD);
             if (newD != oldD)
             {
-                state.SetDomain(StateRef, Size, newD);
+                state.SetDomain(StateRef, Size, newD & oldD);
                 return true;
             }
 
@@ -80,9 +79,9 @@ namespace CSPSolver.Variable
             if (max >= Size + Min) return false;
             if (max < Min)
             {
-                var wasEmpty = isEmpty(state);
+                if (isEmpty(state)) return false;
                 SetDomain(state, 0);
-                return wasEmpty;
+                return true;
             }
 
             var mask = (int)Math.Pow(2, max - Min + 1) - 1;
