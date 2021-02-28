@@ -18,6 +18,8 @@ namespace CSPSolver.Constraint.Plus
 
         public bool HasSmallDomain() => true;
 
+        public void initialise(IState state) { /* holds no state */ }
+
         public bool isEmpty(IState state) => _v1.isEmpty(state) | _v2.isEmpty(state);
 
         public bool isInstantiated(IState state) => _v1.isInstantiated(state) & _v2.isInstantiated(state);

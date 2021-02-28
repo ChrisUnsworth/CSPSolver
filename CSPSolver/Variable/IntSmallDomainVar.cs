@@ -102,13 +102,12 @@ namespace CSPSolver.Variable
             if (min <= Min) return false;
             if (min >= Size + Min)
             {
-                var wasEmpty = isEmpty(state);
+                if (isEmpty(state)) return false;
                 SetDomain(state, 0);
-                return wasEmpty;
+                return true;
             }
 
-            throw new NotImplementedException("this isnt right.");
-            var mask = ~(int)Math.Pow(2, min - Min) - 1;
+            var mask = ~(int)(Math.Pow(2, min - Min) - 1);
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
             if (oldDom != newDom)
@@ -119,5 +118,7 @@ namespace CSPSolver.Variable
 
             return false;
         }
+
+        public void initialise(IState state) => SetDomain(state, (int)Math.Pow(2, Size + 1) - 1);
     }
 }

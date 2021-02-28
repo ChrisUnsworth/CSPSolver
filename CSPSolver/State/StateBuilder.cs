@@ -44,7 +44,7 @@ namespace CSPSolver.State
 
             _size += n;
             _map.AddRange(Enumerable.Repeat(32, n));
-            if (domainSize % 32 > 0)
+            if (r != 0)
             {
                 _map.Add(r);
                 _size++;

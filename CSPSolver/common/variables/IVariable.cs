@@ -11,6 +11,8 @@ namespace CSPSolver.common
 
     public interface IVariable
     {
+        void initialise(IState state);
+
         bool isInstantiated(IState state);
 
         bool isEmpty(IState state);
