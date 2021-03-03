@@ -1,16 +1,30 @@
 ﻿using CSPSolver.common;
+using CSPSolver.common.variables;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CSPSolver.Constraint.Plus
 {
-    public readonly struct PlusSmallIntDomain : IIntVar
+    public readonly struct PlusSmallIntDomain : IIntVar, ICompoundVariable
     {
-        private readonly IIntVar _v1;
-        private readonly IIntVar _v2;
+        private readonly ISmallIntVar _v1;
+        private readonly ISmallIntVar _v2;
 
-        public PlusSmallIntDomain(IIntVar v1, IIntVar v2) => (_v1, _v2) = (v1, v2);
+        public int Min { get; }
+
+        public int Size { get; }
+
+        public int Max { get; }
+
+        public PlusSmallIntDomain(ISmallIntVar v1, ISmallIntVar v2)
+        {
+            _v1 = v1;
+            _v2 = v2;
+            Min = v1.Min + v2.Min;
+            Max = v1.Max + v2.Max;
+            Size = Max - Min + 1;
+        }
 
         public int GetDomainMax(IState state) => _v1.GetDomainMax(state) + _v2.GetDomainMax(state);
 
@@ -35,7 +49,7 @@ namespace CSPSolver.Constraint.Plus
 
             if (_v1.TryGetValue(state, out int v1))
             {
-                result = result | _v2.RemoveValue(state, v1 - intVal);
+                result |= _v2.RemoveValue(state, v1 - intVal);
             }
 
             return result;
@@ -64,5 +78,12 @@ namespace CSPSolver.Constraint.Plus
         }
 
         public Type VariableType() => typeof(int);
+
+        public string PrettyDomain(IState state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
     }
 }

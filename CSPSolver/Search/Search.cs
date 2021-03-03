@@ -36,14 +36,15 @@ namespace CSPSolver.Search
             while (_frontier.Any())
             {
                 _model.State = _frontier.Pop();
+                var before = _model.PrettyDomains();
                 _model.propagate();
+                var after = _model.PrettyDomains();
                 if (_model.IsSolved())
                 {
                     Current = new Solution(_model.State.Copy());
                     return true;
                 }
-
-                if (!_model.HasEmptyDomain()) Branch();
+                else if (!_model.HasEmptyDomain()) Branch();
             }
             
             return false;
@@ -53,6 +54,15 @@ namespace CSPSolver.Search
         {
             var variable = _searchConfig.VariableOrderingHeuristic.Invoke(_model);
             var value = _searchConfig.ValueOrderingHeuristic.Invoke(_model, variable);
+
+            var without = _model.State.Copy();
+            var with = _model.State;
+
+            variable.RemoveValue(without, value);
+            variable.SetValue(with, value);
+
+            _frontier.Push(without);
+            _frontier.Push(with);
         }
     }
 }

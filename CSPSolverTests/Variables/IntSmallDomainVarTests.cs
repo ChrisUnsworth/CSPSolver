@@ -122,5 +122,27 @@ namespace CSPSolverTests.Variables
             Assert.IsTrue(v.SetMax(s, max));
             Assert.IsTrue(v.isEmpty(s));
         }
+
+        [TestMethod]
+        public void PrettyDomainTest()
+        {
+            var (s, v) = GetVar(3, 5);
+            Assert.AreEqual("{ 3, 4, 5, 6, 7 }", v.PrettyDomain(s));
+
+            v.RemoveValue(s, 5);
+            Assert.AreEqual("{ 3, 4, 6, 7 }", v.PrettyDomain(s));
+
+            v.RemoveValue(s, 7);
+            Assert.AreEqual("{ 3, 4, 6 }", v.PrettyDomain(s));
+
+            v.RemoveValue(s, 3);
+            Assert.AreEqual("{ 4, 6 }", v.PrettyDomain(s));
+
+            v.RemoveValue(s, 4);
+            Assert.AreEqual("{ 6 }", v.PrettyDomain(s));
+
+            v.RemoveValue(s, 6);
+            Assert.AreEqual("{  }", v.PrettyDomain(s));
+        }
     }
 }

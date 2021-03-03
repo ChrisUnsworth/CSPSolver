@@ -20,7 +20,9 @@ namespace CSPSolver.Search
 
         public T GetValue<T>(IVariable<T> v)
         {
-            throw new NotImplementedException();
+            if (v.TryGetValue(_state, out T value)) return value;
+
+            throw new ApplicationException("Value not fount for given variable.");
         }
 
         public IList<T> GetValues<T>(IList<IVariable<T>> v)

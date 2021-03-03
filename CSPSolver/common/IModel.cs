@@ -17,5 +17,7 @@ namespace CSPSolver.common
         bool IsSolved();
 
         bool HasEmptyDomain();
+
+        string PrettyDomains();
     }
 }

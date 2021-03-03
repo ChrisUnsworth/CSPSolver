@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSPSolver.common.variables;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace CSPSolver.common
     {
         IModel GetModel();
 
-        IVariable AddIntVar(int min, int max);
+        ISmallIntVar AddSmallIntVar(int min, int max);
 
         IList<IVariable> AddIntVarArray(int min, int max, int count);
 

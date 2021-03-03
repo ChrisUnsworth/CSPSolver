@@ -15,5 +15,11 @@ namespace CSPSolver.common
         bool SetMax(IState state, int max);
 
         bool SetMin(IState state, int min);
+
+        int Min { get; }
+
+        int Size { get; }
+
+        int Max { get; }
     }
 }

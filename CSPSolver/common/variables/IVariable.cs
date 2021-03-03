@@ -22,5 +22,7 @@ namespace CSPSolver.common
         bool SetValue(IState state, object value);
 
         bool RemoveValue(IState state, object value);
+
+        string PrettyDomain(IState state);
     }
 }

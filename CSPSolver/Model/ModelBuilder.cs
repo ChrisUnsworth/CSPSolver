@@ -1,4 +1,5 @@
 ﻿using CSPSolver.common;
+using CSPSolver.common.variables;
 using CSPSolver.Variable;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace CSPSolver.Model
     public class ModelBuilder : IModelBuilder
     {
         private IStateBuilder _sb;
-        private IList<IVariable> _variables;
-        private IList<IConstraint> _constraints;
+        private List<IVariable> _variables;
+        private List<IConstraint> _constraints;
         public ModelBuilder(IStateBuilder sb)
         {
             _sb = sb;
@@ -21,9 +22,9 @@ namespace CSPSolver.Model
 
         public void AddConstraint(IConstraint con) => _constraints.Add(con);
 
-        public IVariable AddIntVar(int min, int max)
+        public ISmallIntVar AddSmallIntVar(int min, int max)
         {
-            var size = max - min;
+            var size = max - min + 1;
             var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
             return intVar;
@@ -31,7 +32,7 @@ namespace CSPSolver.Model
 
         public IList<IVariable> AddIntVarArray(int min, int max, int count)
         {
-            var size = max - min;
+            var size = max - min + 1;
             var intVars = new List<IVariable>();
             foreach (var _ in Enumerable.Repeat(0, count))
             {
@@ -43,6 +44,11 @@ namespace CSPSolver.Model
             return intVars;
         }
 
-        public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray(), _sb.GetState());
+        public IModel GetModel()
+        {
+            var state = _sb.GetState();
+            _variables.ForEach(v => v.initialise(state));
+            return new Model(_constraints.ToArray(), _variables.ToArray(), state);
+        }
     }
 }

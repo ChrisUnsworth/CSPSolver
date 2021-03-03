@@ -1,6 +1,8 @@
 ﻿using CSPSolver.common;
 using CSPSolver.common.variables;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CSPSolver.Variable
 {
@@ -9,6 +11,8 @@ namespace CSPSolver.Variable
         public IStateRef StateRef { get; }
         public int Min { get; }
         public int Size { get; }
+
+        public int Max => Min + Size - 1;
 
         public IntSmallDomainVar(int min, int size, IStateRef stateRef)
         {
@@ -56,7 +60,7 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public bool RemoveValue(IState state, object value) => RemoveValue(state, value);
+        public bool RemoveValue(IState state, object value) => RemoveValue(state, (int)value);
 
         public bool RemoveValue(IState state, int value)
         {
@@ -119,5 +123,23 @@ namespace CSPSolver.Variable
         }
 
         public void initialise(IState state) => SetDomain(state, (int)Math.Pow(2, Size + 1) - 1);
+
+        public IEnumerable<int> EnumerateDomain(IState state)
+        {
+            var domain = state.GetDomain(StateRef, Size);
+            int mask = 0b_1;
+
+            foreach (var i in Enumerable.Range(0, Size))
+            {
+                if ((mask & domain) == mask)
+                {
+                    yield return i + Min;
+                }
+
+                mask = mask << 1;
+            }
+        }
+
+        public string PrettyDomain(IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
     }
 }
