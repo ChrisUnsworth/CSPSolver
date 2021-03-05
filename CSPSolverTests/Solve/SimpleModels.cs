@@ -77,7 +77,7 @@ namespace CSPSolverTests.Solve
                 count++;
             }
 
-            Assert.AreEqual(0, count);
+            Assert.AreEqual(45, count);
         }
     }
 }

@@ -55,9 +55,12 @@ namespace CSPSolver.Constraint.Plus
             return result;
         }
 
-        public bool SetMax(IState state, int max) =>
-            _v1.SetMax(state, max - _v2.GetDomainMin(state))
-          | _v2.SetMax(state, max - _v1.GetDomainMin(state));
+        public bool SetMax(IState state, int max)
+        {
+            var result = _v1.SetMax(state, max - _v2.GetDomainMin(state));
+            result |= _v2.SetMax(state, max - _v1.GetDomainMin(state));
+            return result;
+        }
 
         public bool SetMin(IState state, int min) =>
             _v1.SetMin(state, min - _v2.GetDomainMax(state))
@@ -67,7 +70,7 @@ namespace CSPSolver.Constraint.Plus
 
         public bool TryGetValue(IState state, out int value)
         {
-            if (_v1.TryGetValue(state, out int v1) & _v1.TryGetValue(state, out int v2))
+            if (_v1.TryGetValue(state, out int v1) & _v2.TryGetValue(state, out int v2))
             {
                 value = v1 + v2;
                 return true;
