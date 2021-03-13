@@ -13,12 +13,12 @@ namespace CSPSolver.Search
         private Stack<IState> _frontier;
         private SearchConfig _searchConfig;
 
-        public Search(IModel model, SearchConfig searchConfig = null)
+        public Search(IModel model, SearchConfig? searchConfig = null)
         {
             _model = model;
             _frontier = new Stack<IState>();
             _frontier.Push(_model.State);
-            _searchConfig = searchConfig ?? new SearchConfig();
+            _searchConfig = searchConfig ?? SearchConfig.Default();
         }
 
         public ISolution Current { get; private set; }
@@ -44,25 +44,16 @@ namespace CSPSolver.Search
                     Current = new Solution(_model.State.Copy());
                     return true;
                 }
-                else if (!_model.HasEmptyDomain()) Branch();
+                else if (!_model.HasEmptyDomain())
+                {
+                    foreach (var state in _searchConfig.Branching.Branch(_model).Reverse())
+                    {
+                        _frontier.Push(state);
+                    }
+                }
             }
             
             return false;
-        }
-
-        private void Branch()
-        {
-            var variable = _searchConfig.VariableOrderingHeuristic.Invoke(_model);
-            var value = _searchConfig.ValueOrderingHeuristic.Invoke(_model, variable);
-
-            var without = _model.State.Copy();
-            var with = _model.State;
-
-            variable.RemoveValue(without, value);
-            variable.SetValue(with, value);
-
-            _frontier.Push(without);
-            _frontier.Push(with);
         }
     }
 }

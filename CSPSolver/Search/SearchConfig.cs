@@ -1,20 +1,15 @@
-﻿using CSPSolver.common;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
+﻿using CSPSolver.common.search;
+using CSPSolver.Search.strategy;
 
 namespace CSPSolver.Search
 {
-    public class SearchConfig
+    public readonly struct SearchConfig
     {
-        public Func<IModel, IVariable> VariableOrderingHeuristic { get; set; } = DefaultVariableOrderingHeuristic;
-        public Func<IModel, IVariable, object> ValueOrderingHeuristic { get; set; } = DefaultValueOrderingHeuristic;
+        public IBranchStrategy Branching { get; }
 
-        private static IVariable DefaultVariableOrderingHeuristic(IModel model) =>
-            model.Variables.FirstOrDefault(v => !v.isInstantiated(model.State) && !v.isEmpty(model.State));
+        public SearchConfig(IBranchStrategy branching) => Branching = branching;
 
-        private static object DefaultValueOrderingHeuristic(IModel model, IVariable variable) => 
-            (variable as IIntVar).GetDomainMin(model.State);
+        public static SearchConfig Default() => 
+            new SearchConfig(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
     }
 }
