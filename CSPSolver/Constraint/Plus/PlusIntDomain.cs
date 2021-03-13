@@ -6,10 +6,10 @@ using System.Text;
 
 namespace CSPSolver.Constraint.Plus
 {
-    public readonly struct PlusSmallIntDomain : IIntVar, ICompoundVariable
+    public readonly struct PlusIntDomain : IIntVar, ICompoundVariable
     {
-        private readonly ISmallIntVar _v1;
-        private readonly ISmallIntVar _v2;
+        private readonly IIntVar _v1;
+        private readonly IIntVar _v2;
 
         public int Min { get; }
 
@@ -17,7 +17,7 @@ namespace CSPSolver.Constraint.Plus
 
         public int Max { get; }
 
-        public PlusSmallIntDomain(ISmallIntVar v1, ISmallIntVar v2)
+        public PlusIntDomain(IIntVar v1, IIntVar v2)
         {
             _v1 = v1;
             _v2 = v2;
@@ -29,8 +29,6 @@ namespace CSPSolver.Constraint.Plus
         public int GetDomainMax(IState state) => _v1.GetDomainMax(state) + _v2.GetDomainMax(state);
 
         public int GetDomainMin(IState state) => _v1.GetDomainMin(state) + _v2.GetDomainMin(state);
-
-        public bool HasSmallDomain() => true;
 
         public void initialise(IState state) { /* holds no state */ }
 
