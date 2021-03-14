@@ -15,9 +15,9 @@ namespace CSPSolver.Search.strategy
         public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) => 
             (_variableOrdering, _valueOrdering) = (variableOrdering, valueOrdering);
 
-        public IEnumerable<IState> Branch(IModel model)
+        public IEnumerable<IState> Branch(in IModel model)
         {
-            var variable = _variableOrdering.Next(model);
+            var variable = _variableOrdering.Next(in model, model.State);
             var value = _valueOrdering.Order(model, variable).First();
 
             var without = model.State.Copy();
@@ -26,8 +26,7 @@ namespace CSPSolver.Search.strategy
             variable.RemoveValue(without, value);
             variable.SetValue(with, value);
 
-            yield return with;
-            yield return without;
+            return new IState[] { with, without };
         }
     }
 }

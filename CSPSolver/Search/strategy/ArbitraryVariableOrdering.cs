@@ -9,6 +9,6 @@ namespace CSPSolver.Search.strategy
 {
     public readonly struct ArbitraryVariableOrdering : IVariableOrderingHeuristic
     {
-        public IVariable Next(IModel model) => model.Variables.FirstOrDefault(v => !v.isInstantiated(model.State));
+        public IVariable Next(in IModel model, IState state) => model.Variables.FirstOrDefault(v => !v.isInstantiated(state));
     }
 }

@@ -6,6 +6,6 @@ namespace CSPSolver.common.search
 {
     public interface IValueOrderingHeuristic
     {
-        IEnumerable<object> Order(IModel model, IVariable variable);
+        IEnumerable<object> Order(in IModel model, in IVariable variable);
     }
 }

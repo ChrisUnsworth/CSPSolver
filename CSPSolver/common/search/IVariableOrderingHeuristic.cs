@@ -6,6 +6,6 @@ namespace CSPSolver.common.search
 {
     public interface IVariableOrderingHeuristic
     {
-        IVariable Next(IModel model);
+        IVariable Next(in IModel model, IState state);
     }
 }
