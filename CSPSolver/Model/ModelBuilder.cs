@@ -1,5 +1,4 @@
 ﻿using CSPSolver.common;
-using CSPSolver.common.variables;
 using CSPSolver.Variable;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Text;
 
 namespace CSPSolver.Model
 {
-    public class ModelBuilder : IModelBuilder
+    public class ModelBuilder
     {
         private IStateBuilder _sb;
         private List<IVariable> _variables;
@@ -22,23 +21,23 @@ namespace CSPSolver.Model
 
         public void AddConstraint(IConstraint con) => _constraints.Add(con);
 
-        public ISmallIntVar AddSmallIntVar(int min, int max)
+        public ModelIntVar AddSmallIntVar(int min, int max)
         {
             var size = max - min + 1;
             var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
-            return intVar;
+            return new ModelIntVar { variable = intVar };
         }
 
-        public IList<IVariable> AddIntVarArray(int min, int max, int count)
+        public IList<ModelIntVar> AddIntVarArray(int min, int max, int count)
         {
             var size = max - min + 1;
-            var intVars = new List<IVariable>();
+            var intVars = new List<ModelIntVar>();
             foreach (var _ in Enumerable.Repeat(0, count))
             {
                 var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
                 _variables.Add(intVar);
-                intVars.Add(intVar);
+                intVars.Add(new ModelIntVar { variable = intVar });
             }
 
             return intVars;
