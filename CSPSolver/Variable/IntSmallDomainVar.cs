@@ -27,7 +27,18 @@ namespace CSPSolver.Variable
 
         public (int domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
-        public void SetDomain(IState state, int domain) => state.SetDomain(StateRef, Size, domain);
+        public bool SetDomain(IState state, int domain)
+        {
+            if (domain != state.GetDomain(StateRef, Size))
+            {
+                state.SetDomain(StateRef, Size, domain);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool DomainMinus(IState state, int domain) => SetDomain(state, state.GetDomain(StateRef, Size) & ~domain);
 
         public bool TryGetValue(IState state, out int value)
         {
@@ -83,21 +94,13 @@ namespace CSPSolver.Variable
             if (max >= Size + Min) return false;
             if (max < Min)
             {
-                if (isEmpty(state)) return false;
-                SetDomain(state, 0);
-                return true;
+                return SetDomain(state, 0);
             }
 
             var mask = (int)Math.Pow(2, max - Min + 1) - 1;
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
-            if (oldDom != newDom)
-            {
-                SetDomain(state, newDom);
-                return true;
-            }
-
-            return false;
+            return SetDomain(state, newDom);
         }
 
         public bool SetMin(IState state, int min)
@@ -105,21 +108,13 @@ namespace CSPSolver.Variable
             if (min <= Min) return false;
             if (min >= Size + Min)
             {
-                if (isEmpty(state)) return false;
-                SetDomain(state, 0);
-                return true;
+                return SetDomain(state, 0);
             }
 
             var mask = ~(int)(Math.Pow(2, min - Min) - 1);
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
-            if (oldDom != newDom)
-            {
-                SetDomain(state, newDom);
-                return true;
-            }
-
-            return false;
+            return SetDomain(state, newDom);
         }
 
         public void initialise(IState state) => SetDomain(state, (int)Math.Pow(2, Size + 1) - 1);

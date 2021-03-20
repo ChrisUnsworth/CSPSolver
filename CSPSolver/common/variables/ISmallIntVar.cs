@@ -6,7 +6,9 @@ namespace CSPSolver.common.variables
     {
         (int domain, int min, int size) GetDomain(IState state);
 
-        void SetDomain(IState state, int domain);
+        bool SetDomain(IState state, int domain);
+
+        bool DomainMinus(IState state, int domain);
 
         IEnumerable<int> EnumerateDomain(IState state);
     }

@@ -1,4 +1,6 @@
 ﻿using CSPSolver.common;
+using CSPSolver.common.variables;
+using CSPSolver.Constraint.AllDiff;
 using CSPSolver.Variable;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,21 @@ namespace CSPSolver.Model
         }
 
         public void AddConstraint(IConstraint con) => _constraints.Add(con);
+
+        public void AddAllDiff(IEnumerable<ModelIntVar> vars)
+        {
+            var intVars = vars.Select(v => v.variable as ISmallIntVar).Where(s => s != null);
+            if (intVars.Any() && intVars.Min(v => v.Min) == intVars.Max(v => v.Min))
+            {
+                _constraints.Add(new AllDiffSameIntDomain(intVars));
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            
+        }
 
         public ModelIntVar AddSmallIntVar(int min, int max)
         {

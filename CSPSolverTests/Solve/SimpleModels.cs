@@ -169,5 +169,34 @@ namespace CSPSolverTests.Solve
 
             Assert.AreEqual(10, count);
         }
+
+        [TestMethod]
+        public void AllDiffTest()
+        {
+            var mb = GetModelBuilder();
+            var vars = mb.AddIntVarArray(1, 3, 3);
+
+            mb.AddAllDiff(vars);
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
+                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
+
+                count++;
+            }
+
+            Assert.AreEqual(6, count);
+        }
     }
 }
