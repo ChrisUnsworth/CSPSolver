@@ -8,10 +8,10 @@ namespace CSPSolver.Constraint.AllDiff
 {
     public readonly struct AllDiffSameIntDomain : IConstraint
     {
-        private readonly ISmallIntVar[] _variables;
+        private readonly ISmallIntDomainVar[] _variables;
         private int _n => _variables.Length;
 
-        public AllDiffSameIntDomain(IEnumerable<ISmallIntVar> variables) => _variables = variables.ToArray();
+        public AllDiffSameIntDomain(IEnumerable<ISmallIntDomainVar> variables) => _variables = variables.ToArray();
 
         public IEnumerable<IVariable> Variables => _variables;
 
@@ -21,7 +21,7 @@ namespace CSPSolver.Constraint.AllDiff
 
             foreach (var subSet in BitCounter.PowerSet(_variables, 1, _n - 1))
             {
-                var union = subSet.Aggregate(0, (u, v) => u |= v.GetDomain(state).domain);
+                var union = subSet.Aggregate(0u, (u, v) => u |= v.GetDomain(state).domain);
 
                 if (BitCounter.Count(union) <= subSet.Count)
                 {

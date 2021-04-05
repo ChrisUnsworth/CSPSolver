@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct IntSmallDomainVar : ISmallIntVar
+    public readonly struct IntSmallDomainVar : ISmallIntDomainVar
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -25,9 +25,9 @@ namespace CSPSolver.Variable
 
         public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size) + Min;
 
-        public (int domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
+        public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
-        public bool SetDomain(IState state, int domain)
+        public bool SetDomain(IState state, uint domain)
         {
             if (domain != state.GetDomain(StateRef, Size))
             {
@@ -38,7 +38,7 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public bool DomainMinus(IState state, int domain) => SetDomain(state, state.GetDomain(StateRef, Size) & ~domain);
+        public bool DomainMinus(IState state, uint domain) => SetDomain(state, state.GetDomain(StateRef, Size) & ~domain);
 
         public bool TryGetValue(IState state, out int value)
         {
@@ -61,7 +61,7 @@ namespace CSPSolver.Variable
         public bool SetValue(IState state, int value)
         {
             var oldD = state.GetDomain(StateRef, Size);
-            var newD = (int)Math.Pow(2, value - Min);
+            var newD = (uint)Math.Pow(2, value - Min);
             if (newD != oldD)
             {
                 state.SetDomain(StateRef, Size, newD & oldD);
@@ -76,7 +76,7 @@ namespace CSPSolver.Variable
         public bool RemoveValue(IState state, int value)
         {
             var oldD = state.GetDomain(StateRef, Size);
-            var newD = oldD & ~(int)Math.Pow(2, value - Min);
+            var newD = oldD & ~(uint)Math.Pow(2, value - Min);
             state.SetDomain(StateRef, Size, newD);
             if (newD != oldD)
             {
@@ -87,8 +87,6 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public bool HasSmallDomain() => true;
-
         public bool SetMax(IState state, int max)
         {
             if (max >= Size + Min) return false;
@@ -97,7 +95,7 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = (int)Math.Pow(2, max - Min + 1) - 1;
+            var mask = (uint)Math.Pow(2, max - Min + 1) - 1;
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
@@ -111,13 +109,13 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = ~(int)(Math.Pow(2, min - Min) - 1);
+            var mask = ~(uint)(Math.Pow(2, min - Min) - 1);
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
         }
 
-        public void initialise(IState state) => SetDomain(state, (int)Math.Pow(2, Size + 1) - 1);
+        public void initialise(IState state) => SetDomain(state, (uint)Math.Pow(2, Size + 1) - 1);
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {
@@ -131,7 +129,7 @@ namespace CSPSolver.Variable
                     yield return i + Min;
                 }
 
-                mask = mask << 1;
+                mask <<= 1;
             }
         }
 

@@ -28,8 +28,8 @@ namespace CSPSolverTests.Solve
         public void XequalsY()
         {
             var mb = GetModelBuilder();
-            var x = mb.AddSmallIntVar(1, 5).variable;
-            var y = mb.AddSmallIntVar(1, 5).variable;
+            var x = mb.AddIntDomainVar(1, 5).variable;
+            var y = mb.AddIntDomainVar(1, 5).variable;
 
             mb.AddConstraint(new EqualIntVar(x, y));
 
@@ -56,9 +56,9 @@ namespace CSPSolverTests.Solve
         public void XplusYequalsZ()
         {
             var mb = GetModelBuilder();
-            var x = mb.AddSmallIntVar(1, 10).variable;
-            var y = mb.AddSmallIntVar(1, 10).variable;
-            var z = mb.AddSmallIntVar(1, 10).variable;
+            var x = mb.AddIntDomainVar(1, 10).variable;
+            var y = mb.AddIntDomainVar(1, 10).variable;
+            var z = mb.AddIntDomainVar(1, 10).variable;
 
             mb.AddConstraint(new EqualIntVar(new PlusIntDomain(x, y), z));
 
@@ -85,9 +85,9 @@ namespace CSPSolverTests.Solve
         public void XminusYequalsZ()
         {
             var mb = GetModelBuilder();
-            var x = mb.AddSmallIntVar(1, 10).variable;
-            var y = mb.AddSmallIntVar(1, 10).variable;
-            var z = mb.AddSmallIntVar(1, 10).variable;
+            var x = mb.AddIntDomainVar(1, 10).variable;
+            var y = mb.AddIntDomainVar(1, 10).variable;
+            var z = mb.AddIntDomainVar(1, 10).variable;
 
             mb.AddConstraint(new EqualIntVar(new MinusIntDomain(x, y), z));
 
@@ -114,10 +114,10 @@ namespace CSPSolverTests.Solve
         public void AplusBEqualsCminusD()
         {
             var mb = GetModelBuilder();
-            var a = mb.AddSmallIntVar(1, 5).variable;
-            var b = mb.AddSmallIntVar(1, 5).variable;
-            var c = mb.AddSmallIntVar(1, 5).variable;
-            var d = mb.AddSmallIntVar(1, 5).variable;
+            var a = mb.AddIntDomainVar(1, 5).variable;
+            var b = mb.AddIntDomainVar(1, 5).variable;
+            var c = mb.AddIntDomainVar(1, 5).variable;
+            var d = mb.AddIntDomainVar(1, 5).variable;
 
             mb.AddConstraint(new EqualIntVar(new PlusIntDomain(a, b), new MinusIntDomain(c, d)));
 
@@ -144,10 +144,10 @@ namespace CSPSolverTests.Solve
         public void AplusBEqualsCminusDInline()
         {
             var mb = GetModelBuilder();
-            var a = mb.AddSmallIntVar(1, 5);
-            var b = mb.AddSmallIntVar(1, 5);
-            var c = mb.AddSmallIntVar(1, 5);
-            var d = mb.AddSmallIntVar(1, 5);
+            var a = mb.AddIntDomainVar(1, 5);
+            var b = mb.AddIntDomainVar(1, 5);
+            var c = mb.AddIntDomainVar(1, 5);
+            var d = mb.AddIntDomainVar(1, 5);
 
             mb.AddConstraint(a + b == c - d);
 

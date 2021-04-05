@@ -10,7 +10,7 @@ namespace CSPSolverTests
         [TestMethod]
         public void SetAndGet()
         {
-            var value = 0b10101;
+            uint value = 0b10101;
             var state = new IntState(1);
             var stateRef = new StateRef(0, 0);
 
@@ -23,7 +23,7 @@ namespace CSPSolverTests
         [TestMethod]
         public void SetAndGetOffset()
         {
-            var value = 0b10101;
+            uint value = 0b10101;
             var state = new IntState(1);
             var stateRef = new StateRef(0, 5);
 
@@ -36,8 +36,8 @@ namespace CSPSolverTests
         [TestMethod]
         public void SetAndGet2values()
         {
-            var value1 = 0b10101;
-            var value2 = 0b10111;
+            uint value1 = 0b10101;
+            uint value2 = 0b10111;
             var state = new IntState(1);
             var stateRef1 = new StateRef(0, 0);
             var stateRef2 = new StateRef(0, 5);
@@ -54,8 +54,8 @@ namespace CSPSolverTests
         [TestMethod]
         public void SetAndGet2valuesFull()
         {
-            var value1 = 0b1111_0000_1010_1111;
-            var value2 = 0b1001_1001_1001_1001;
+            uint value1 = 0b1111_0000_1010_1111;
+            uint value2 = 0b1001_1001_1001_1001;
             var state = new IntState(1);
             var stateRef1 = new StateRef(0, 0);
             var stateRef2 = new StateRef(0, 16);
@@ -72,7 +72,7 @@ namespace CSPSolverTests
         [TestMethod]
         public void GetAndSetBigDomain()
         {
-            var values = new int[] { 46, 77, 0b1111_0000_1010_1111 };
+            var values = new uint[] { 46, 77, 0b1111_0000_1010_1111 };
             var state = new IntState(3);
             var stateRef = new StateRef(0, 0);
 

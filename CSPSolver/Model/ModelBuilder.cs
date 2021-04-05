@@ -25,7 +25,7 @@ namespace CSPSolver.Model
 
         public void AddAllDiff(IEnumerable<ModelIntVar> vars)
         {
-            var intVars = vars.Select(v => v.variable as ISmallIntVar).Where(s => s != null);
+            var intVars = vars.Select(v => v.variable as ISmallIntDomainVar).Where(s => s != null);
             if (intVars.Any() && intVars.Min(v => v.Min) == intVars.Max(v => v.Min))
             {
                 _constraints.Add(new AllDiffSameIntDomain(intVars));
@@ -38,10 +38,12 @@ namespace CSPSolver.Model
             
         }
 
-        public ModelIntVar AddSmallIntVar(int min, int max)
+        public ModelIntVar AddIntDomainVar(int min, int max)
         {
             var size = max - min + 1;
-            var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
+            var intVar = size > 32 
+                    ? (IIntVar)new IntDomainVar(min, size, _sb.AddDomain(size))
+                    : (IIntVar)new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
             return new ModelIntVar { variable = intVar };
         }

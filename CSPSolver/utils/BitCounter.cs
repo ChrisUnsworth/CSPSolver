@@ -6,9 +6,14 @@ namespace CSPSolver.utils
 {
     public static class BitCounter
     {
-        private static readonly int[] _lookup = Enumerable.Range(0, 33).Select(CountBits).ToArray();
+        private static readonly int[] _lookup = Enumerable.Range(0, byte.MaxValue).Select(CountBits).ToArray();
 
-        public static int Count(int value) => _lookup[value];
+        public static int Count(uint value)
+        {
+            if (value <= _lookup.Length) return _lookup[(int)value];
+
+            return BitConverter.GetBytes(value).Sum(b => _lookup[b]);
+        }
 
         public  static int CountBits(int value)
         {

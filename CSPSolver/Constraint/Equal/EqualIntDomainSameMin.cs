@@ -9,10 +9,10 @@ namespace CSPSolver.Constraint.Equal
 {
     public class EqualIntDomainSameMin : IConstraint
     {
-        private ISmallIntVar _var1;
-        private ISmallIntVar _var2;
+        private ISmallIntDomainVar _var1;
+        private ISmallIntDomainVar _var2;
 
-        public EqualIntDomainSameMin(ISmallIntVar var1, ISmallIntVar var2) => (_var1, _var2) = (var1, var2);
+        public EqualIntDomainSameMin(ISmallIntDomainVar var1, ISmallIntDomainVar var2) => (_var1, _var2) = (var1, var2);
 
         public IEnumerable<IVariable> Variables => new List<IVariable>() { _var1, _var2};
 

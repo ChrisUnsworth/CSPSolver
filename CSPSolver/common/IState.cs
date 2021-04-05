@@ -6,25 +6,27 @@ namespace CSPSolver.common
 {
     public interface IState
     {
-        int GetInt(IStateRef idx);
-        void SetInt(IStateRef idx, int value);
+        int GetInt(in IStateRef idx);
+        void SetInt(in IStateRef idx, in int value);
 
-        long GetLong(IStateRef idx);
-        void SetLong(IStateRef idx, long value);
+        long GetLong(in IStateRef idx);
+        void SetLong(in IStateRef idx, in long value);
 
-        double GetDouble(IStateRef idx);
-        void SetDouble(IStateRef idx, double value);
+        double GetDouble(in IStateRef idx);
+        void SetDouble(in IStateRef idx, in double value);
 
-        float GetFloat(IStateRef idx);
-        void SetFloat(IStateRef idx, float value);
+        float GetFloat(in IStateRef idx);
+        void SetFloat(in IStateRef idx, in float value);
 
-        int GetDomain(IStateRef idx, int size);
-        int GetDomainMax(IStateRef idx, int size);
-        int GetDomainMin(IStateRef idx, int size);
-        void SetDomain(IStateRef idx, int size, int value);
+        uint GetDomain(in IStateRef idx, in int size);
+        int GetDomainMax(in IStateRef idx, in int size);
+        int GetLargeDomainMax(in IStateRef idx, in int size);
+        int GetDomainMin(in IStateRef idx, in int size);
+        int GetLargeDomainMin(in IStateRef idx, in int size);
+        void SetDomain(in IStateRef idx, in int size, in uint value);
 
-        int[] GetLargeDomain(IStateRef idx, int size);
-        void SetLargeDomain(IStateRef idx, int size, int[] value);
+        uint[] GetLargeDomain(in IStateRef idx, in int size);
+        void SetLargeDomain(in IStateRef idx, in int size, in uint[] value);
 
         IState Copy();
     }

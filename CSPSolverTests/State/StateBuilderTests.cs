@@ -18,7 +18,7 @@ namespace CSPSolverTests.State
             var sb = new StateBuilder();
             var stateRef = sb.AddDomain(5);
 
-            var value = 0b10101;
+            uint value = 0b10101;
             var state = sb.GetState();
 
             state.SetDomain(stateRef, 5, value);
@@ -35,9 +35,9 @@ namespace CSPSolverTests.State
             var stateRef2 = sb.AddDomain(8);
             var stateRef3 = sb.AddDomain(16);
 
-            var value1 = 0b1010_1111_0010_1000;
-            var value2 = 0b1010_1000;
-            var value3 = 0b1110_1101_1010_1001;
+            uint value1 = 0b1010_1111_0010_1000;
+            uint value2 = 0b1010_1000;
+            uint value3 = 0b1110_1101_1010_1001;
             var state = sb.GetState();
 
             state.SetDomain(stateRef1, 16, value1);
