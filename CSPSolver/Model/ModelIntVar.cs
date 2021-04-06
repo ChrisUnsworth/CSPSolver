@@ -18,5 +18,9 @@ namespace CSPSolver.Model
         public static ModelIntVar operator -(ModelIntVar v1, ModelIntVar v2) => new ModelIntVar { variable = new MinusIntDomain(v1.variable, v2.variable) };
         public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.variable, v2.variable);
         public static IConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new NotEqualIntVar(v1.variable, v2.variable);
+        public static IConstraint operator ==(ModelIntVar v, int i) => new EqualIntDomainConst(v.variable, i);
+        public static IConstraint operator !=(ModelIntVar v, int i) => new NotEqualIntDomainConst(v.variable, i);
+        public static IConstraint operator ==(int i, ModelIntVar v) => new EqualIntDomainConst(v.variable, i);
+        public static IConstraint operator !=(int i, ModelIntVar v) => new NotEqualIntDomainConst(v.variable, i);
     }
 }

@@ -17,11 +17,60 @@ namespace CSPSolverTests.Solve
     [TestClass]
     public class SimpleModels
     {
-        private ModelBuilder GetModelBuilder()
+        private ModelBuilder GetModelBuilder() => new ModelBuilder(new StateBuilder());
+
+        [TestMethod]
+        public void XequalsConst()
         {
-            var sb = new StateBuilder();
-            var mb = new ModelBuilder(sb);
-            return mb;
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x == 3);
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(3, solution.GetValue(x));
+
+                count++;
+            }
+
+            Assert.AreEqual(1, count);
+        }
+
+        [TestMethod]
+        public void XNotEqualsConst()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x != 3);
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreNotEqual(3, solution.GetValue(x));
+
+                count++;
+            }
+
+            Assert.AreEqual(4, count);
         }
 
         [TestMethod]

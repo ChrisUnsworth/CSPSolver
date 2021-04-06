@@ -6,16 +6,23 @@ namespace CSPSolver.utils
 {
     public static class BitCounter
     {
-        private static readonly int[] _lookup = Enumerable.Range(0, byte.MaxValue).Select(CountBits).ToArray();
+        private static readonly int[] _lookup = Enumerable.Range(0, byte.MaxValue + 1).Select(CountBits).ToArray();
 
         public static int Count(uint value)
         {
-            if (value <= _lookup.Length) return _lookup[(int)value];
+            if (value < _lookup.Length) return _lookup[(int)value];
 
             return BitConverter.GetBytes(value).Sum(b => _lookup[b]);
         }
 
-        public  static int CountBits(int value)
+        public static int Count(int value)
+        {
+            if (value < _lookup.Length) return _lookup[value];
+
+            return BitConverter.GetBytes(value).Sum(b => _lookup[b]);
+        }
+
+        public static int CountBits(int value)
         {
             int count = 0;
             while (value != 0)
@@ -30,7 +37,7 @@ namespace CSPSolver.utils
         {
             var count = 1 << list.Count;
             return Enumerable.Range(0, count)
-                .Where(mask => _lookup[mask] >= min && _lookup[mask] <= max)
+                .Where(mask => { var count = Count(mask); return count >= min && count <= max; } )
                 .Select(mask =>
                     Enumerable.Range(0, list.Count)
                         .Where(i => (mask & (1 << i)) > 0)
