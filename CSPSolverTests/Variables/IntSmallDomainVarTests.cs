@@ -144,5 +144,13 @@ namespace CSPSolverTests.Variables
             v.RemoveValue(s, 6);
             Assert.AreEqual("{  }", v.PrettyDomain(s));
         }
+
+        [TestMethod]
+        public void NegativeTests()
+        {
+            var (s, v) = GetVar(-3, 7);
+
+            Assert.AreEqual("{ -3, -2, -1, 0, 1, 2, 3 }", v.PrettyDomain(s));
+        }
     }
 }

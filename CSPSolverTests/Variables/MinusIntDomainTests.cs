@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSPSolverTests.Variables
 {
     [TestClass]
-    public class MinusSmallIntDomainTests
+    public class MinusIntDomainTests
     {
         private (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
         {

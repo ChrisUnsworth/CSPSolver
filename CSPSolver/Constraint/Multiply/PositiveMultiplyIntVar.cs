@@ -1,12 +1,13 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.variables;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSPSolver.Constraint.Plus
+using CSPSolver.common;
+using CSPSolver.common.variables;
+
+namespace CSPSolver.Constraint.Multiply
 {
-    public readonly struct PlusIntDomain : IIntVar, ICompoundVariable
+    public readonly struct PositiveMultiplyIntVar : IIntVar, ICompoundVariable
     {
         private readonly IIntVar _v1;
         private readonly IIntVar _v2;
@@ -17,18 +18,19 @@ namespace CSPSolver.Constraint.Plus
 
         public int Max { get; }
 
-        public PlusIntDomain(IIntVar v1, IIntVar v2)
+        public PositiveMultiplyIntVar(IIntVar v1, IIntVar v2)
         {
+            if (v1.Min < 0 || v2.Min < 0) throw new ArgumentOutOfRangeException($"{nameof(NegativeMultiplyIntVar)} only acts over posative domains.");
             _v1 = v1;
             _v2 = v2;
-            Min = v1.Min + v2.Min;
-            Max = v1.Max + v2.Max;
+            Min = v1.Min * v2.Min;
+            Max = v1.Max * v2.Max;
             Size = Max - Min + 1;
         }
 
-        public int GetDomainMax(IState state) => _v1.GetDomainMax(state) + _v2.GetDomainMax(state);
+        public int GetDomainMax(IState state) => _v1.GetDomainMax(state) * _v2.GetDomainMax(state);
 
-        public int GetDomainMin(IState state) => _v1.GetDomainMin(state) + _v2.GetDomainMin(state);
+        public int GetDomainMin(IState state) => _v1.GetDomainMin(state) * _v2.GetDomainMin(state);
 
         public void initialise(IState state) { /* holds no state */ }
 
@@ -39,26 +41,30 @@ namespace CSPSolver.Constraint.Plus
         public bool RemoveValue(IState state, object value)
         {
             var result = false;
+            var intVal = (int)value;
             if (_v2.TryGetValue(state, out int v2))
             {
-                result = _v1.RemoveValue(state, (int)value - v2);
+                result = _v1.RemoveValue(state, intVal / v2);
             }
 
             if (_v1.TryGetValue(state, out int v1))
             {
-                result |= _v2.RemoveValue(state, (int)value - v1);
+                result |= _v2.RemoveValue(state, intVal / v1);
             }
 
             return result;
         }
 
-        public bool SetMax(IState state, int max) => 
-            _v1.SetMax(state, max - _v2.GetDomainMin(state))
-          | _v2.SetMax(state, max - _v1.GetDomainMin(state));
+        public bool SetMax(IState state, int max) =>
+            _v1.SetMax(state, max / _v2.GetDomainMin(state))
+          | _v2.SetMax(state, max / _v1.GetDomainMin(state));
 
-        public bool SetMin(IState state, int min) =>
-            _v1.SetMin(state, min - _v2.GetDomainMax(state))
-          | _v2.SetMin(state, min - _v1.GetDomainMax(state));
+        public bool SetMin(IState state, int min)
+        {
+            if (min <= 0) return false; 
+            return _v1.SetMin(state, (int)Math.Ceiling((double)min / _v2.GetDomainMax(state)))
+                 | _v2.SetMin(state, (int)Math.Ceiling((double)min / _v1.GetDomainMax(state)));
+        }
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 
@@ -66,7 +72,7 @@ namespace CSPSolver.Constraint.Plus
         {
             if (_v1.TryGetValue(state, out int v1) & _v2.TryGetValue(state, out int v2))
             {
-                value = v1 + v2;
+                value = v1 * v2;
                 return true;
             }
 

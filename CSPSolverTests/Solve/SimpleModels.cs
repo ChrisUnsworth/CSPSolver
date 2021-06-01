@@ -11,6 +11,7 @@ using CSPSolver.Constraint.Equal;
 using CSPSolver.Constraint.Plus;
 using CSPSolver.Search;
 using CSPSolver.Constraint.Minus;
+using CSPSolver.Constraint.Multiply;
 
 namespace CSPSolverTests.Solve
 {
@@ -131,6 +132,35 @@ namespace CSPSolverTests.Solve
         }
 
         [TestMethod]
+        public void negativeXplusYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-10, -1).variable;
+            var y = mb.AddIntDomainVar(-10, -1).variable;
+            var z = mb.AddIntDomainVar(-10, -1).variable;
+
+            mb.AddConstraint(new EqualIntVar(new PlusIntDomain(x, y), z));
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) + solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(45, count);
+        }
+
+        [TestMethod]
         public void XminusYequalsZ()
         {
             var mb = GetModelBuilder();
@@ -157,6 +187,64 @@ namespace CSPSolverTests.Solve
             }
 
             Assert.AreEqual(45, count);
+        }
+
+        [TestMethod]
+        public void XmultiplyYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 10).variable;
+            var y = mb.AddIntDomainVar(1, 10).variable;
+            var z = mb.AddIntDomainVar(1, 20).variable;
+
+            mb.AddConstraint(new EqualIntVar(new PositiveMultiplyIntVar(x, y), z));
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(46, count);
+        }
+
+        [TestMethod]
+        public void negativeXmultiplyYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-10, -1).variable;
+            var y = mb.AddIntDomainVar(-10, -1).variable;
+            var z = mb.AddIntDomainVar(1, 20).variable;
+
+            mb.AddConstraint(new EqualIntVar(new NegativeMultiplyIntVar(x, y), z));
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(46, count);
         }
 
         [TestMethod]

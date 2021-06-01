@@ -33,9 +33,7 @@ namespace CSPSolver.Model
             else
             {
                 throw new NotImplementedException();
-            }
-
-            
+            }            
         }
 
         public ModelIntVar AddIntDomainVar(int min, int max)
