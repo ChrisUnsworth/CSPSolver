@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -23,8 +22,8 @@ namespace CSPSolver.Constraint.Multiply
             if (v1.Max >= 0 || v2.Max >= 0) throw new ArgumentOutOfRangeException($"{nameof(NegativeMultiplyIntVar)} only acts over negative domains.");
             _v1 = v1;
             _v2 = v2;
-            Min = v1.Min * v2.Min;
-            Max = v1.Max * v2.Max;
+            Min = v1.Max * v2.Max;
+            Max = v1.Min * v2.Min;
             Size = Max - Min + 1;
         }
 

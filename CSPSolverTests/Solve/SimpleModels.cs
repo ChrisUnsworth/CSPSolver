@@ -248,6 +248,35 @@ namespace CSPSolverTests.Solve
         }
 
         [TestMethod]
+        public void MixedSignXmultiplyYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-3, 3);
+            var y = mb.AddIntDomainVar(-3, 3);
+            var z = mb.AddIntDomainVar(-10, 10);
+
+            mb.AddConstraint(x * y == z);
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(49, count);
+        }
+
+        [TestMethod]
         public void AplusBEqualsCminusD()
         {
             var mb = GetModelBuilder();

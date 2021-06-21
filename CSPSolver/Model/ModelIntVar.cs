@@ -24,7 +24,7 @@ namespace CSPSolver.Model
         {
             if (v1.variable.Min >= 0 && v2.variable.Min >= 0) return new ModelIntVar { variable = new PositiveMultiplyIntVar(v1.variable, v2.variable) };
             if (v1.variable.Max < 0 && v2.variable.Max < 0) return new ModelIntVar { variable = new NegativeMultiplyIntVar(v1.variable, v2.variable) };
-            throw new NotImplementedException("Mixed sign multiply constraint not yet implemented.");
+            return new ModelIntVar { variable = new MixedSignMultiplyIntVar(v1.variable, v2.variable) };
         }
         public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.variable, v2.variable);
         public static IConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new NotEqualIntVar(v1.variable, v2.variable);
