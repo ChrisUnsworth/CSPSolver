@@ -18,7 +18,7 @@ namespace CSPSolverTests.Solve
     [TestClass]
     public class SimpleModels
     {
-        private ModelBuilder GetModelBuilder() => new ModelBuilder(new StateBuilder());
+        private static ModelBuilder GetModelBuilder() => new(new StateBuilder());
 
         [TestMethod]
         public void XequalsConst()
@@ -132,7 +132,7 @@ namespace CSPSolverTests.Solve
         }
 
         [TestMethod]
-        public void negativeXplusYequalsZ()
+        public void NegativeXplusYequalsZ()
         {
             var mb = GetModelBuilder();
             var x = mb.AddIntDomainVar(-10, -1).variable;
@@ -219,7 +219,7 @@ namespace CSPSolverTests.Solve
         }
 
         [TestMethod]
-        public void negativeXmultiplyYequalsZ()
+        public void NegativeXmultiplyYequalsZ()
         {
             var mb = GetModelBuilder();
             var x = mb.AddIntDomainVar(-10, -1).variable;
@@ -334,6 +334,36 @@ namespace CSPSolverTests.Solve
             }
 
             Assert.AreEqual(10, count);
+        }
+
+        [TestMethod]
+        public void AplusConstEqualsCminusDInline()
+        {
+            var mb = GetModelBuilder();
+            var a = mb.AddIntDomainVar(1, 5);
+            var b = 2;
+            var c = mb.AddIntDomainVar(1, 5);
+            var d = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(a + b == c - d);
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(a) + b, solution.GetValue(c) - solution.GetValue(d));
+
+                count++;
+            }
+
+            Assert.AreEqual(3, count);
         }
 
         [TestMethod]
