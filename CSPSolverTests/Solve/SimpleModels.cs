@@ -12,6 +12,7 @@ using CSPSolver.Constraint.Plus;
 using CSPSolver.Search;
 using CSPSolver.Constraint.Minus;
 using CSPSolver.Constraint.Multiply;
+using CSPSolver.Constraint.Divide;
 
 namespace CSPSolverTests.Solve
 {
@@ -216,6 +217,35 @@ namespace CSPSolverTests.Solve
             }
 
             Assert.AreEqual(46, count);
+        }
+
+        [TestMethod]
+        public void XdivideYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 10).variable;
+            var y = mb.AddIntDomainVar(1, 10).variable;
+            var z = mb.AddIntDomainVar(0, 5).variable;
+
+            mb.AddConstraint(new EqualIntVar(new PositiveDivideIntVar(x, y), z));
+
+            var model = mb.GetModel();
+
+            var search = new Search(model);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(95, count);
         }
 
         [TestMethod]

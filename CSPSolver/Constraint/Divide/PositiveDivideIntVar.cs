@@ -45,8 +45,8 @@ namespace CSPSolver.Constraint.Divide
             max == 0
                 ?   _v1.SetMax(state, _v2.GetDomainMax(state) - 1)
                   | _v2.SetMin(state, _v1.GetDomainMin(state) + 1)
-                :   _v1.SetMax(state, max * _v2.GetDomainMax(state))
-                  | _v2.SetMin(state, _v1.GetDomainMin(state) / max);
+                :   _v1.SetMax(state, ((max + 1) * _v2.GetDomainMax(state)) - 1)
+                  | _v2.SetMin(state, (_v1.GetDomainMin(state) / (max + 1)) + 1);
 
         public bool SetMin(IState state, int min) =>
             min > 0

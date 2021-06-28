@@ -1,11 +1,12 @@
-﻿using CSPSolver.common;
+﻿using System;
+using System.Collections.Generic;
+
+using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
 using CSPSolver.Constraint.Minus;
 using CSPSolver.Constraint.Plus;
 using CSPSolver.Constraint.Multiply;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CSPSolver.Constraint.Divide;
 using CSPSolver.Variable;
 
 namespace CSPSolver.Model
@@ -28,6 +29,11 @@ namespace CSPSolver.Model
             if (v1.variable.Min >= 0 && v2.variable.Min >= 0) return new() { variable = new PositiveMultiplyIntVar(v1.variable, v2.variable) };
             if (v1.variable.Max < 0 && v2.variable.Max < 0) return new() { variable = new NegativeMultiplyIntVar(v1.variable, v2.variable) };
             return new ModelIntVar { variable = new MixedSignMultiplyIntVar(v1.variable, v2.variable) };
+        }
+        public static ModelIntVar operator /(ModelIntVar v1, ModelIntVar v2)
+        {
+            if (v1.variable.Min >= 0 && v2.variable.Min >= 0) return new() { variable = new PositiveDivideIntVar(v1.variable, v2.variable) };
+            throw new NotImplementedException();
         }
         public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.variable, v2.variable);
         public static IConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new NotEqualIntVar(v1.variable, v2.variable);
