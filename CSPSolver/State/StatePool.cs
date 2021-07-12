@@ -22,8 +22,8 @@ namespace CSPSolver.State
         {
             if (state is IntState intState)
             {
-                _arrayPool = ArrayPool<uint>.Create();
                 _size = intState._data.Length;
+                _arrayPool = ArrayPool<uint>.Create(_size, 10);
             }
             else
             {
