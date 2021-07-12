@@ -6,6 +6,6 @@ namespace CSPSolver.common.search
 {
     public interface IBranchStrategy
     {
-        IEnumerable<IState> Branch(in IModel model);
+        IEnumerable<IState> Branch(in IModel model, IStatePool statePool);
     }
 }

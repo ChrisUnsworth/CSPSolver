@@ -1,15 +1,14 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.search;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Numerics;
-using System.Text;
+
+using CSPSolver.common;
+using CSPSolver.common.search;
 
 namespace CSPSolver.State
 {
     public readonly struct IntState : IState
     {
-        private readonly uint[] _data;
+        internal readonly uint[] _data;
 
         public IntState(int size)
         {
@@ -17,16 +16,13 @@ namespace CSPSolver.State
             for (int i = 0; i < size; i++) _data[i] = 0;
         }
 
-        public IntState(uint[] data) => _data = data;
+        internal IntState(uint[] data) => _data = data;
 
-        public IntState Copy()
+        internal IntState Copy(uint[] copy)
         {
-            var copy = new uint[_data.Length];
             _data.CopyTo(copy, 0);
             return new IntState(copy);
         }
-
-        IState IState.Copy() => Copy();
 
         public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx , size);
         private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & ((uint)Math.Pow(2, size) - 1);

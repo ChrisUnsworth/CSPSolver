@@ -4,14 +4,16 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using CSPSolver.State;
 
 namespace CSPSolver.Search
 {
     public class Search : IEnumerator<ISolution>
     {
-        private IModel _model;
-        private Stack<IState> _frontier;
-        private SearchConfig _searchConfig;
+        private readonly IModel _model;
+        private readonly Stack<IState> _frontier;
+        private readonly SearchConfig _searchConfig;
+        private readonly StatePool _statePool;
 
         public Search(IModel model, SearchConfig? searchConfig = null)
         {
@@ -19,6 +21,7 @@ namespace CSPSolver.Search
             _frontier = new Stack<IState>();
             _frontier.Push(_model.State);
             _searchConfig = searchConfig ?? SearchConfig.Default();
+            _statePool = new StatePool(_model.State);
         }
 
         public ISolution Current { get; private set; }
@@ -41,15 +44,18 @@ namespace CSPSolver.Search
                 var after = _model.PrettyDomains();
                 if (_model.IsSolved())
                 {
-                    Current = new Solution(_model.State.Copy());
+                    Current = new Solution(_statePool.Copy(_model.State));
                     return true;
                 }
                 else if (!_model.HasEmptyDomain())
                 {
-                    foreach (var state in _searchConfig.Branching.Branch(_model).Reverse())
+                    foreach (var state in _searchConfig.Branching.Branch(_model, _statePool).Reverse())
                     {
                         _frontier.Push(state);
                     }
+                } else
+                {
+                    _statePool.Return(_model.State);
                 }
             }
             

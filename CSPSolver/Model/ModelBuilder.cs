@@ -39,9 +39,9 @@ namespace CSPSolver.Model
         public ModelIntVar AddIntDomainVar(int min, int max)
         {
             var size = max - min + 1;
-            var intVar = size > 32 
-                    ? (IIntVar)new IntDomainVar(min, size, _sb.AddDomain(size))
-                    : (IIntVar)new IntSmallDomainVar(min, size, _sb.AddDomain(size));
+            IIntVar intVar = size > 32 
+                    ? new IntDomainVar(min, size, _sb.AddDomain(size))
+                    : new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
             return new ModelIntVar { variable = intVar };
         }
