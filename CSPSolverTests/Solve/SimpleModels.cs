@@ -29,9 +29,9 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(x == 3);
 
-            var model = mb.GetModel();
+            var (model, state) = mb.GetModel();
 
-            var search = new Search(model);
+            var search = new Search(model, state);
 
             var count = 0;
 

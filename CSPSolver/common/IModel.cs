@@ -6,18 +6,16 @@ namespace CSPSolver.common
 {
     public interface IModel
     {
-        IState State { get; set; }
-
         IEnumerable<IVariable> Variables { get; }
 
         IEnumerable<IConstraint> Constraints { get; }
 
-        void propagate();
+        void propagate(IState state);
 
-        bool IsSolved();
+        bool IsSolved(IState state);
 
-        bool HasEmptyDomain();
+        bool HasEmptyDomain(IState state);
 
-        string PrettyDomains();
+        string PrettyDomains(IState state);
     }
 }

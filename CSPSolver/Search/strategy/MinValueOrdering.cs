@@ -10,9 +10,9 @@ namespace CSPSolver.Search.strategy
 {
     public readonly struct MinValueOrdering : IValueOrderingHeuristic
     {
-        public IEnumerable<object> Order(in IModel model, in IVariable variable) => variable switch
+        public IEnumerable<object> Order(in IModel model, in IState state, in IVariable variable) => variable switch
             {
-                ISmallIntDomainVar siv => siv.EnumerateDomain(model.State).Cast<object>(),
+                ISmallIntDomainVar siv => siv.EnumerateDomain(state).Cast<object>(),
                 _ => throw new NotSupportedException($"Variable type {variable.GetType().Name} not currently supported in MinValueOrdering."),
             };
     }

@@ -60,11 +60,11 @@ namespace CSPSolver.Model
             return intVars;
         }
 
-        public IModel GetModel()
+        public (IModel, IState) GetModel()
         {
             var state = _sb.GetState();
             _variables.ForEach(v => v.initialise(state));
-            return new Model(_constraints.ToArray(), _variables.ToArray(), state);
+            return (new Model(_constraints.ToArray(), _variables.ToArray()), state);
         }
     }
 }

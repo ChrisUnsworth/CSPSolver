@@ -15,13 +15,13 @@ namespace CSPSolver.Search.strategy
         public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) => 
             (_variableOrdering, _valueOrdering) = (variableOrdering, valueOrdering);
 
-        public IEnumerable<IState> Branch(in IModel model, IStatePool statePool)
+        public IEnumerable<IState> Branch(in IModel model, in IState state, IStatePool statePool)
         {
-            var variable = _variableOrdering.Next(in model, model.State);
-            var value = _valueOrdering.Order(model, variable).First();
+            var variable = _variableOrdering.Next(in model, state);
+            var value = _valueOrdering.Order(model, state, variable).First();
 
-            var without = statePool.Copy(model.State);
-            var with = model.State;
+            var without = statePool.Copy(state);
+            var with = state;
 
             variable.RemoveValue(without, value);
             variable.SetValue(with, value);

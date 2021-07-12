@@ -15,13 +15,15 @@ namespace CSPSolver.Search
         private readonly SearchConfig _searchConfig;
         private readonly StatePool _statePool;
 
-        public Search(IModel model, SearchConfig? searchConfig = null)
+        public Search((IModel model, IState initialState) x, SearchConfig? searchConfig = null) : this(x.model, x.initialState, searchConfig) { }
+
+        public Search(IModel model, IState initialState, SearchConfig? searchConfig = null)
         {
             _model = model;
             _frontier = new Stack<IState>();
-            _frontier.Push(_model.State);
+            _frontier.Push(initialState);
             _searchConfig = searchConfig ?? SearchConfig.Default();
-            _statePool = new StatePool(_model.State);
+            _statePool = new StatePool(initialState);
         }
 
         public ISolution Current { get; private set; }
@@ -38,24 +40,22 @@ namespace CSPSolver.Search
         {
             while (_frontier.Any())
             {
-                _model.State = _frontier.Pop();
-                var before = _model.PrettyDomains();
-                _model.propagate();
-                var after = _model.PrettyDomains();
-                if (_model.IsSolved())
+                var state = _frontier.Pop();
+                _model.propagate(state);
+                if (_model.IsSolved(state))
                 {
-                    Current = new Solution(_statePool.Copy(_model.State));
+                    Current = new Solution(_statePool.Copy(state));
                     return true;
                 }
-                else if (!_model.HasEmptyDomain())
+                else if (!_model.HasEmptyDomain(state))
                 {
-                    foreach (var state in _searchConfig.Branching.Branch(_model, _statePool).Reverse())
+                    foreach (var branch in _searchConfig.Branching.Branch(_model, state, _statePool).Reverse())
                     {
-                        _frontier.Push(state);
+                        _frontier.Push(branch);
                     }
                 } else
                 {
-                    _statePool.Return(_model.State);
+                    _statePool.Return(state);
                 }
             }
             
