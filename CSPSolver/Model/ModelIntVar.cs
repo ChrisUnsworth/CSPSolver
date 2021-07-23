@@ -8,6 +8,7 @@ using CSPSolver.Constraint.Plus;
 using CSPSolver.Constraint.Multiply;
 using CSPSolver.Constraint.Divide;
 using CSPSolver.Variable;
+using CSPSolver.Constraint.Inequality;
 
 namespace CSPSolver.Model
 {
@@ -33,6 +34,7 @@ namespace CSPSolver.Model
         public static ModelIntVar operator /(ModelIntVar v1, ModelIntVar v2)
         {
             if (v1.variable.Min >= 0 && v2.variable.Min >= 0) return new() { variable = new PositiveDivideIntVar(v1.variable, v2.variable) };
+            if (v1.variable.Max < 0 && v2.variable.Max < 0) return new() { variable = new NegativeDivideIntVar(v1.variable, v2.variable) };
             throw new NotImplementedException();
         }
         public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.variable, v2.variable);
@@ -41,5 +43,7 @@ namespace CSPSolver.Model
         public static IConstraint operator !=(ModelIntVar v, int i) => new NotEqualIntDomainConst(v.variable, i);
         public static IConstraint operator ==(int i, ModelIntVar v) => new EqualIntDomainConst(v.variable, i);
         public static IConstraint operator !=(int i, ModelIntVar v) => new NotEqualIntDomainConst(v.variable, i);
+        public static IConstraint operator >(ModelIntVar v1, ModelIntVar v2) => new GreaterThanIntVar(v1.variable, v2.variable);
+        public static IConstraint operator <(ModelIntVar v1, ModelIntVar v2) => throw new NotImplementedException();
     }
 }
