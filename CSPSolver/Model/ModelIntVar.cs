@@ -44,6 +44,8 @@ namespace CSPSolver.Model
         public static IConstraint operator ==(int i, ModelIntVar v) => new EqualIntDomainConst(v.variable, i);
         public static IConstraint operator !=(int i, ModelIntVar v) => new NotEqualIntDomainConst(v.variable, i);
         public static IConstraint operator >(ModelIntVar v1, ModelIntVar v2) => new GreaterThanIntVar(v1.variable, v2.variable);
-        public static IConstraint operator <(ModelIntVar v1, ModelIntVar v2) => throw new NotImplementedException();
+        public static IConstraint operator <(ModelIntVar v1, ModelIntVar v2) => new GreaterThanIntVar(v2.variable, v1.variable);
+        public static IConstraint operator >=(ModelIntVar v1, ModelIntVar v2) => new GreaterEqualIntVar(v1.variable, v2.variable);
+        public static IConstraint operator <=(ModelIntVar v1, ModelIntVar v2) => new GreaterEqualIntVar(v2.variable, v1.variable);
     }
 }

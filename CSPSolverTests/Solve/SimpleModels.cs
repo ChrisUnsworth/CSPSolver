@@ -463,21 +463,63 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(x > y);
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
-
-            var count = 0;
-
-            while (search.MoveNext())
+            Action<ISolution> test = solution =>
             {
-                var solution = search.Current;
-                Assert.IsNotNull(solution);
                 Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
-                count++;
-            }
+            };
 
-            Assert.AreEqual(10, count);
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void XGreaterEqualY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x >= y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 15);
+        }
+
+        [TestMethod]
+        public void XLessThanY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x < y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void XLessEqualY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x <= y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 15);
         }
 
         [TestMethod]
@@ -488,25 +530,37 @@ namespace CSPSolverTests.Solve
 
             mb.AddAllDiff(vars);
 
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
+                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
+            };
+
+            CheckAll(mb, test, 6);
+        }
+
+        private void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
+        {
             var model = mb.GetModel();
-
             var search = new Search(model);
-
             var count = 0;
 
             while (search.MoveNext())
             {
                 var solution = search.Current;
-
-                Assert.IsNotNull(solution);
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
-                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
-
+                test(solution);
                 count++;
             }
 
-            Assert.AreEqual(6, count);
+            Assert.AreEqual(expected, count);
+        }
+
+        private IEnumerable<ISolution> Solutions(ModelBuilder mb)
+        {
+            var model = mb.GetModel();
+            var search = new Search(model);
+            while (search.MoveNext()) yield return search.Current;
         }
     }
 }
