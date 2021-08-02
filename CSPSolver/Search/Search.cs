@@ -15,15 +15,15 @@ namespace CSPSolver.Search
         private readonly SearchConfig _searchConfig;
         private readonly StatePool _statePool;
 
-        public Search((IModel model, IState initialState) x, SearchConfig? searchConfig = null) : this(x.model, x.initialState, searchConfig) { }
-
-        public Search(IModel model, IState initialState, SearchConfig? searchConfig = null)
+        public Search(IModelBuilder mb, SearchConfig? searchConfig = null)
         {
-            _model = model;
+            _model = mb.GetModel();
+            _statePool = new StatePool(mb.GetStateSize());
+            var initialState = _statePool.Empty();
+            _model.Initialise(initialState);
             _frontier = new Stack<IState>();
             _frontier.Push(initialState);
             _searchConfig = searchConfig ?? SearchConfig.Default();
-            _statePool = new StatePool(initialState);
         }
 
         public ISolution Current { get; private set; }

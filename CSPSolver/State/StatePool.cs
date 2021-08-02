@@ -14,21 +14,8 @@ namespace CSPSolver.State
         private readonly ArrayPool<uint> _arrayPool;
         public StatePool(int size)
         {
-            _arrayPool = ArrayPool<uint>.Create();
             _size = size;
-        }
-
-        public StatePool(IState state)
-        {
-            if (state is IntState intState)
-            {
-                _size = intState._data.Length;
-                _arrayPool = ArrayPool<uint>.Create(_size, 10);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            _arrayPool = ArrayPool<uint>.Create(_size, 10);
         }
 
         public IState Copy(IState state)
@@ -48,8 +35,12 @@ namespace CSPSolver.State
             {
                 _arrayPool.Return(intState._data);
             }
-
-            throw new NotImplementedException();
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
+
+        internal IState Empty() => new IntState(_arrayPool.Rent(_size));
     }
 }

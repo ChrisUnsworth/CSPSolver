@@ -35,7 +35,7 @@ namespace CSPSolver.Model
         {
             if (v1.variable.Min >= 0 && v2.variable.Min >= 0) return new() { variable = new PositiveDivideIntVar(v1.variable, v2.variable) };
             if (v1.variable.Max < 0 && v2.variable.Max < 0) return new() { variable = new NegativeDivideIntVar(v1.variable, v2.variable) };
-            throw new NotImplementedException();
+            return new ModelIntVar { variable = new MixedSignDivideIntVar(v1.variable, v2.variable) };
         }
         public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.variable, v2.variable);
         public static IConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new NotEqualIntVar(v1.variable, v2.variable);

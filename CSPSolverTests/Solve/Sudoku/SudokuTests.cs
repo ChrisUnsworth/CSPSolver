@@ -59,7 +59,7 @@ namespace CSPSolverTests.Solve.Sudoku
                 }
             }
 
-            var search = new Search(mb.GetModel());
+            var search = new Search(mb);
 
             var count = 0;
 

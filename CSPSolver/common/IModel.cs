@@ -17,5 +17,7 @@ namespace CSPSolver.common
         bool HasEmptyDomain(IState state);
 
         string PrettyDomains(IState state);
+
+        void Initialise(IState state);
     }
 }

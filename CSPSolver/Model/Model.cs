@@ -76,5 +76,10 @@ namespace CSPSolver.Model
         public bool IsSolved(IState state) => Variables.All(v => v.isInstantiated(state));
 
         public bool HasEmptyDomain(IState state) => Variables.Any(v => v.isEmpty(state));
+
+        public void Initialise(IState state)
+        {
+            foreach (var v in Variables) v.initialise(state);
+        }
     }
 }
