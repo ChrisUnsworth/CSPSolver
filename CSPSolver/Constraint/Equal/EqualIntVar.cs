@@ -23,14 +23,9 @@ namespace CSPSolver.Constraint.Equal
 
             var changed = new List<IVariable>();
 
-            var add1 = _var1.SetMax(state, _var2.GetDomainMax(state));
-            add1 |= _var1.SetMin(state, _var2.GetDomainMin(state));
+            if (_var1.SetMax(state, _var2.GetDomainMax(state)) | _var1.SetMin(state, _var2.GetDomainMin(state))) changed.Add(_var1);
+            if (_var2.SetMax(state, _var1.GetDomainMax(state)) | _var2.SetMin(state, _var1.GetDomainMin(state))) changed.Add(_var2);
 
-            var add2 = _var2.SetMax(state, _var1.GetDomainMax(state));
-            add2 |= _var2.SetMin(state, _var1.GetDomainMin(state));
-
-            if (add1) changed.Add(_var1);
-            if (add2) changed.Add(_var2);
             return changed;
         }
     }

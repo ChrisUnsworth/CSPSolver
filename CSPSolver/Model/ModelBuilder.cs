@@ -5,11 +5,10 @@ using CSPSolver.Variable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CSPSolver.Model
 {
-    public class ModelBuilder
+    public class ModelBuilder : IModelBuilder
     {
         private IStateBuilder _sb;
         private List<IVariable> _variables;
@@ -60,11 +59,8 @@ namespace CSPSolver.Model
             return intVars;
         }
 
-        public (IModel, IState) GetModel()
-        {
-            var state = _sb.GetState();
-            _variables.ForEach(v => v.initialise(state));
-            return (new Model(_constraints.ToArray(), _variables.ToArray()), state);
-        }
+        public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray());        
+
+        public int GetStateSize() =>_sb.GetSize();
     }
 }

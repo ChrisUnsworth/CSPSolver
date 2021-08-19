@@ -29,9 +29,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(x == 3);
 
-            var (model, state) = mb.GetModel();
-
-            var search = new Search(model, state);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -56,9 +54,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(x != 3);
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -84,9 +80,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(x, y));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -113,9 +107,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new PlusIntDomain(x, y), z));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -142,9 +134,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new PlusIntDomain(x, y), z));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -171,9 +161,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new MinusIntDomain(x, y), z));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -191,6 +179,33 @@ namespace CSPSolverTests.Solve
         }
 
         [TestMethod]
+        public void MixedSignXminusYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-5, 5).variable;
+            var y = mb.AddIntDomainVar(-5, 5).variable;
+            var z = mb.AddIntDomainVar(-5, 5).variable;
+
+            mb.AddConstraint(new EqualIntVar(new MinusIntDomain(x, y), z));
+
+            var search = new Search(mb);
+
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) - solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(91, count);
+        }
+
+        [TestMethod]
         public void XmultiplyYequalsZ()
         {
             var mb = GetModelBuilder();
@@ -200,9 +215,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new PositiveMultiplyIntVar(x, y), z));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -229,9 +242,64 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new PositiveDivideIntVar(x, y), z));
 
-            var model = mb.GetModel();
+            var search = new Search(mb);
 
-            var search = new Search(model);
+            var count = 0;
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
+
+                count++;
+            }
+
+            Assert.AreEqual(95, count);
+        }
+
+        [Ignore]
+        public void MixedSignXdivideYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-5, 5).variable;
+            var y = mb.AddIntDomainVar(-5, 5).variable;
+            var z = mb.AddIntDomainVar(-5, 5).variable;
+
+            var div = new MixedSignDivideIntVar(x, y);
+
+            mb.AddConstraint(new EqualIntVar(new MixedSignDivideIntVar(x, y), z));
+
+            var search = new Search(mb);
+
+            var count = 0;
+            var sb = new StringBuilder();
+
+            while (search.MoveNext())
+            {
+                var solution = search.Current;
+
+                Assert.IsNotNull(solution);
+                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
+                sb.AppendLine($"{solution.GetValue(x)} / {solution.GetValue(y)} = {solution.GetValue(z)}");
+                count++;
+            }
+
+            Assert.AreEqual(110, count);
+        }
+
+        [TestMethod]
+        public void NegativeXdivideYequalsZ()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(-10, -1).variable;
+            var y = mb.AddIntDomainVar(-10, -1).variable;
+            var z = mb.AddIntDomainVar(0, 5).variable;
+
+            mb.AddConstraint(new EqualIntVar(new NegativeDivideIntVar(x, y), z));
+
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -258,9 +326,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new NegativeMultiplyIntVar(x, y), z));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -277,7 +343,7 @@ namespace CSPSolverTests.Solve
             Assert.AreEqual(46, count);
         }
 
-        [TestMethod]
+        [Ignore]
         public void MixedSignXmultiplyYequalsZ()
         {
             var mb = GetModelBuilder();
@@ -287,9 +353,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(x * y == z);
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -317,9 +381,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(new EqualIntVar(new PlusIntDomain(a, b), new MinusIntDomain(c, d)));
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -347,9 +409,7 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(a + b == c - d);
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
+            var search = new Search(mb);
 
             var count = 0;
 
@@ -377,23 +437,80 @@ namespace CSPSolverTests.Solve
 
             mb.AddConstraint(a + b == c - d);
 
-            var model = mb.GetModel();
-
-            var search = new Search(model);
-
-            var count = 0;
-
-            while (search.MoveNext())
+            Action<ISolution> test = solution =>
             {
-                var solution = search.Current;
-
-                Assert.IsNotNull(solution);
                 Assert.AreEqual(solution.GetValue(a) + b, solution.GetValue(c) - solution.GetValue(d));
+            };
 
-                count++;
-            }
+            CheckAll(mb, test, 3);
+        }
 
-            Assert.AreEqual(3, count);
+        [TestMethod]
+        public void XGreaterThanY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x > y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void XGreaterEqualY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x >= y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 15);
+        }
+
+        [TestMethod]
+        public void XLessThanY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x < y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void XLessEqualY()
+        {
+            var mb = GetModelBuilder();
+            var x = mb.AddIntDomainVar(1, 5);
+            var y = mb.AddIntDomainVar(1, 5);
+
+            mb.AddConstraint(x <= y);
+
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
+            };
+
+            CheckAll(mb, test, 15);
         }
 
         [TestMethod]
@@ -404,25 +521,29 @@ namespace CSPSolverTests.Solve
 
             mb.AddAllDiff(vars);
 
-            var model = mb.GetModel();
+            Action<ISolution> test = solution =>
+            {
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
+                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
+                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
+            };
 
-            var search = new Search(model);
+            CheckAll(mb, test, 6);
+        }
 
+        private void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
+        {
+            var search = new Search(mb);
             var count = 0;
 
             while (search.MoveNext())
             {
                 var solution = search.Current;
-
-                Assert.IsNotNull(solution);
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
-                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
-
+                test(solution);
                 count++;
             }
 
-            Assert.AreEqual(6, count);
+            Assert.AreEqual(expected, count);
         }
     }
 }

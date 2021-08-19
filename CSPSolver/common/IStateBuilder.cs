@@ -14,5 +14,6 @@ namespace CSPSolver.common
         IStateRef AddLong();
 
         IState GetState();
+        int GetSize();
     }
 }

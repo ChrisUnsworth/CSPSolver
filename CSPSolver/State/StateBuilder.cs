@@ -11,7 +11,7 @@ namespace CSPSolver.State
         private int _size;
         private List<int> _map;
 
-        public StateBuilder() 
+        public StateBuilder()
         {
             _size = 0;
             _map = new List<int>();
@@ -79,5 +79,6 @@ namespace CSPSolver.State
 
         public IState GetState() => new IntState(_size);
 
+        public int GetSize() => _size;
     }
 }
