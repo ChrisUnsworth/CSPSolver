@@ -9,6 +9,7 @@ using CSPSolver.Constraint.Multiply;
 using CSPSolver.Constraint.Divide;
 using CSPSolver.Variable;
 using CSPSolver.Constraint.Inequality;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Model
 {

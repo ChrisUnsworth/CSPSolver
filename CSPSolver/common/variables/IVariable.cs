@@ -11,11 +11,11 @@ namespace CSPSolver.common
 
     public interface IVariable
     {
-        void initialise(IState state);
+        void Initialise(IState state);
 
-        bool isInstantiated(IState state);
+        bool IsInstantiated(IState state);
 
-        bool isEmpty(IState state);
+        bool IsEmpty(IState state);
 
         Type VariableType();
 

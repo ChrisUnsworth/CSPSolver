@@ -145,7 +145,7 @@ namespace CSPSolver.Variable
             return value == GetDomainMax(state);
         }
 
-        public void initialise(IState state)
+        public void Initialise(IState state)
         {
             var domain = state.GetLargeDomain(StateRef, Size);
 
@@ -157,7 +157,7 @@ namespace CSPSolver.Variable
             state.SetLargeDomain(StateRef, Size, domain);
         }
 
-        public bool isInstantiated(IState state)
+        public bool IsInstantiated(IState state)
         {
             int i = 0;
             var domain = state.GetLargeDomain(StateRef, Size);
@@ -180,7 +180,7 @@ namespace CSPSolver.Variable
             return true;
         }
 
-        public bool isEmpty(IState state)
+        public bool IsEmpty(IState state)
         {
             foreach (var subdom in state.GetLargeDomain(StateRef, Size))
             {

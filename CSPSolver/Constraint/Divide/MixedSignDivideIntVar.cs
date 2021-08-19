@@ -65,11 +65,11 @@ namespace CSPSolver.Constraint.Divide
             return Math.Min(v1Max / -1, v1Min / 1);
         }
 
-        public void initialise(IState state) { /* holds no state */ }
+        public void Initialise(IState state) { /* holds no state */ }
 
-        public bool isEmpty(IState state) => _v1.isEmpty(state) | _v2.isEmpty(state);
+        public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
 
-        public bool isInstantiated(IState state) => _v1.isInstantiated(state) & _v2.isInstantiated(state);
+        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
 
         public bool RemoveValue(IState state, object value) =>
             (_v2.TryGetValue(state, out int v2) && _v1.RemoveValue(state, (int)value * v2))

@@ -31,11 +31,11 @@ namespace CSPSolver.Variable
 
         public int GetDomainMin(IState state) => Min;
 
-        public void initialise(IState state) { }
+        public void Initialise(IState state) { }
 
-        public bool isEmpty(IState state) => false;
+        public bool IsEmpty(IState state) => false;
 
-        public bool isInstantiated(IState state) => true;
+        public bool IsInstantiated(IState state) => true;
 
         public string PrettyDomain(IState state)
         {

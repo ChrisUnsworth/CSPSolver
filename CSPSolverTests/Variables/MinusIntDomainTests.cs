@@ -18,8 +18,8 @@ namespace CSPSolverTests.Variables
             var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));
             var variable2 = new IntSmallDomainVar(min2, size2, sb.AddDomain(size2));
             var state = sb.GetState();
-            variable1.initialise(state);
-            variable2.initialise(state);
+            variable1.Initialise(state);
+            variable2.Initialise(state);
             return (state, variable1, variable2);
         }
 
@@ -74,7 +74,7 @@ namespace CSPSolverTests.Variables
             Assert.AreEqual("{ 5 }", v2.PrettyDomain(state));
 
             minus.SetMax(state, -5);
-            Assert.IsTrue(minus.isEmpty(state));
+            Assert.IsTrue(minus.IsEmpty(state));
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace CSPSolverTests.Variables
             Assert.AreEqual("{ 1 }", v2.PrettyDomain(state));
 
             Assert.IsTrue(minus.SetMin(state, 5));
-            Assert.IsTrue(minus.isEmpty(state));
+            Assert.IsTrue(minus.IsEmpty(state));
         }
     }
 }
