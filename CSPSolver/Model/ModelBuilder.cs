@@ -11,6 +11,8 @@ namespace CSPSolver.Model
     public class ModelBuilder : IModelBuilder
     {
         private IStateBuilder _sb;
+        private IIntVar _objective;
+        private bool _maximise;
         private List<IVariable> _variables;
         private List<IConstraint> _constraints;
         public ModelBuilder(IStateBuilder sb)
@@ -18,6 +20,14 @@ namespace CSPSolver.Model
             _sb = sb;
             _variables = new List<IVariable>();
             _constraints = new List<IConstraint>();
+        }
+
+
+        public void AddObjective(ModelIntVar objective, bool maximise) => AddObjective((IIntVar)objective.GetVariable(), maximise);
+        public void AddObjective(IIntVar objective, bool maximise)
+        {
+            _objective = objective;
+            _maximise = maximise;
         }
 
         public void AddConstraint(IConstraint con) => _constraints.Add(con);
@@ -59,7 +69,7 @@ namespace CSPSolver.Model
             return intVars;
         }
 
-        public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray());        
+        public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray(), _objective, _maximise);        
 
         public int GetStateSize() =>_sb.GetSize();
     }

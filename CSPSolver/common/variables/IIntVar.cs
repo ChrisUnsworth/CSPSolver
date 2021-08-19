@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSPSolver.common
+namespace CSPSolver.common.variables
 {
     public interface IIntVar : IVariable<int>
     {
+        int Min { get; }
+
+        int Size { get; }
+
+        int Max { get; }
+
         int GetDomainMax(IState state);
 
         int GetDomainMin(IState state);
@@ -14,10 +20,5 @@ namespace CSPSolver.common
 
         bool SetMin(IState state, int min);
 
-        int Min { get; }
-
-        int Size { get; }
-
-        int Max { get; }
     }
 }

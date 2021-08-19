@@ -20,8 +20,8 @@ namespace CSPSolverTests.Variables
             var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));
             var variable2 = new IntSmallDomainVar(min2, size2, sb.AddDomain(size2));
             var state = sb.GetState();
-            variable1.initialise(state);
-            variable2.initialise(state);
+            variable1.Initialise(state);
+            variable2.Initialise(state);
             return (state, variable1, variable2);
         }
 
@@ -64,20 +64,20 @@ namespace CSPSolverTests.Variables
             Assert.IsFalse(divide.SetMax(state, 3));
             Assert.AreEqual(10, v1.GetDomainMax(state));
             Assert.AreEqual(2, v2.GetDomainMin(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMax(state, 1));
             Assert.AreEqual(9, v1.GetDomainMax(state));
             Assert.AreEqual(4, v2.GetDomainMin(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsFalse(divide.SetMax(state, 1));
             Assert.AreEqual(9, v1.GetDomainMax(state));
             Assert.AreEqual(4, v2.GetDomainMin(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMax(state, 0));
-            Assert.IsTrue(divide.isEmpty(state));
+            Assert.IsTrue(divide.IsEmpty(state));
         }
 
         [TestMethod]
@@ -89,30 +89,30 @@ namespace CSPSolverTests.Variables
             Assert.IsFalse(divide.SetMin(state, 1));
             Assert.AreEqual(1, v1.GetDomainMin(state));
             Assert.AreEqual(10, v2.GetDomainMax(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMin(state, 2));
             Assert.AreEqual(2, v1.GetDomainMin(state));
             Assert.AreEqual(5, v2.GetDomainMax(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMin(state, 5));
             Assert.AreEqual(5, v1.GetDomainMin(state));
             Assert.AreEqual(2, v2.GetDomainMax(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsFalse(divide.SetMin(state, 5));
             Assert.AreEqual(5, v1.GetDomainMin(state));
             Assert.AreEqual(2, v2.GetDomainMax(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMin(state, 10));
             Assert.AreEqual(10, v1.GetDomainMin(state));
             Assert.AreEqual(1, v2.GetDomainMax(state));
-            Assert.IsFalse(divide.isEmpty(state));
+            Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMin(state, 11));
-            Assert.IsTrue(divide.isEmpty(state));
+            Assert.IsTrue(divide.IsEmpty(state));
         }
     }
 }

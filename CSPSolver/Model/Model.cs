@@ -10,6 +10,10 @@ namespace CSPSolver.Model
 {
     public readonly struct Model : IModel
     {
+        public bool Maximise { get; }
+
+        public IVariable Objective { get; }
+
         public IVariable[] Variables { get; }
 
         public IConstraint[] Constraints { get; }
@@ -20,8 +24,10 @@ namespace CSPSolver.Model
 
         private readonly ImmutableDictionary<IVariable, List<IConstraint>> _constraintLookup;
 
-        public Model(IConstraint[] constraints, IVariable[] variables)
+        public Model(IConstraint[] constraints, IVariable[] variables, IVariable objective = null, bool? maximise = null)
         {
+            Maximise = maximise ?? true;
+            Objective = objective;
             Variables = variables;
             Constraints = constraints;
             var keyValuePairs = constraints
@@ -32,7 +38,7 @@ namespace CSPSolver.Model
             _constraintLookup = ImmutableDictionary<IVariable, List<IConstraint>>.Empty.AddRange(keyValuePairs);
         }
 
-        public void propagate(IState state)
+        public void Propagate(IState state)
         {
             var todo = Constraints.ToList();
 
@@ -73,13 +79,13 @@ namespace CSPSolver.Model
             return sb.ToString();
         }
 
-        public bool IsSolved(IState state) => Variables.All(v => v.isInstantiated(state));
+        public bool IsSolved(IState state) => Variables.All(v => v.IsInstantiated(state));
 
-        public bool HasEmptyDomain(IState state) => Variables.Any(v => v.isEmpty(state));
+        public bool HasEmptyDomain(IState state) => Variables.Any(v => v.IsEmpty(state));
 
         public void Initialise(IState state)
         {
-            foreach (var v in Variables) v.initialise(state);
+            foreach (var v in Variables) v.Initialise(state);
         }
     }
 }

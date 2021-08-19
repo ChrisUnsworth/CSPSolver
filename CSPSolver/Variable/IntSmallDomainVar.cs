@@ -46,13 +46,13 @@ namespace CSPSolver.Variable
             return value == GetDomainMax(state);
         }
 
-        public bool isInstantiated(IState state)
+        public bool IsInstantiated(IState state)
         {
             var dom = state.GetDomain(StateRef, Size);
             return dom != 0 && (dom & (dom - 1)) == 0;
         }
 
-        public bool isEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
+        public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
         public Type VariableType() => typeof(int);
 
@@ -116,7 +116,7 @@ namespace CSPSolver.Variable
             return SetDomain(state, newDom);
         }
 
-        public void initialise(IState state) => SetDomain(state, (uint)Math.Pow(2, Size + 1) - 1);
+        public void Initialise(IState state) => SetDomain(state, (uint)Math.Pow(2, Size + 1) - 1);
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {

@@ -21,8 +21,8 @@ namespace CSPSolverTests.Variables
             var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));
             var variable2 = new IntSmallDomainVar(min2, size2, sb.AddDomain(size2));
             var state = sb.GetState();
-            variable1.initialise(state);
-            variable2.initialise(state);
+            variable1.Initialise(state);
+            variable2.Initialise(state);
             return (state, variable1, variable2);
         }
 
@@ -34,9 +34,9 @@ namespace CSPSolverTests.Variables
             var b = new IntSmallDomainVar(4, 2, sb.AddDomain(11));
             var c = new IntSmallDomainVar(-1, 1, sb.AddDomain(11));
             var state = sb.GetState();
-            a.initialise(state);
-            b.initialise(state);
-            c.initialise(state);
+            a.Initialise(state);
+            b.Initialise(state);
+            c.Initialise(state);
             var divide = new MixedSignDivideIntVar(a, b);
             var constraint = new EqualIntVar(divide, c);
 

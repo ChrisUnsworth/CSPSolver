@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace CSPSolver.common
 {
     public interface IModel
     {
+        bool Maximise { get; }
+
+        IVariable Objective { get; }
+
         IEnumerable<IVariable> Variables { get; }
 
         IEnumerable<IConstraint> Constraints { get; }
 
-        void propagate(IState state);
+        void Propagate(IState state);
 
         bool IsSolved(IState state);
 

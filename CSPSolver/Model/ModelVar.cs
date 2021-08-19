@@ -1,7 +1,5 @@
 ﻿using CSPSolver.common;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CSPSolver.Model
 {
@@ -9,11 +7,11 @@ namespace CSPSolver.Model
     {
         public abstract IVariable<T> GetVariable();
 
-        public void initialise(IState state) => throw new NotImplementedException();
+        public void Initialise(IState state) => throw new NotImplementedException();
 
-        public bool isEmpty(IState state) => throw new NotImplementedException();
+        public bool IsEmpty(IState state) => throw new NotImplementedException();
 
-        public bool isInstantiated(IState state) => throw new NotImplementedException();
+        public bool IsInstantiated(IState state) => throw new NotImplementedException();
 
         public string PrettyDomain(IState state) => throw new NotImplementedException();
 

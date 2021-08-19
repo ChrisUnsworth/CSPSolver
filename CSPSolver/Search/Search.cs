@@ -3,12 +3,13 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+
 using CSPSolver.State;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Search
 {
-    public class Search : IEnumerator<ISolution>
+    public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
     {
         private readonly IModel _model;
         private readonly Stack<IState> _frontier;
@@ -32,7 +33,17 @@ namespace CSPSolver.Search
 
         public void Dispose() { }
 
-        public void Reset() => throw new NotImplementedException();
+        public void Reset()
+        {
+            while (_frontier.Any())
+            {
+                _statePool.Return(_frontier.Pop());
+            }
+
+            var initialState = _statePool.Empty();
+            _model.Initialise(initialState);
+            _frontier.Push(initialState);
+        }
 
         public bool MoveNext() => Solve();
 
@@ -41,7 +52,18 @@ namespace CSPSolver.Search
             while (_frontier.Any())
             {
                 var state = _frontier.Pop();
-                _model.propagate(state);
+
+                if (Current != null && _model.Objective != null)
+                {
+                    var objective = _model.Objective as IIntVar;
+                    var best = Current.GetValue(objective);
+                    if (_model.Maximise) objective.SetMin(state, best + 1);
+                    else objective.SetMax(state, best - 1);
+
+                    if (_model.Objective.IsEmpty(state)) break;
+                }
+
+                _model.Propagate(state);
                 if (_model.IsSolved(state))
                 {
                     Current = new Solution(_statePool.Copy(state));
@@ -61,5 +83,9 @@ namespace CSPSolver.Search
             
             return false;
         }
+
+        public IEnumerator<ISolution> GetEnumerator() => this;
+
+        IEnumerator IEnumerable.GetEnumerator() => this;
     }
 }
