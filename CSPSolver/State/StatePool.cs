@@ -20,24 +20,25 @@ namespace CSPSolver.State
 
         public IState Copy(IState state)
         {
-            if (state is IntState intState)
+            switch (state)
             {
-                var array = _arrayPool.Rent(_size);
-                return intState.Copy(array);
+                case IntState intState:
+                    var array = _arrayPool.Rent(_size);
+                    return intState.Copy(array);
+                default:
+                    throw new NotImplementedException();
             }
-
-            throw new NotImplementedException();
         }
 
         public void Return(IState state)
         {
-            if (state is IntState intState)
+            switch (state)
             {
-                _arrayPool.Return(intState._data);
-            }
-            else
-            {
-                throw new NotImplementedException();
+                case IntState intState:
+                    _arrayPool.Return(intState._data);
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 

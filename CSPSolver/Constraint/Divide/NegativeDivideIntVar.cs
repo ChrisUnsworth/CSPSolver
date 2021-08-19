@@ -67,10 +67,7 @@ namespace CSPSolver.Constraint.Divide
 
         public Type VariableType() => typeof(int);
 
-        public string PrettyDomain(IState state)
-        {
-            throw new NotImplementedException();
-        }
+        public string PrettyDomain(IState state) => $"{_v1.PrettyDomain(state)} / {_v2.PrettyDomain(state)}";
 
         public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
     }

@@ -49,7 +49,7 @@ namespace CSPSolver.Variable
         public bool isInstantiated(IState state)
         {
             var dom = state.GetDomain(StateRef, Size);
-            return (dom & (dom - 1)) == 0;
+            return dom != 0 && (dom & (dom - 1)) == 0;
         }
 
         public bool isEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
@@ -61,6 +61,7 @@ namespace CSPSolver.Variable
         public bool SetValue(IState state, int value)
         {
             var oldD = state.GetDomain(StateRef, Size);
+            if (oldD == 0) return false;
             var newD = (uint)Math.Pow(2, value - Min);
             if (newD != oldD)
             {
