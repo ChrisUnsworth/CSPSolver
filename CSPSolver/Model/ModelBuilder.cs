@@ -10,11 +10,11 @@ namespace CSPSolver.Model
 {
     public class ModelBuilder : IModelBuilder
     {
-        private IStateBuilder _sb;
+        private readonly IStateBuilder _sb;
         private IIntVar _objective;
         private bool _maximise;
-        private List<IVariable> _variables;
-        private List<IConstraint> _constraints;
+        private readonly List<IVariable> _variables;
+        private readonly List<IConstraint> _constraints;
         public ModelBuilder(IStateBuilder sb)
         {
             _sb = sb;
@@ -34,7 +34,7 @@ namespace CSPSolver.Model
 
         public void AddAllDiff(IEnumerable<ModelIntVar> vars)
         {
-            var intVars = vars.Select(v => v.variable as ISmallIntDomainVar).Where(s => s != null);
+            var intVars = vars.Select(v => v.Variable as ISmallIntDomainVar).Where(s => s != null);
             if (intVars.Any() && intVars.Min(v => v.Min) == intVars.Max(v => v.Min))
             {
                 _constraints.Add(new AllDiffSameIntDomain(intVars));
@@ -52,7 +52,7 @@ namespace CSPSolver.Model
                     ? new IntDomainVar(min, size, _sb.AddDomain(size))
                     : new IntSmallDomainVar(min, size, _sb.AddDomain(size));
             _variables.Add(intVar);
-            return new ModelIntVar { variable = intVar };
+            return new ModelIntVar { Variable = intVar };
         }
 
         public IList<ModelIntVar> AddIntVarArray(int min, int max, int count)
@@ -63,7 +63,7 @@ namespace CSPSolver.Model
             {
                 var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
                 _variables.Add(intVar);
-                intVars.Add(new ModelIntVar { variable = intVar });
+                intVars.Add(new ModelIntVar { Variable = intVar });
             }
 
             return intVars;

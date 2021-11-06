@@ -7,7 +7,7 @@ namespace CSPSolverTests.Solve.Sudoku
 {
     public static class Sets
     {
-        public static IList<IList<(int x, int y)>> Rows =
+        public static readonly IList<IList<(int x, int y)>> Rows =
             new List<IList<(int x, int y)>>
             {
                 new List<(int x, int y)> { (0,0), (1,0), (2,0), (3,0), (4,0), (5,0), (6,0), (7,0), (8,0) },
@@ -24,7 +24,7 @@ namespace CSPSolverTests.Solve.Sudoku
         public static IEnumerable<(int x, int y)> All => Rows.SelectMany(l => l);
 
 
-        public static IList<IList<(int x, int y)>> Columns =
+        public static readonly IList<IList<(int x, int y)>> Columns =
             new List<IList<(int x, int y)>>
             {
                 new List<(int x, int y)> { (0,0), (0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7), (0,8) },
@@ -39,7 +39,7 @@ namespace CSPSolverTests.Solve.Sudoku
             };
 
 
-        public static IList<IList<(int x, int y)>> Squares =
+        public static readonly IList<IList<(int x, int y)>> Squares =
             new List<IList<(int x, int y)>>
             {
                 new List<(int x, int y)> { (0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (0, 2), (1, 2), (2, 2) },

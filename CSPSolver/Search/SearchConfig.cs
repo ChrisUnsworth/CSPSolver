@@ -10,6 +10,6 @@ namespace CSPSolver.Search
         public SearchConfig(IBranchStrategy branching) => Branching = branching;
 
         public static SearchConfig Default() => 
-            new SearchConfig(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
+            new(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
     }
 }
