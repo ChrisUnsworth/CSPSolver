@@ -27,5 +27,7 @@ namespace CSPSolver.common
 
         uint[] GetLargeDomain(in IStateRef idx, in int size);
         void SetLargeDomain(in IStateRef idx, in int size, in uint[] value);
+
+        bool IsSameAs(IState other);
     }
 }

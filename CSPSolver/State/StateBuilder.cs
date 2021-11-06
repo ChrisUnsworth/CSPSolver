@@ -9,7 +9,7 @@ namespace CSPSolver.State
     public class StateBuilder : IStateBuilder
     {
         private int _size;
-        private List<int> _map;
+        private readonly List<int> _map;
 
         public StateBuilder()
         {

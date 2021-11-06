@@ -138,5 +138,18 @@ namespace CSPSolver.State
 
         public float GetFloat(in IStateRef idx) => BitConverter.Int32BitsToSingle(GetInt(idx));
         public void SetFloat(in IStateRef idx, in float value) => SetInt(idx, BitConverter.SingleToInt32Bits(value));
+
+        public bool IsSameAs(IState other)
+        {
+            if (!(other is IntState)) return false;
+            var o = (IntState)other;
+            if (_data.Length != o._data.Length) return false;
+            for (int i = 0; i < _data.Length; ++i)
+            {
+                if (_data[i] != o._data[i]) return false;
+            }
+
+            return true;
+        }
     }
 }

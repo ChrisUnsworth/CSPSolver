@@ -8,11 +8,11 @@ namespace CSPSolver.Search
 {
     public class Solution : ISolution
     {
-        private IState _state;
+        private readonly IState _state;
 
         public Solution(IState state) => _state = state;
 
-        public int GetInt(ModelIntVar v) => GetInt(v.variable);
+        public int GetInt(ModelIntVar v) => GetInt(v.Variable);
 
         public int GetInt(IVariable<int> v) => v.TryGetValue(_state, out int value) ? value : throw new ArgumentException("Unable to get value for variable");
 

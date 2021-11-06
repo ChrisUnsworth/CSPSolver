@@ -8,11 +8,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CSPSolver.State;
 using CSPSolver.Model;
 using CSPSolver.Search;
+using CSPSolverTests.Solve.Sudoku;
 
-namespace CSPSolverTests.Solve.Sudoku
+namespace CSPSolverTests.DebugSearchTests
 {
     [TestClass]
-    public class SudokuTests
+    public class DebugSearchTest
     {
         private static (ModelBuilder mb, ModelIntVar[,] varMatrix) BuildBaseModel()
         {
@@ -59,7 +60,7 @@ namespace CSPSolverTests.Solve.Sudoku
                 }
             }
 
-            var search = new Search(mb);
+            var search = new DebugSearch(mb);
 
             var count = 0;
 
