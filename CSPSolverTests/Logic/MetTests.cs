@@ -81,5 +81,33 @@ namespace CSPSolverTests.Logic
             Assert.IsTrue(con4.CanBeMet(state));
             Assert.IsTrue(con4.IsMet(state));
         }
+
+        [TestMethod]
+        public void NotEqualIntDomainConstIsMetTest()
+        {
+            var sb = new StateBuilder();
+
+            var v1 = GetIntVar(2, 4, sb);
+            var v2 = GetIntVar(2, 2, sb);
+
+            var con1 = new NotEqualIntDomainConst(v1, 3);
+            var con2 = new NotEqualIntDomainConst(v1, 8);
+            var con3 = new NotEqualIntDomainConst(v2, 8);
+            var con4 = new NotEqualIntDomainConst(v2, 2);
+
+            var state = Initialise(sb, v1, v2);
+
+            Assert.IsTrue(con1.CanBeMet(state));
+            Assert.IsFalse(con1.IsMet(state));
+
+            Assert.IsTrue(con2.CanBeMet(state));
+            Assert.IsTrue(con2.IsMet(state));
+
+            Assert.IsTrue(con3.CanBeMet(state));
+            Assert.IsTrue(con3.IsMet(state));
+
+            Assert.IsFalse(con4.CanBeMet(state));
+            Assert.IsFalse(con4.IsMet(state));
+        }
     }
 }
