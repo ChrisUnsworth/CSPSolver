@@ -17,6 +17,16 @@ namespace CSPSolver.Constraint.Equal
 
         public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2 };
 
+        public bool CanBeMet(IState state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsMet(IState state)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             if (_var1.TryGetValue(state, out int val1)) return _var2.RemoveValue(state, val1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();

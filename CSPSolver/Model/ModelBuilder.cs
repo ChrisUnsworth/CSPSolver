@@ -57,13 +57,10 @@ namespace CSPSolver.Model
 
         public IList<ModelIntVar> AddIntVarArray(int min, int max, int count)
         {
-            var size = max - min + 1;
             var intVars = new List<ModelIntVar>();
             foreach (var _ in Enumerable.Repeat(0, count))
             {
-                var intVar = new IntSmallDomainVar(min, size, _sb.AddDomain(size));
-                _variables.Add(intVar);
-                intVars.Add(new ModelIntVar { Variable = intVar });
+                intVars.Add(AddIntDomainVar(min, max));
             }
 
             return intVars;

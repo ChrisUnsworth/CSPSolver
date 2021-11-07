@@ -15,6 +15,16 @@ namespace CSPSolver.Constraint.Inequality
 
         public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2 };
 
+        public bool CanBeMet(IState state)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsMet(IState state)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             if (_var1.TryGetValue(state, out int val1)) return _var2.SetMax(state, val1 - 1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();

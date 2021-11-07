@@ -1,11 +1,8 @@
-﻿using System.Text;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CSPSolver.Variable;
 using CSPSolver.common;
 using CSPSolver.State;
-using CSPSolver.common.search;
 
 namespace CSPSolverTests.Variables
 {

@@ -37,5 +37,15 @@ namespace CSPSolver.Constraint.AllDiff
 
             return result;
         }
+
+        public bool IsMet(IState state)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool CanBeMet(IState state)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

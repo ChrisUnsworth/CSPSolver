@@ -17,6 +17,15 @@ namespace CSPSolver.Constraint.Equal
 
         public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2};
 
+        public bool CanBeMet(IState state) => 
+            _var1.GetDomainMin(state) <= _var2.GetDomainMax(state) && 
+            _var1.GetDomainMax(state) >= _var2.GetDomainMin(state);
+
+        public bool IsMet(IState state) =>
+            _var1.TryGetValue(state, out int val1) &&
+            _var2.TryGetValue(state, out int val2) &&
+            val1 == val2;
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             if (_var1.TryGetValue(state, out int val1)) return _var2.SetValue(state, val1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();

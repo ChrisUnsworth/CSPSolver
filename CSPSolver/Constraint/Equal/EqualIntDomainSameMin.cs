@@ -16,6 +16,16 @@ namespace CSPSolver.Constraint.Equal
 
         public IEnumerable<IVariable> Variables => new List<IVariable>() { _var1, _var2};
 
+        public bool CanBeMet(IState state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsMet(IState state)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             var (d1, _, _) = _var1.GetDomain(state);
