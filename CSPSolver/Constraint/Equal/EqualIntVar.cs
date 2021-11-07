@@ -1,10 +1,8 @@
-﻿using CSPSolver.common;
-using CSPSolver.Variable;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+
 using CSPSolver.common.variables;
+using CSPSolver.common;
 
 namespace CSPSolver.Constraint.Equal
 {

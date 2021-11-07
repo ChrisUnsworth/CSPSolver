@@ -23,17 +23,20 @@ namespace CSPSolverTests.Logic
             return state;
         }
 
+        private IntSmallDomainVar GetIntVar(int min, int max, StateBuilder sb) =>
+            new(min, max - min + 1, sb.AddDomain(max - min + 1));
+
         [TestMethod]
         public void EqualIntVatIsMetTest()
         {
             var sb = new StateBuilder();
 
-            var v1 = new IntSmallDomainVar(2, 2, sb.AddDomain(2));
-            var v2 = new IntSmallDomainVar(2, 2, sb.AddDomain(2));
-            var v3 = new IntSmallDomainVar(2, 1, sb.AddDomain(1));
-            var v4 = new IntSmallDomainVar(2, 1, sb.AddDomain(1));
-            var v5 = new IntSmallDomainVar(7, 2, sb.AddDomain(2));
-            var v6 = new IntSmallDomainVar(2, 2, sb.AddDomain(2));
+            var v1 = GetIntVar(2, 4, sb);
+            var v2 = GetIntVar(2, 4, sb);
+            var v3 = GetIntVar(2, 2, sb);
+            var v4 = GetIntVar(2, 2, sb);
+            var v5 = GetIntVar(7, 9, sb);
+            var v6 = GetIntVar(2, 4, sb);
 
             var con1 = new EqualIntVar(v1, v2);
             var con2 = new EqualIntVar(v3, v4);
@@ -49,7 +52,34 @@ namespace CSPSolverTests.Logic
 
             Assert.IsFalse(con3.CanBeMet(state));
             Assert.IsFalse(con3.IsMet(state));
+        }
 
+        [TestMethod]
+        public void EqualIntDomainConstIsMetTest()
+        {
+            var sb = new StateBuilder();
+
+            var v1 = GetIntVar(2, 4, sb);
+            var v2 = GetIntVar(2, 2, sb);
+
+            var con1 = new EqualIntDomainConst(v1, 3);
+            var con2 = new EqualIntDomainConst(v1, 8);
+            var con3 = new EqualIntDomainConst(v2, 8);
+            var con4 = new EqualIntDomainConst(v2, 2);
+
+            var state = Initialise(sb, v1, v2);
+
+            Assert.IsTrue(con1.CanBeMet(state));
+            Assert.IsFalse(con1.IsMet(state));
+
+            Assert.IsFalse(con2.CanBeMet(state));
+            Assert.IsFalse(con2.IsMet(state));
+
+            Assert.IsFalse(con3.CanBeMet(state));
+            Assert.IsFalse(con3.IsMet(state));
+
+            Assert.IsTrue(con4.CanBeMet(state));
+            Assert.IsTrue(con4.IsMet(state));
         }
     }
 }
