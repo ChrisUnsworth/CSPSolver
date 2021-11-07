@@ -109,5 +109,41 @@ namespace CSPSolverTests.Logic
             Assert.IsFalse(con4.CanBeMet(state));
             Assert.IsFalse(con4.IsMet(state));
         }
+
+        
+
+        [TestMethod]
+        public void EqualIntDomainSameMinMetTest()
+        {
+            var sb = new StateBuilder();
+
+            var v1 = GetIntVar(2, 4, sb);
+            var v2 = GetIntVar(2, 4, sb);
+            var v3 = GetIntVar(2, 4, sb);
+            var v4 = GetIntVar(2, 4, sb);
+
+            var con1 = new EqualIntDomainSameMin(v1, v2);
+            var con2 = new EqualIntDomainSameMin(v3, v4);
+
+            var state = Initialise(sb, v1, v2, v3, v4);
+
+            Assert.IsTrue(con1.CanBeMet(state));
+            Assert.IsFalse(con1.IsMet(state));
+
+            v1.RemoveValue(state, 3);
+            v2.SetValue(state, 3);
+
+            Assert.IsFalse(con1.CanBeMet(state));
+            Assert.IsFalse(con1.IsMet(state));
+
+            Assert.IsTrue(con2.CanBeMet(state));
+            Assert.IsFalse(con2.IsMet(state));
+
+            v3.SetValue(state, 3);
+            v4.SetValue(state, 3);
+
+            Assert.IsTrue(con2.CanBeMet(state));
+            Assert.IsTrue(con2.IsMet(state));
+        }
     }
 }

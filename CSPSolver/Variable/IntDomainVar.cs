@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
-using CSPSolver.State;
-using System.Numerics;
 
 namespace CSPSolver.Variable
 {
