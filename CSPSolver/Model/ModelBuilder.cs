@@ -30,6 +30,8 @@ namespace CSPSolver.Model
             _maximise = maximise;
         }
 
+        public void AddConstraint(ModelConstraint con) => AddConstraint(con.Constraint);
+
         public void AddConstraint(IConstraint con) => _constraints.Add(con);
 
         public void AddAllDiff(IEnumerable<ModelIntVar> vars)

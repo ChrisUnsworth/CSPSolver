@@ -38,15 +38,15 @@ namespace CSPSolver.Model
             if (v1.Variable.Max < 0 && v2.Variable.Max < 0) return new() { Variable = new NegativeDivideIntVar(v1.Variable, v2.Variable) };
             return new ModelIntVar { Variable = new MixedSignDivideIntVar(v1.Variable, v2.Variable) };
         }
-        public static IConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new EqualIntVar(v1.Variable, v2.Variable);
-        public static IConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new NotEqualIntVar(v1.Variable, v2.Variable);
-        public static IConstraint operator ==(ModelIntVar v, int i) => new EqualIntDomainConst(v.Variable, i);
-        public static IConstraint operator !=(ModelIntVar v, int i) => new NotEqualIntDomainConst(v.Variable, i);
-        public static IConstraint operator ==(int i, ModelIntVar v) => new EqualIntDomainConst(v.Variable, i);
-        public static IConstraint operator !=(int i, ModelIntVar v) => new NotEqualIntDomainConst(v.Variable, i);
-        public static IConstraint operator >(ModelIntVar v1, ModelIntVar v2) => new GreaterThanIntVar(v1.Variable, v2.Variable);
-        public static IConstraint operator <(ModelIntVar v1, ModelIntVar v2) => new GreaterThanIntVar(v2.Variable, v1.Variable);
-        public static IConstraint operator >=(ModelIntVar v1, ModelIntVar v2) => new GreaterEqualIntVar(v1.Variable, v2.Variable);
-        public static IConstraint operator <=(ModelIntVar v1, ModelIntVar v2) => new GreaterEqualIntVar(v2.Variable, v1.Variable);
+        public static ModelConstraint operator ==(ModelIntVar v1, ModelIntVar v2) => new(new EqualIntVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator !=(ModelIntVar v1, ModelIntVar v2) => new(new NotEqualIntVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator ==(ModelIntVar v, int i) => new(new EqualIntDomainConst(v.Variable, i));
+        public static ModelConstraint operator !=(ModelIntVar v, int i) => new(new NotEqualIntDomainConst(v.Variable, i));
+        public static ModelConstraint operator ==(int i, ModelIntVar v) => new(new EqualIntDomainConst(v.Variable, i));
+        public static ModelConstraint operator !=(int i, ModelIntVar v) => new(new NotEqualIntDomainConst(v.Variable, i));
+        public static ModelConstraint operator >(ModelIntVar v1, ModelIntVar v2) => new(new GreaterThanIntVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator <(ModelIntVar v1, ModelIntVar v2) => new(new GreaterThanIntVar(v2.Variable, v1.Variable));
+        public static ModelConstraint operator >=(ModelIntVar v1, ModelIntVar v2) => new(new GreaterEqualIntVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator <=(ModelIntVar v1, ModelIntVar v2) => new(new GreaterEqualIntVar(v2.Variable, v1.Variable));
     }
 }
