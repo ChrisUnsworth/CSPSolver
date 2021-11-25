@@ -37,10 +37,7 @@ namespace CSPSolver.Variable
 
         public bool IsInstantiated(IState state) => true;
 
-        public string PrettyDomain(IState state)
-        {
-            throw new NotImplementedException();
-        }
+        public string PrettyDomain(IState state) => $"{_value}";
 
         public bool RemoveValue(IState state, object value) => false;
 

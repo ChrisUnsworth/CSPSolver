@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace CSPSolver.common
 {
@@ -9,5 +7,9 @@ namespace CSPSolver.common
         IEnumerable<IVariable> Variables { get; }
 
         IEnumerable<IVariable> Propagate(IState state);
+
+        bool IsMet(IState state);
+
+        bool CanBeMet(IState state);
     }
 }

@@ -1,10 +1,8 @@
-﻿using CSPSolver.common;
-using CSPSolver.Variable;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+
 using CSPSolver.common.variables;
+using CSPSolver.common;
 
 namespace CSPSolver.Constraint.Equal
 {
@@ -16,6 +14,15 @@ namespace CSPSolver.Constraint.Equal
         public EqualIntVar(IIntVar var1, IIntVar var2) => (_var1, _var2) = (var1, var2);
 
         public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2};
+
+        public bool CanBeMet(IState state) => 
+            _var1.GetDomainMin(state) <= _var2.GetDomainMax(state) && 
+            _var1.GetDomainMax(state) >= _var2.GetDomainMin(state);
+
+        public bool IsMet(IState state) =>
+            _var1.TryGetValue(state, out int val1) &&
+            _var2.TryGetValue(state, out int val2) &&
+            val1 == val2;
 
         public IEnumerable<IVariable> Propagate(IState state)
         {

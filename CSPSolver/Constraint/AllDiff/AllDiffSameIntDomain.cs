@@ -9,9 +9,14 @@ namespace CSPSolver.Constraint.AllDiff
     public readonly struct AllDiffSameIntDomain : IConstraint
     {
         private readonly ISmallIntDomainVar[] _variables;
+        private readonly uint[] _domains;
         private int _n => _variables.Length;
 
-        public AllDiffSameIntDomain(IEnumerable<ISmallIntDomainVar> variables) => _variables = variables.ToArray();
+        public AllDiffSameIntDomain(IEnumerable<ISmallIntDomainVar> variables)
+        {
+            _variables = variables.ToArray();
+            _domains = new uint[_variables.Length];
+        }
 
         public IEnumerable<IVariable> Variables => _variables;
 
@@ -36,6 +41,38 @@ namespace CSPSolver.Constraint.AllDiff
             }
 
             return result;
+        }
+
+        public bool IsMet(IState state)
+        {
+            UpdateDomains(state);
+
+            for (int i = 0; i < _n; ++i)
+            {
+                for (int j = i+1; j < _n; ++j)
+                {
+                    if ((_domains[i] & _domains[j]) != 0) return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool CanBeMet(IState state)
+        {
+            UpdateDomains(state);
+
+            var union = _domains.Aggregate(0u, (u, d) => u |= d);
+
+            return BitCounter.Count(union) >= _n;
+        }
+
+        private void UpdateDomains(IState state)
+        {
+            for (int i = 0; i < _variables.Length; ++i)
+            {
+                _domains[i] = _variables[i].GetDomain(state).domain;
+            }
         }
     }
 }
