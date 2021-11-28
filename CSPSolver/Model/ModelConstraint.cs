@@ -1,4 +1,5 @@
 ﻿using CSPSolver.common;
+using CSPSolver.Constraint.Bool;
 using CSPSolver.Constraint.Logic;
 
 namespace CSPSolver.Model
@@ -8,6 +9,8 @@ namespace CSPSolver.Model
         private IConstraint _constraint;
 
         public ModelConstraint(IConstraint constraint) => _constraint = constraint;
+
+        public static implicit operator ModelConstraint(ModelBoolVar boolVar) => new(new BoolConstraint(boolVar.Variable));
 
         public IConstraint Constraint => _constraint;
 
