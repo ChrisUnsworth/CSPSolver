@@ -70,6 +70,12 @@ namespace CSPSolver.Variable
             return !IsEmpty(state);
         }
 
+        public bool TryGetValue(IState state, out bool value)
+        {
+            value = true;
+            return IsTrue(state);
+        }
+
         public void Initialise(IState state) => state.SetDomain(StateRef, Size, 1);
 
         public bool IsInstantiated(IState state) => IsTrue(state);

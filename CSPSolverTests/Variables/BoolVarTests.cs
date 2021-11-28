@@ -128,7 +128,7 @@ namespace CSPSolverTests.Variables
         {
             var (s, v) = GetVar();
 
-            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.TryGetValue(s, out int _));
 
             v.SetValue(s, true);
 
@@ -136,7 +136,7 @@ namespace CSPSolverTests.Variables
 
             v.SetValue(s, false);
 
-            Assert.IsFalse(v.TryGetValue(s, out _));
+            Assert.IsFalse(v.TryGetValue(s, out int _));
 
             (s, v) = GetVar();
 

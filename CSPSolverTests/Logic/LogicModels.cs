@@ -96,6 +96,28 @@ namespace CSPSolverTests.Logic
             CheckAll(mb, test, 3);
         }
 
+        [TestMethod]
+        public void BoolVarTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+            var z = mb.AddBoolVar();
+
+            mb.AddConstraint(x | y);
+            mb.AddConstraint(y | z);
+
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) || solution.GetValue(y));
+                Assert.IsTrue(solution.GetValue(y) || solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 5);
+        }
+
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
         {
             var search = new Search(mb);

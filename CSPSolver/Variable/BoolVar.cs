@@ -77,6 +77,12 @@ namespace CSPSolver.Variable
             return value == GetDomainMax(state);
         }
 
+        public bool TryGetValue(IState state, out bool value)
+        {
+            value = IsTrue(state);
+            return value || IsFalse(state);
+        }
+
         public void Initialise(IState state) => state.SetDomain(StateRef, Size, 3);
 
         public bool IsInstantiated(IState state) => IsTrue(state) || IsFalse(state);

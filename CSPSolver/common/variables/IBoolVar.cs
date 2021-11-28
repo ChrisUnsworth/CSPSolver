@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CSPSolver.common.variables
 {
-    public interface IBoolVar: ISmallIntDomainVar
+    public interface IBoolVar: ISmallIntDomainVar, IVariable<bool>
     {
         public bool IsTrue(IState state);
 
