@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Equal
 {
-    public class EqualIntDomainSameMin : IConstraint
+    public readonly struct EqualIntDomainSameMin : IConstraint
     {
-        private ISmallIntDomainVar _var1;
-        private ISmallIntDomainVar _var2;
+        private readonly ISmallIntDomainVar _var1;
+        private readonly ISmallIntDomainVar _var2;
 
         public EqualIntDomainSameMin(ISmallIntDomainVar var1, ISmallIntDomainVar var2) => (_var1, _var2) = (var1, var2);
 
@@ -27,6 +25,11 @@ namespace CSPSolver.Constraint.Equal
             _var1.TryGetValue(state, out int val1) &&
             _var2.TryGetValue(state, out int val2) &&
             val1 == val2;
+
+        public IEnumerable<IVariable> NegativePropagate(IState state)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public IEnumerable<IVariable> Propagate(IState state)
         {

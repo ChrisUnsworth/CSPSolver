@@ -9,7 +9,7 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class IntDomainVarTests
     {
-        private (IState state, IntDomainVar variable) GetVar(int min, int size)
+        private static (IState state, IntDomainVar variable) GetVar(int min, int size)
         {
             var sb = new StateBuilder();
             var stateRef = sb.AddDomain(size);

@@ -10,7 +10,7 @@ namespace CSPSolver.Constraint.AllDiff
     {
         private readonly ISmallIntDomainVar[] _variables;
         private readonly uint[] _domains;
-        private int _n => _variables.Length;
+        private int N => _variables.Length;
 
         public AllDiffSameIntDomain(IEnumerable<ISmallIntDomainVar> variables)
         {
@@ -20,11 +20,43 @@ namespace CSPSolver.Constraint.AllDiff
 
         public IEnumerable<IVariable> Variables => _variables;
 
+        public IEnumerable<IVariable> NegativePropagate(IState state)
+        {
+            UpdateDomains(state);
+
+            (int i1, int i2)? pair = null;
+
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = i + 1; j < N; j++)
+                {
+                    if ((_domains[i] & _domains[j]) != 0)
+                    {
+                        if (pair.HasValue) yield break;
+                        pair = (i, j);
+                    }
+                }
+            }
+
+            if (pair.HasValue)
+            {
+                if (_variables[pair.Value.i1].SetDomain(state, _domains[pair.Value.i2])) yield return _variables[pair.Value.i1];
+                if (_variables[pair.Value.i2].SetDomain(state, _domains[pair.Value.i1])) yield return _variables[pair.Value.i2];
+            }
+            else
+            {
+                for (int i = 0; i < N; i++)
+                {
+                    if (_variables[i].SetDomain(state, 0)) yield return _variables[i];
+                }
+            }
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             var result = new HashSet<IVariable>();
 
-            foreach (var subSet in BitCounter.PowerSet(_variables, 1, _n - 1))
+            foreach (var subSet in BitCounter.PowerSet(_variables, 1, N - 1))
             {
                 var union = subSet.Aggregate(0u, (u, v) => u |= v.GetDomain(state).domain);
 
@@ -47,9 +79,9 @@ namespace CSPSolver.Constraint.AllDiff
         {
             UpdateDomains(state);
 
-            for (int i = 0; i < _n; ++i)
+            for (int i = 0; i < N; ++i)
             {
-                for (int j = i+1; j < _n; ++j)
+                for (int j = i+1; j < N; ++j)
                 {
                     if ((_domains[i] & _domains[j]) != 0) return false;
                 }
@@ -64,7 +96,7 @@ namespace CSPSolver.Constraint.AllDiff
 
             var union = _domains.Aggregate(0u, (u, d) => u |= d);
 
-            return BitCounter.Count(union) >= _n;
+            return BitCounter.Count(union) >= N;
         }
 
         private void UpdateDomains(IState state)

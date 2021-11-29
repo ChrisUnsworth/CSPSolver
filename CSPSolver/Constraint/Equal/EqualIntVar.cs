@@ -24,6 +24,14 @@ namespace CSPSolver.Constraint.Equal
             _var2.TryGetValue(state, out int val2) &&
             val1 == val2;
 
+        public IEnumerable<IVariable> NegativePropagate(IState state)
+        {
+            if (_var1.TryGetValue(state, out int val1)) return _var2.RemoveValue(state, val1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();
+            if (_var2.TryGetValue(state, out int val2)) return _var1.RemoveValue(state, val2) ? new IVariable[] { _var1 } : Enumerable.Empty<IVariable>();
+
+            return Enumerable.Empty<IVariable>();
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             if (_var1.TryGetValue(state, out int val1)) return _var2.SetValue(state, val1) ? new IVariable[] { _var2 } : Enumerable.Empty<IVariable>();

@@ -22,6 +22,12 @@ namespace CSPSolver.Constraint.Logic
 
         public bool IsMet(IState state) => (!_con1.CanBeMet(state)) || (_con1.IsMet(state) && _con2.IsMet(state));
 
+        public IEnumerable<IVariable> NegativePropagate(IState state)
+        {
+            if (_con1.IsMet(state)) return _con2.NegativePropagate(state);
+            return Enumerable.Empty<IVariable>();
+        }
+
         public IEnumerable<IVariable> Propagate(IState state)
         {
             if (_con1.IsMet(state)) return _con2.Propagate(state);

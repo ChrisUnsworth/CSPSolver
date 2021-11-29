@@ -9,7 +9,7 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class BoolVarTests
     {
-        private (IState state, BoolVar variable) GetVar()
+        private static (IState state, BoolVar variable) GetVar()
         {
             var sb = new StateBuilder();
             var stateRef = sb.AddDomain(2);

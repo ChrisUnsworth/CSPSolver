@@ -21,5 +21,10 @@ namespace CSPSolver.Constraint.Bool
         {
             if (_var.SetValue(state, true)) yield return _var;
         }
+
+        public IEnumerable<IVariable> NegativePropagate(IState state)
+        {
+            if (_var.SetValue(state, false)) yield return _var;
+        }
     }
 }

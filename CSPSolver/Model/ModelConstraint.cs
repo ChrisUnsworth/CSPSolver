@@ -6,7 +6,7 @@ namespace CSPSolver.Model
 {
     public class ModelConstraint
     {
-        private IConstraint _constraint;
+        private readonly IConstraint _constraint;
 
         public ModelConstraint(IConstraint constraint) => _constraint = constraint;
 
