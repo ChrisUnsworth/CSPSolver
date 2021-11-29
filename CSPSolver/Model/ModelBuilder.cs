@@ -47,6 +47,25 @@ namespace CSPSolver.Model
             }            
         }
 
+        public ModelBoolVar AddBoolVar()
+        {
+            var boolVar = new BoolVar(_sb.AddDomain(2));
+            _variables.Add(boolVar);
+            return new ModelBoolVar { Variable = boolVar };
+        }
+
+        public ModelBoolVar[] AddBoolVarArray(int count)
+        {
+            var boolVars = new ModelBoolVar[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                boolVars[i] = AddBoolVar();
+            }
+
+            return boolVars;
+        }
+
         public ModelIntVar AddIntDomainVar(int min, int max)
         {
             var size = max - min + 1;
@@ -57,12 +76,13 @@ namespace CSPSolver.Model
             return new ModelIntVar { Variable = intVar };
         }
 
-        public IList<ModelIntVar> AddIntVarArray(int min, int max, int count)
+        public ModelIntVar[] AddIntVarArray(int min, int max, int count)
         {
-            var intVars = new List<ModelIntVar>();
-            foreach (var _ in Enumerable.Repeat(0, count))
+            var intVars = new ModelIntVar[count];
+
+            for (int i = 0; i < count; i++)
             {
-                intVars.Add(AddIntDomainVar(min, max));
+                intVars[i] = AddIntDomainVar(min, max);
             }
 
             return intVars;

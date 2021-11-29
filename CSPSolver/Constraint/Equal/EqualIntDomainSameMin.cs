@@ -32,22 +32,8 @@ namespace CSPSolver.Constraint.Equal
         {
             var (d1, _, _) = _var1.GetDomain(state);
             var (d2, _, _) = _var2.GetDomain(state);
-            var newD = d1 & d2;
-            var result = new List<IVariable>();
-
-            if (d1 != newD)
-            {
-                result.Add(_var1);
-                _var1.SetDomain(state, newD);
-            }
-
-            if (d2 != newD)
-            {
-                result.Add(_var2);
-                _var2.SetDomain(state, newD);
-            }
-
-            return result;
+            if (_var1.SetDomain(state, d2)) yield return _var1;
+            if (_var2.SetDomain(state, d1)) yield return _var2;
         }
     }
 }

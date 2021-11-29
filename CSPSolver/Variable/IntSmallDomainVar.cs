@@ -29,7 +29,9 @@ namespace CSPSolver.Variable
 
         public bool SetDomain(IState state, uint domain)
         {
-            if (domain != state.GetDomain(StateRef, Size))
+            var oldDom = state.GetDomain(StateRef, Size);
+            domain &= oldDom;
+            if (domain != oldDom)
             {
                 state.SetDomain(StateRef, Size, domain);
                 return true;
@@ -38,7 +40,7 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public bool DomainMinus(IState state, uint domain) => SetDomain(state, state.GetDomain(StateRef, Size) & ~domain);
+        public bool DomainMinus(IState state, uint domain) => SetDomain(state, ~domain);
 
         public bool TryGetValue(IState state, out int value)
         {
@@ -116,7 +118,7 @@ namespace CSPSolver.Variable
             return SetDomain(state, newDom);
         }
 
-        public void Initialise(IState state) => SetDomain(state, (uint)Math.Pow(2, Size + 1) - 1);
+        public void Initialise(IState state) => state.SetDomain(StateRef, Size, (uint)Math.Pow(2, Size) - 1);
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {
