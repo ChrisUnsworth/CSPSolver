@@ -9,7 +9,7 @@ namespace CSPSolver.Model
     {
         public IBoolVar Variable { get; set; }
 
-        public override IVariable<bool> GetVariable() => (IVariable<bool>)Variable;
+        public override IVariable<bool> GetVariable() => Variable;
 
         public static ModelConstraint operator |(ModelBoolVar v1, ModelBoolVar v2) => new(new Or(new BoolConstraint(v1.Variable), new BoolConstraint(v2.Variable)));
 
