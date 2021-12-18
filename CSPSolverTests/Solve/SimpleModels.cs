@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,6 +14,9 @@ using CSPSolver.Search;
 using CSPSolver.Constraint.Minus;
 using CSPSolver.Constraint.Multiply;
 using CSPSolver.Constraint.Divide;
+using CSPSolver.Constraint.Logic;
+using CSPSolver.Constraint.AllDiff;
+using CSPSolver.common.variables;
 
 namespace CSPSolverTests.Solve
 {
@@ -527,6 +531,24 @@ namespace CSPSolverTests.Solve
             }
 
             CheckAll(mb, test, 6);
+        }
+
+        [TestMethod]
+        public void NotAllDiffTest()
+        {
+            var mb = GetModelBuilder();
+            var vars = mb.AddIntVarArray(1, 3, 3);
+
+            mb.AddConstraint(new Not(new AllDiffSameIntDomain(vars.Select(m => m.GetVariable() as ISmallIntDomainVar))));
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue((solution.GetValue(vars[0]) == solution.GetValue(vars[1]))
+                           || (solution.GetValue(vars[0]) == solution.GetValue(vars[2]))
+                           || (solution.GetValue(vars[1]) == solution.GetValue(vars[2])));
+            }
+
+            CheckAll(mb, test, 21);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)

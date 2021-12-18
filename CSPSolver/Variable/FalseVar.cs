@@ -6,25 +6,25 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct TrueVar : IBoolVar
+    public readonly struct FalseVar : IBoolVar
     {
         public IStateRef StateRef { get; }
 
-        public int Min => 1;
+        public int Min => 0;
 
         public int Size => 1;
 
-        public int Max => 1;
+        public int Max => 0;
 
-        public TrueVar(IStateRef stateRef) => StateRef = stateRef;
+        public FalseVar(IStateRef stateRef) => StateRef = stateRef;
 
-        public bool IsTrue(IState state) => !IsEmpty(state);
+        public bool IsTrue(IState state) => false;
 
-        public bool CanBeTrue(IState state) => !IsEmpty(state);
+        public bool CanBeTrue(IState state) => false;
 
-        public bool IsFalse(IState state) => false;
+        public bool IsFalse(IState state) => !IsEmpty(state);
 
-        public bool CanBeFalse(IState state) => false;
+        public bool CanBeFalse(IState state) => !IsEmpty(state);
 
         public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
@@ -45,40 +45,40 @@ namespace CSPSolver.Variable
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {
-            if (CanBeTrue(state)) yield return 1;
+            if (CanBeFalse(state)) yield return 0;
         }
 
-        public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size) + 1;
+        public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size);
 
-        public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size) + 1;
+        public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size);
 
         public bool SetMax(IState state, int max)
         {
-            if (max >= 1) return false;
+            if (max >= 0) return false;
             return SetDomain(state, 0);
         }
 
         public bool SetMin(IState state, int min)
         {
-            if (min <= 1) return false;
+            if (min <= 0) return false;
             return SetDomain(state, 0);
         }
 
         public bool TryGetValue(IState state, out int value)
         {
-            value = 1;
+            value = 0;
             return !IsEmpty(state);
         }
 
         public bool TryGetValue(IState state, out bool value)
         {
-            value = true;
-            return IsTrue(state);
+            value = false;
+            return IsFalse(state);
         }
 
         public void Initialise(IState state) => state.SetDomain(StateRef, Size, 1);
 
-        public bool IsInstantiated(IState state) => IsTrue(state);
+        public bool IsInstantiated(IState state) => IsFalse(state);
 
         public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
@@ -87,14 +87,14 @@ namespace CSPSolver.Variable
         public bool SetValue(IState state, object value) =>
             Convert.ToInt32(value) switch
             {
-                1 => false,
+                0 => false,
                 _ => SetDomain(state, 0),
             };
 
         public bool RemoveValue(IState state, object value) =>
             Convert.ToInt32(value) switch
             {
-                1 => SetDomain(state, 0),
+                0 => SetDomain(state, 0),
                 _ => false,
             };
 

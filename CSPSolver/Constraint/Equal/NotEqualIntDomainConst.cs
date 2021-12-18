@@ -23,6 +23,9 @@ namespace CSPSolver.Constraint.Equal
         public bool IsMet(IState state) =>
             _var.GetDomainMax(state) < _con || _var.GetDomainMin(state) > _con;
 
+        public IEnumerable<IVariable> NegativePropagate(IState state) =>
+            _var.SetValue(state, _con) ? new IVariable[] { _var } : Enumerable.Empty<IVariable>();
+
         public IEnumerable<IVariable> Propagate(IState state) => 
             _var.RemoveValue(state, _con) ? new IVariable[] { _var } : Enumerable.Empty<IVariable>();
     }

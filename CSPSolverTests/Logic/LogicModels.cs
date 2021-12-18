@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CSPSolver.Model;
+using static CSPSolver.Model.ModelConstraint;
 using CSPSolver.State;
 using CSPSolver.common;
-using CSPSolver.Constraint.Equal;
-using CSPSolver.Constraint.Plus;
 using CSPSolver.Search;
-using CSPSolver.Constraint.Minus;
-using CSPSolver.Constraint.Multiply;
-using CSPSolver.Constraint.Divide;
-using CSPSolver.Constraint.Logic;
 
 namespace CSPSolverTests.Logic
 {
@@ -67,7 +60,7 @@ namespace CSPSolverTests.Logic
             var x = mb.AddIntDomainVar(1, 3);
             var y = mb.AddIntDomainVar(1, 3);
 
-            mb.AddConstraint(ModelConstraint.IfThen(x == 2, y == 2));
+            mb.AddConstraint(IfThen(x == 2, y == 2));
 
             void test(ISolution solution)
             {
@@ -85,7 +78,7 @@ namespace CSPSolverTests.Logic
             var x = mb.AddIntDomainVar(1, 3);
             var y = mb.AddIntDomainVar(1, 3);
 
-            mb.AddConstraint(ModelConstraint.IfThenElse(x == 2, y == 2, y == 1));
+            mb.AddConstraint(IfThenElse(x == 2, y == 2, y == 1));
 
             void test(ISolution solution)
             {
@@ -116,6 +109,61 @@ namespace CSPSolverTests.Logic
             }
 
             CheckAll(mb, test, 5);
+        }
+
+        [TestMethod]
+        public void NotTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddIntDomainVar(1, 3);
+            var y = mb.AddIntDomainVar(1, 3);
+
+            mb.AddConstraint(!(x > y));
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 6);
+        }
+
+        [TestMethod]
+        public void XOrTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            mb.AddConstraint(XOr(x, y));
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) || solution.GetValue(y));
+                Assert.IsTrue(!(solution.GetValue(x) && solution.GetValue(y)));
+            }
+
+            CheckAll(mb, test, 2);
+        }
+
+        [TestMethod]
+        public void IfAndOnlyIfTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            mb.AddConstraint(IfAndOnlyIf(x, y));
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 2);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
