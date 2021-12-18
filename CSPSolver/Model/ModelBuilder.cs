@@ -1,10 +1,13 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.variables;
-using CSPSolver.Constraint.AllDiff;
-using CSPSolver.Variable;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using CSPSolver.common;
+using CSPSolver.common.variables;
+using CSPSolver.Constraint.AllDiff;
+using CSPSolver.State;
+using CSPSolver.Variable;
+using CSPSolver;
 
 namespace CSPSolver.Model
 {
@@ -15,6 +18,9 @@ namespace CSPSolver.Model
         private bool _maximise;
         private readonly List<IVariable> _variables;
         private readonly List<IConstraint> _constraints;
+
+        public ModelBuilder() : this(new StateBuilder()) { }
+
         public ModelBuilder(IStateBuilder sb)
         {
             _sb = sb;
@@ -22,6 +28,7 @@ namespace CSPSolver.Model
             _constraints = new List<IConstraint>();
         }
 
+        public IEnumerable<ISolution> Search() => new Search.Search(this);
 
         public void AddObjective(ModelIntVar objective, bool maximise) => AddObjective((IIntVar)objective.GetVariable(), maximise);
         public void AddObjective(IIntVar objective, bool maximise)
