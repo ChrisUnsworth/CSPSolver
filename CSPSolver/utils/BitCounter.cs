@@ -37,11 +37,22 @@ namespace CSPSolver.utils
         {
             var count = 1 << list.Count;
             return Enumerable.Range(0, count)
-                .Where(mask => { var count = Count(mask); return count >= min && count <= max; } )
+                .Where(mask => { var count = Count(mask); return count >= min && count <= max; })
                 .Select(mask =>
                     Enumerable.Range(0, list.Count)
                         .Where(i => (mask & (1 << i)) > 0)
                         .Select(i => list[i])
+                        .ToList());
+        }
+
+        public static IEnumerable<List<int>> PowerSetIndices<T>(IList<T> list, int min, int max)
+        {
+            var count = 1 << list.Count;
+            return Enumerable.Range(0, count)
+                .Where(mask => { var count = Count(mask); return count >= min && count <= max; })
+                .Select(mask =>
+                    Enumerable.Range(0, list.Count)
+                        .Where(i => (mask & (1 << i)) > 0)
                         .ToList());
         }
     }

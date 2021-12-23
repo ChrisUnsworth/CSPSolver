@@ -1,24 +1,55 @@
-﻿using CSPSolver.common;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.utils;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace CSPSolver.Constraint.AllDiff
 {
-    public readonly struct AllDiffSameIntDomain : IConstraint
+    public readonly struct AllDiffMixedSmallIntDomain : IConstraint
     {
         private readonly ISmallIntDomainVar[] _variables;
         private readonly uint[] _domains;
         private int N => _variables.Length;
+        private readonly int _minMin;
 
-        public AllDiffSameIntDomain(IEnumerable<ISmallIntDomainVar> variables)
+        public AllDiffMixedSmallIntDomain(IEnumerable<ISmallIntDomainVar> variables)
         {
             _variables = variables.ToArray();
             _domains = new uint[_variables.Length];
+            _minMin = variables.Select(v => v.Min).Min();
         }
 
         public IEnumerable<IVariable> Variables => _variables;
+
+        public IEnumerable<IVariable> Propagate(IState state)
+        {
+            UpdateDomains(state);
+            var result = new HashSet<IVariable>();
+
+            foreach (var subSet in BitCounter.PowerSetIndices(_variables, 1, N - 1))
+            {
+                var union = 0u;
+                foreach (var i in subSet)
+                {
+                    union |= _domains[i];
+                }
+
+                if (BitCounter.Count(union) <= subSet.Count)
+                {
+                    foreach (var p2 in _variables.Where((v, i) => !subSet.Contains(i)))
+                    {
+                        if (p2.DomainMinus(state, union >> (p2.Min - _minMin)))
+                        {
+                            result.Add(p2);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
 
         public IEnumerable<IVariable> NegativePropagate(IState state)
         {
@@ -38,8 +69,8 @@ namespace CSPSolver.Constraint.AllDiff
 
             if (pair.HasValue)
             {
-                if (_variables[pair.Value.i1].SetDomain(state, _domains[pair.Value.i2])) yield return _variables[pair.Value.i1];
-                if (_variables[pair.Value.i2].SetDomain(state, _domains[pair.Value.i1])) yield return _variables[pair.Value.i2];
+                if (_variables[pair.Value.i1].SetDomain(state, RightShift(_domains[pair.Value.i2], pair.Value.i1))) yield return _variables[pair.Value.i1];
+                if (_variables[pair.Value.i2].SetDomain(state, RightShift(_domains[pair.Value.i1], pair.Value.i2))) yield return _variables[pair.Value.i2];
             }
             else
             {
@@ -48,34 +79,6 @@ namespace CSPSolver.Constraint.AllDiff
                     if (_variables[i].SetDomain(state, 0)) yield return _variables[i];
                 }
             }
-        }
-
-        public IEnumerable<IVariable> Propagate(IState state)
-        {
-            UpdateDomains(state);
-            var result = new HashSet<IVariable>();
-
-            foreach (var subSet in BitCounter.PowerSetIndices(_variables, 1, N - 1))
-            {
-                var union = 0u;
-                foreach (var i in subSet)
-                {
-                    union |= _domains[i];
-                }
-
-                if (BitCounter.Count(union) <= subSet.Count)
-                {
-                    foreach (var p2 in _variables.Where((v, i) => !subSet.Contains(i)))
-                    {
-                        if (p2.DomainMinus(state, union))
-                        {
-                            result.Add(p2);
-                        }
-                    }
-                }
-            }
-
-            return result;
         }
 
         public bool IsMet(IState state)
@@ -104,7 +107,7 @@ namespace CSPSolver.Constraint.AllDiff
         {
             for (int i = 0; i < _variables.Length; ++i)
             {
-                _domains[i] = _variables[i].GetDomain(state).domain;
+                _domains[i] = GetLeftShifted(state, i);
                 yield return i;
             }
         }
@@ -113,8 +116,14 @@ namespace CSPSolver.Constraint.AllDiff
         {
             for (int i = 0; i < _variables.Length; ++i)
             {
-                _domains[i] = _variables[i].GetDomain(state).domain;
+                _domains[i] = GetLeftShifted(state, i);
             }
         }
+
+        private uint GetLeftShifted(IState state, int i) => 
+            _variables[i].GetDomain(state).domain << (_variables[i].Min - _minMin);
+
+        private uint RightShift(uint domain, int i) => 
+            domain >> (_variables[i].Min - _minMin);
     }
 }
