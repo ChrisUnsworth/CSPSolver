@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSPSolver.common
+﻿namespace CSPSolver.common
 {
     public interface IState
     {
@@ -19,6 +15,7 @@ namespace CSPSolver.common
         void SetFloat(in IStateRef idx, in float value);
 
         uint GetDomain(in IStateRef idx, in int size);
+        ulong GetDomainLong(in IStateRef idx, in int size);
         int GetDomainMax(in IStateRef idx, in int size);
         int GetLargeDomainMax(in IStateRef idx, in int size);
         int GetDomainMin(in IStateRef idx, in int size);

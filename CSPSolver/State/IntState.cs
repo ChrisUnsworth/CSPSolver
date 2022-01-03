@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Linq;
 
 using CSPSolver.common;
 using CSPSolver.common.search;
@@ -26,6 +27,8 @@ namespace CSPSolver.State
 
         public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx , size);
         private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & ((uint)Math.Pow(2, size) - 1);
+
+        public ulong GetDomainLong(in IStateRef idx, in int size) => GetLargeDomain(idx, size).Reverse().Aggregate(0ul, (r, d) => d | (r << 32));
 
         public int GetDomainMax(in IStateRef idx, in int size) => (int)Math.Log2(GetDomain((StateRef)idx, size));
 
