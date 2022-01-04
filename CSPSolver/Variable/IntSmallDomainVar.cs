@@ -80,7 +80,6 @@ namespace CSPSolver.Variable
         {
             var oldD = state.GetDomain(StateRef, Size);
             var newD = oldD & ~(uint)Math.Pow(2, value - Min);
-            state.SetDomain(StateRef, Size, newD);
             if (newD != oldD)
             {
                 state.SetDomain(StateRef, Size, newD);
@@ -118,12 +117,12 @@ namespace CSPSolver.Variable
             return SetDomain(state, newDom);
         }
 
-        public void Initialise(IState state) => state.SetDomain(StateRef, Size, (uint)Math.Pow(2, Size) - 1);
+        public void Initialise(IState state) => state.SetDomain(StateRef, Size, (uint)(Math.Pow(2, Size) - 1));
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {
             var domain = state.GetDomain(StateRef, Size);
-            int mask = 0b_1;
+            uint mask = 0b_1;
 
             foreach (var i in Enumerable.Range(0, Size))
             {

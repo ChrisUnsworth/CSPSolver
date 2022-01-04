@@ -175,10 +175,8 @@ namespace CSPSolverTests
             var stateRef = new StateRef(0, 0);
 
             ulong domain = 0b1010_1000_0001_0101_1010_1100_0010_0000_1010_1000_0000_0100;
-            uint d1 = (uint)domain;
-            uint d2 = (uint)(domain >> 32);
 
-            state.SetLargeDomain(stateRef, 48, new[] { d1, d2 });
+            state.SetDomainLong(stateRef, 48, domain);
 
             Assert.AreEqual(domain, state.GetDomainLong(stateRef, 48));
         }

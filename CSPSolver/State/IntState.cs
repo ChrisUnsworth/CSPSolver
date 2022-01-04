@@ -32,6 +32,8 @@ namespace CSPSolver.State
 
         public int GetDomainMax(in IStateRef idx, in int size) => (int)Math.Log2(GetDomain((StateRef)idx, size));
 
+        public int GetDomainMaxLong(in IStateRef idx, in int size) => (int)Math.Log2(GetDomainLong((StateRef)idx, size));
+
         public int GetLargeDomainMax(in IStateRef idx, in int size)
         {
             var domain = GetLargeDomain(idx, size);
@@ -48,6 +50,8 @@ namespace CSPSolver.State
         }
 
         public int GetDomainMin(in IStateRef idx, in int size) => BitOperations.TrailingZeroCount(GetDomain((StateRef)idx, size));
+
+        public int GetDomainMinLong(in IStateRef idx, in int size) => BitOperations.TrailingZeroCount(GetDomainLong((StateRef)idx, size));
 
         public int GetLargeDomainMin(in IStateRef idx, in int size)
         {
@@ -93,11 +97,14 @@ namespace CSPSolver.State
 
         public void SetDomain(in IStateRef idx, in int size, in uint value) => SetDomain((StateRef)idx, size, value);
 
-        private  void SetDomain(in StateRef idx, in int size, in uint value)
+        private void SetDomain(in StateRef idx, in int size, in uint value)
         {
             _data[idx.Idx] = _data[idx.Idx] & ~(((uint)Math.Pow(2, size) - 1) << idx.Offset);
             _data[idx.Idx] = _data[idx.Idx] + (value << idx.Offset);
         }
+
+        public void SetDomainLong(in IStateRef idx, in int size, in ulong value) => 
+            SetLargeDomain((StateRef)idx, size, new[] { (uint)value, (uint)(value >> 32) });
 
         public void SetLargeDomain(in IStateRef idx, in int size, in uint[] value)
         {

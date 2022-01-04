@@ -9,6 +9,8 @@ using CSPSolver.State;
 using CSPSolver.Model;
 using CSPSolver.Search;
 
+using static CSPSolver.Model.ModelConstraint;
+
 namespace CSPSolverTests.Solve.Sudoku
 {
     [TestClass]
@@ -33,17 +35,17 @@ namespace CSPSolverTests.Solve.Sudoku
 
             foreach (var row in Sets.Rows)
             {
-                mb.AddAllDiff(row.Select(c => varMatrix[c.x, c.y]));
+                mb.AddConstraint(AllDiff(row.Select(c => varMatrix[c.x, c.y])));
             }
 
             foreach (var column in Sets.Columns)
             {
-                mb.AddAllDiff(column.Select(c => varMatrix[c.x, c.y]));
+                mb.AddConstraint(AllDiff(column.Select(c => varMatrix[c.x, c.y])));
             }
 
             foreach (var square in Sets.Squares)
             {
-                mb.AddAllDiff(square.Select(c => varMatrix[c.x, c.y]));
+                mb.AddConstraint(AllDiff(square.Select(c => varMatrix[c.x, c.y])));
             }
 
             return (mb, varMatrix);

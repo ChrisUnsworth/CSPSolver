@@ -15,6 +15,13 @@ namespace CSPSolver.utils
             return BitConverter.GetBytes(value).Sum(b => _lookup[b]);
         }
 
+        public static int Count(ulong value)
+        {
+            if (value < (ulong)_lookup.Length) return _lookup[(int)value];
+
+            return BitConverter.GetBytes(value).Sum(b => _lookup[b]);
+        }
+
         public static int Count(int value)
         {
             if (value < _lookup.Length) return _lookup[value];

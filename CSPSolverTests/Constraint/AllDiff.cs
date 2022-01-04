@@ -343,5 +343,232 @@ namespace CSPSolverTests.Constraint
 
             Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
         }
+
+        [TestMethod]
+        public void AllDiffLongDomainPropagate1()
+        {
+            var mb = new ModelBuilder();
+            var variables = mb.AddIntVarArray(1, 50, 3).Select(v => v.GetVariable() as ILongDomainVar).ToArray();
+            var state = GetState(mb);
+            var constraint = new AllDiffLongDomain(variables);
+            foreach (var v in variables) { v.SetMax(state, 3); }
+
+            Assert.AreEqual(0, constraint.Propagate(state).Count());
+
+            variables[0].SetMin(state, 2);
+
+            Assert.AreEqual(0, constraint.Propagate(state).Count());
+
+            variables[0].SetMin(state, 3);
+
+            Assert.AreEqual(2, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 3 }, { 1, 2 }, { 1, 2 }", Pretty(variables, state));
+
+            variables[1].SetMin(state, 2);
+
+            Assert.AreEqual(1, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 3 }, { 2 }, { 1 }", Pretty(variables, state));
+
+            state = GetState(mb);
+            variables[0].SetMin(state, 2);
+            variables[1].SetMin(state, 2);
+            foreach (var v in variables) { v.SetMax(state, 3); }
+
+            Assert.AreEqual(1, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 2, 3 }, { 2, 3 }, { 1 }", Pretty(variables, state));
+
+            variables[0].SetMax(state, 2);
+            variables[1].SetMax(state, 2);
+
+            Assert.AreNotEqual(0, constraint.Propagate(state).Count());
+
+            Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        }
+
+        [TestMethod]
+        public void AllDiffLongDomainPropagate2()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddIntDomainVar(1, 50).GetVariable() as ILongDomainVar;
+            var y = mb.AddIntDomainVar(2, 50).GetVariable() as ILongDomainVar;
+            var z = mb.AddIntDomainVar(3, 50).GetVariable() as ILongDomainVar;
+            var state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+            var variables = new[] { x, y, z };
+            var constraint = new AllDiffLongDomain(variables);
+
+            Assert.AreEqual(0, constraint.Propagate(state).Count());
+
+            x.SetValue(state, 3);
+
+            Assert.AreEqual(2, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 3 }, { 2, 4, 5, 6 }, { 4, 5, 6, 7 }", Pretty(variables, state));
+
+            y.SetValue(state, 5);
+
+            Assert.AreEqual(1, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 3 }, { 5 }, { 4, 6, 7 }", Pretty(variables, state));
+
+            state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+
+            x.SetMin(state, 3);
+            x.SetMax(state, 4);
+            y.SetMin(state, 3);
+            y.SetMax(state, 4);
+
+            Assert.AreEqual(1, constraint.Propagate(state).Count());
+
+            Assert.AreEqual("{ 3, 4 }, { 3, 4 }, { 5, 6, 7 }", Pretty(variables, state));
+
+            x.SetValue(state, 3);
+            y.SetValue(state, 3);
+
+            Assert.AreNotEqual(0, constraint.Propagate(state).Count());
+
+            Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        }
+
+        [TestMethod]
+        public void AllDiffLongDomainIsMet()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddIntDomainVar(1, 50).GetVariable() as ILongDomainVar;
+            var y = mb.AddIntDomainVar(2, 50).GetVariable() as ILongDomainVar;
+            var z = mb.AddIntDomainVar(3, 50).GetVariable() as ILongDomainVar;
+            var state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+            var variables = new[] { x, y, z };
+            var constraint = new AllDiffLongDomain(variables);
+
+            Assert.IsFalse(constraint.IsMet(state));
+
+            x.SetMax(state, 3);
+
+            Assert.IsFalse(constraint.IsMet(state));
+
+            y.SetMin(state, 4);
+            y.SetMax(state, 5);
+
+            Assert.IsFalse(constraint.IsMet(state));
+
+            z.SetMin(state, 6);
+
+            Assert.IsTrue(constraint.IsMet(state));
+        }
+
+        [TestMethod]
+        public void AllDiffLongDomainCanBeMet()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddIntDomainVar(1, 50).GetVariable() as ILongDomainVar;
+            var y = mb.AddIntDomainVar(2, 50).GetVariable() as ILongDomainVar;
+            var z = mb.AddIntDomainVar(3, 50).GetVariable() as ILongDomainVar;
+            var state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+            var variables = new[] { x, y, z };
+            var constraint = new AllDiffLongDomain(variables);
+
+            Assert.IsTrue(constraint.CanBeMet(state));
+
+            x.SetMin(state, 3);
+            x.SetMax(state, 4);
+
+            Assert.IsTrue(constraint.CanBeMet(state));
+
+            y.SetMin(state, 3);
+            y.SetMax(state, 4);
+
+            Assert.IsTrue(constraint.CanBeMet(state));
+
+            z.SetMin(state, 3);
+            z.SetMax(state, 4);
+
+            Assert.IsFalse(constraint.CanBeMet(state));
+        }
+
+        [TestMethod]
+        public void AllDiffLongDomainNegativePropagate1()
+        {
+            var mb = new ModelBuilder();
+            var variables = mb.AddIntVarArray(1, 50, 3).Select(v => v.GetVariable() as ILongDomainVar).ToArray();
+            var state = GetState(mb);
+            var constraint = new AllDiffLongDomain(variables);
+            foreach (var v in variables) { v.SetMax(state, 3); }
+
+            Assert.AreEqual(0, constraint.NegativePropagate(state).Count());
+
+            variables[0].SetValue(state, 3);
+
+            Assert.AreEqual(0, constraint.NegativePropagate(state).Count());
+
+            variables[1].SetValue(state, 2);
+            variables[2].SetMax(state, 2);
+
+            Assert.AreEqual(1, constraint.NegativePropagate(state).Count());
+
+            Assert.AreEqual("{ 3 }, { 2 }, { 2 }", Pretty(variables, state));
+        }
+
+        [TestMethod]
+        public void AllDiffLongDomainNegativePropagate2()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddIntDomainVar(1, 50).GetVariable() as ILongDomainVar;
+            var y = mb.AddIntDomainVar(2, 50).GetVariable() as ILongDomainVar;
+            var z = mb.AddIntDomainVar(3, 50).GetVariable() as ILongDomainVar;
+            var state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+            var variables = new[] { x, y, z };
+            var constraint = new AllDiffLongDomain(variables);
+
+            Assert.AreEqual(0, constraint.NegativePropagate(state).Count());
+
+            x.SetValue(state, 1);
+
+            Assert.AreEqual(2, constraint.NegativePropagate(state).Count());
+
+            Assert.AreEqual("{ 1 }, { 3, 4, 5, 6 }, { 3, 4, 5, 6 }", Pretty(variables, state));
+
+            y.RemoveValue(state, 4);
+
+            Assert.AreEqual(1, constraint.NegativePropagate(state).Count());
+
+            Assert.AreEqual("{ 1 }, { 3, 5, 6 }, { 3, 5, 6 }", Pretty(variables, state));
+
+            z.SetValue(state, 3);
+
+            Assert.AreEqual(1, constraint.NegativePropagate(state).Count());
+
+            Assert.AreEqual("{ 1 }, { 3 }, { 3 }", Pretty(variables, state));
+
+            state = GetState(mb);
+            x.SetMax(state, 5);
+            y.SetMax(state, 6);
+            z.SetMax(state, 7);
+
+            x.SetValue(state, 1);
+            y.SetValue(state, 2);
+            z.SetMin(state, 3);
+
+            Assert.AreNotEqual(0, constraint.NegativePropagate(state).Count());
+
+            Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        }
     }
 }
