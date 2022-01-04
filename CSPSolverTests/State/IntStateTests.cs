@@ -167,5 +167,18 @@ namespace CSPSolverTests
 
             Assert.AreEqual(0, state.GetDomainMin(stateRef, 16));
         }
+
+        [TestMethod]
+        public void GetDoaminLong()
+        {
+            var state = new IntState(2);
+            var stateRef = new StateRef(0, 0);
+
+            ulong domain = 0b1010_1000_0001_0101_1010_1100_0010_0000_1010_1000_0000_0100;
+
+            state.SetDomainLong(stateRef, 48, domain);
+
+            Assert.AreEqual(domain, state.GetDomainLong(stateRef, 48));
+        }
     }
 }

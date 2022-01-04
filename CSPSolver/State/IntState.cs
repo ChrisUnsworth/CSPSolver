@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Linq;
 
 using CSPSolver.common;
 using CSPSolver.common.search;
@@ -27,7 +28,11 @@ namespace CSPSolver.State
         public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx , size);
         private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & ((uint)Math.Pow(2, size) - 1);
 
+        public ulong GetDomainLong(in IStateRef idx, in int size) => GetLargeDomain(idx, size).Reverse().Aggregate(0ul, (r, d) => d | (r << 32));
+
         public int GetDomainMax(in IStateRef idx, in int size) => (int)Math.Log2(GetDomain((StateRef)idx, size));
+
+        public int GetDomainMaxLong(in IStateRef idx, in int size) => (int)Math.Log2(GetDomainLong((StateRef)idx, size));
 
         public int GetLargeDomainMax(in IStateRef idx, in int size)
         {
@@ -45,6 +50,8 @@ namespace CSPSolver.State
         }
 
         public int GetDomainMin(in IStateRef idx, in int size) => BitOperations.TrailingZeroCount(GetDomain((StateRef)idx, size));
+
+        public int GetDomainMinLong(in IStateRef idx, in int size) => BitOperations.TrailingZeroCount(GetDomainLong((StateRef)idx, size));
 
         public int GetLargeDomainMin(in IStateRef idx, in int size)
         {
@@ -90,11 +97,14 @@ namespace CSPSolver.State
 
         public void SetDomain(in IStateRef idx, in int size, in uint value) => SetDomain((StateRef)idx, size, value);
 
-        private  void SetDomain(in StateRef idx, in int size, in uint value)
+        private void SetDomain(in StateRef idx, in int size, in uint value)
         {
             _data[idx.Idx] = _data[idx.Idx] & ~(((uint)Math.Pow(2, size) - 1) << idx.Offset);
             _data[idx.Idx] = _data[idx.Idx] + (value << idx.Offset);
         }
+
+        public void SetDomainLong(in IStateRef idx, in int size, in ulong value) => 
+            SetLargeDomain((StateRef)idx, size, new[] { (uint)value, (uint)(value >> 32) });
 
         public void SetLargeDomain(in IStateRef idx, in int size, in uint[] value)
         {

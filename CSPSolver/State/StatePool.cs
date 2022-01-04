@@ -42,6 +42,6 @@ namespace CSPSolver.State
             }
         }
 
-        internal IState Empty() => new IntState(_arrayPool.Rent(_size));
+        public IState Empty() => new IntState(_arrayPool.Rent(_size));
     }
 }
