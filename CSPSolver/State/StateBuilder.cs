@@ -56,7 +56,9 @@ namespace CSPSolver.State
         public IStateRef AddDouble()
         {
             _map.AddRange(new int[] { 32, 32 });
-            return new StateRef(_size++, 0);
+            var idx = _size;
+            _size += 2;
+            return new StateRef(idx, 0);
         }
 
         public IStateRef AddFloat()
@@ -74,7 +76,9 @@ namespace CSPSolver.State
         public IStateRef AddLong()
         {
             _map.AddRange(new int[] { 32, 32 });
-            return new StateRef(_size++, 0);
+            var idx = _size;
+            _size += 2;
+            return new StateRef(idx, 0);
         }
 
         public IState GetState() => new IntState(_size);
