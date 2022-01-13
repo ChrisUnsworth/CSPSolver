@@ -31,6 +31,7 @@ namespace CSPSolver.Model
         public IEnumerable<ISolution> Search() => new Search.Search(this);
 
         public void AddObjective(ModelIntVar objective, bool maximise) => AddObjective((IIntVar)objective.GetVariable(), maximise);
+
         public void AddObjective(IIntVar objective, bool maximise)
         {
             _objective = objective;
@@ -83,6 +84,27 @@ namespace CSPSolver.Model
             }
 
             return intVars;
+        }
+
+        public ModelRealVar AddRealVar(double min, double max, double epsilon = 0)
+        {
+            var realVar = epsilon == 0
+                ? new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble())
+                : new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), epsilon);
+            _variables.Add(realVar);
+            return new ModelRealVar { Variable = realVar };
+        }
+
+        public ModelRealVar[] AddRealVarArray(double min, double max, int count, double epsilon = 0)
+        {
+            var realVars = new ModelRealVar[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                realVars[i] = AddRealVar(min, max, epsilon);
+            }
+
+            return realVars;
         }
 
         public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray(), _objective, _maximise);        
