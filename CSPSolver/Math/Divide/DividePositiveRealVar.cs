@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Divide
+namespace CSPSolver.Math.Divide
 {
     public readonly struct DividePositiveRealVar : IRealVar, ICompoundVariable
     {
@@ -14,6 +16,8 @@ namespace CSPSolver.Constraint.Divide
         public double Min { get; }
 
         public double Max { get; }
+
+        public double Epsilon => Max(_v1.Epsilon, _v2.Epsilon);
 
         public DividePositiveRealVar(IRealVar v1, IRealVar v2)
         {
@@ -45,8 +49,8 @@ namespace CSPSolver.Constraint.Divide
 
         public bool SetMin(IState state, double min) =>
             min > 0
-         && (_v1.SetMin(state, _v2.GetDomainMin(state) * min)
-           | _v2.SetMax(state, _v1.GetDomainMax(state) / min));
+         && _v1.SetMin(state, _v2.GetDomainMin(state) * min)
+           | _v2.SetMax(state, _v1.GetDomainMax(state) / min);
 
         public bool SetValue(IState state, object value) => SetMax(state, (double)value) | SetMin(state, (double)value);
 

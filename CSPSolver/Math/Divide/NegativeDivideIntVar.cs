@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Divide
+namespace CSPSolver.Math.Divide
 {
     public readonly struct NegativeDivideIntVar : IIntVar, ICompoundVariable
     {
@@ -43,13 +45,13 @@ namespace CSPSolver.Constraint.Divide
 
         public bool SetMax(IState state, int max) =>
             max > 0
-                && (_v1.SetMin(state, ((max + 1) * _v2.GetDomainMin(state)) + 1)
-                  | _v2.SetMax(state, (_v1.GetDomainMax(state) / (max + 1)) - 1));
+                && _v1.SetMin(state, (max + 1) * _v2.GetDomainMin(state) + 1)
+                  | _v2.SetMax(state, _v1.GetDomainMax(state) / (max + 1) - 1);
 
         public bool SetMin(IState state, int min) =>
             min > 0
-         && (_v1.SetMax(state, _v2.GetDomainMax(state) * min)
-           | _v2.SetMin(state, (int)Math.Ceiling(_v1.GetDomainMin(state) / (double)min)));
+         && _v1.SetMax(state, _v2.GetDomainMax(state) * min)
+           | _v2.SetMin(state, (int)Ceiling(_v1.GetDomainMin(state) / (double)min));
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 

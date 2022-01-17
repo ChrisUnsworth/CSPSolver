@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CSPSolver.common;
-using CSPSolver.Constraint.Minus;
+using CSPSolver.Math.Minus;
 using CSPSolver.State;
 using CSPSolver.Variable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +12,7 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class MinusIntDomainTests
     {
-        private (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
+        private static (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
         {
             var sb = new StateBuilder();
             var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));

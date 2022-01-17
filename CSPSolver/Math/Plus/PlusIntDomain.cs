@@ -3,7 +3,7 @@ using CSPSolver.common.variables;
 using System;
 using System.Collections.Generic;
 
-namespace CSPSolver.Constraint.Plus
+namespace CSPSolver.Math.Plus
 {
     public readonly struct PlusIntDomain : IIntVar, ICompoundVariable
     {
@@ -51,7 +51,7 @@ namespace CSPSolver.Constraint.Plus
             return result;
         }
 
-        public bool SetMax(IState state, int max) => 
+        public bool SetMax(IState state, int max) =>
             _v1.SetMax(state, max - _v2.GetDomainMin(state))
           | _v2.SetMax(state, max - _v1.GetDomainMin(state));
 

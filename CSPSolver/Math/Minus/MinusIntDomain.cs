@@ -1,10 +1,10 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.variables;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace CSPSolver.Constraint.Minus
+using CSPSolver.common;
+using CSPSolver.common.variables;
+
+namespace CSPSolver.Math.Minus
 {
     public readonly struct MinusIntDomain : IIntVar, ICompoundVariable
     {
@@ -57,7 +57,7 @@ namespace CSPSolver.Constraint.Minus
             _v1.SetMax(state, max + _v2.GetDomainMax(state))
           | _v2.SetMin(state, _v1.GetDomainMin(state) - max);
 
-        public bool SetMin(IState state, int min) => 
+        public bool SetMin(IState state, int min) =>
             _v1.SetMin(state, min + _v2.GetDomainMin(state))
           | _v2.SetMax(state, _v1.GetDomainMax(state) - min);
 

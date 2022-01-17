@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Divide
+namespace CSPSolver.Math.Divide
 {
     public readonly struct PositiveDivideIntVar : IIntVar, ICompoundVariable
     {
@@ -43,15 +45,15 @@ namespace CSPSolver.Constraint.Divide
 
         public bool SetMax(IState state, int max) =>
             max == 0
-                ?   _v1.SetMax(state, _v2.GetDomainMax(state) - 1)
+                ? _v1.SetMax(state, _v2.GetDomainMax(state) - 1)
                   | _v2.SetMin(state, _v1.GetDomainMin(state) + 1)
-                :   _v1.SetMax(state, ((max + 1) * _v2.GetDomainMax(state)) - 1)
-                  | _v2.SetMin(state, (_v1.GetDomainMin(state) / (max + 1)) + 1);
+                : _v1.SetMax(state, (max + 1) * _v2.GetDomainMax(state) - 1)
+                  | _v2.SetMin(state, _v1.GetDomainMin(state) / (max + 1) + 1);
 
         public bool SetMin(IState state, int min) =>
             min > 0
-         && (_v1.SetMin(state, _v2.GetDomainMin(state) * min)
-           | _v2.SetMax(state, (int)Math.Ceiling(_v1.GetDomainMax(state) / (double)min)));
+         && _v1.SetMin(state, _v2.GetDomainMin(state) * min)
+           | _v2.SetMax(state, (int)Ceiling(_v1.GetDomainMax(state) / (double)min));
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 

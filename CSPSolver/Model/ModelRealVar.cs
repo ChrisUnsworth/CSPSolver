@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
-using CSPSolver.Constraint.Divide;
+using CSPSolver.Math.Divide;
+using CSPSolver.Math.Round;
 using CSPSolver.Variable;
 
 namespace CSPSolver.Model
@@ -24,5 +25,7 @@ namespace CSPSolver.Model
             if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new DividePositiveRealVar(v1.Variable, v2.Variable) };
             throw new NotImplementedException();
         }
+
+        public static ModelIntVar Truncate(ModelRealVar v) => new() { Variable = new Truncate(v.Variable) };
     }
 }

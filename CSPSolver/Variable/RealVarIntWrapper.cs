@@ -1,5 +1,7 @@
 ﻿using System;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -15,6 +17,8 @@ namespace CSPSolver.Variable
 
         public double Max => _intVar.Max;
 
+        public double Epsilon => 1;
+
         public double GetDomainMax(IState state) => _intVar.GetDomainMax(state);
 
         public double GetDomainMin(IState state) => _intVar.GetDomainMin(state);
@@ -29,11 +33,11 @@ namespace CSPSolver.Variable
 
         public bool RemoveValue(IState state, object value) => _intVar.RemoveValue(state, (int)value);
 
-        public bool SetMax(IState state, double max) => _intVar.SetMax(state, (int)Math.Ceiling(max));
+        public bool SetMax(IState state, double max) => _intVar.SetMax(state, (int)Ceiling(max));
 
-        public bool SetMin(IState state, double min) => _intVar.SetMin(state, (int)Math.Floor(min));
+        public bool SetMin(IState state, double min) => _intVar.SetMin(state, (int)Floor(min));
 
-        public bool SetValue(IState state, object value) => _intVar.SetValue(state, (int)Math.Round((double)value));
+        public bool SetValue(IState state, object value) => _intVar.SetValue(state, (int)Round((double)value));
 
         public bool TryGetValue(IState state, out double value)
         {

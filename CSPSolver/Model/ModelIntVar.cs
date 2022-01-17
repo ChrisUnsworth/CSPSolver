@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
-using CSPSolver.Constraint.Minus;
-using CSPSolver.Constraint.Plus;
-using CSPSolver.Constraint.Multiply;
-using CSPSolver.Constraint.Divide;
+using CSPSolver.Math.Minus;
+using CSPSolver.Math.Plus;
+using CSPSolver.Math.Multiply;
+using CSPSolver.Math.Divide;
 using CSPSolver.Variable;
 using CSPSolver.Constraint.Inequality;
 using CSPSolver.common.variables;

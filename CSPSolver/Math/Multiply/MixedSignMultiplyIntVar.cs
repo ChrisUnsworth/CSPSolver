@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Multiply
+namespace CSPSolver.Math.Multiply
 {
     public readonly struct MixedSignMultiplyIntVar : IIntVar, ICompoundVariable
     {
@@ -64,7 +66,7 @@ namespace CSPSolver.Constraint.Multiply
             return result;
         }
 
-        public bool SetMax(IState state, int max) => 
+        public bool SetMax(IState state, int max) =>
             SetMax(GetVariableDomainExtremes(state), state, max);
 
         private bool SetMax((int v1Min, int v1Max, int v2Min, int v2Max) extremes, IState state, int max)
@@ -95,11 +97,11 @@ namespace CSPSolver.Constraint.Multiply
             var result = false;
             (int v1Min, int v1Max, int v2Min, int v2Max) = extremes;
 
-            if (v1Min > 0) result = _v2.SetMin(state, (int)Math.Ceiling((double)min / v1Max));
-            if (v2Min > 0) result |= _v1.SetMin(state, (int)Math.Ceiling((double)min / v2Max));
+            if (v1Min > 0) result = _v2.SetMin(state, (int)Ceiling((double)min / v1Max));
+            if (v2Min > 0) result |= _v1.SetMin(state, (int)Ceiling((double)min / v2Max));
 
-            if (v1Max < 0) result |= _v2.SetMax(state, (int)Math.Floor((double)min / v1Min));
-            if (v2Max < 0) result |= _v1.SetMax(state, (int)Math.Floor((double)min / v2Min));
+            if (v1Max < 0) result |= _v2.SetMax(state, (int)Floor((double)min / v1Min));
+            if (v2Max < 0) result |= _v1.SetMax(state, (int)Floor((double)min / v2Min));
 
             if (min > 0)
             {

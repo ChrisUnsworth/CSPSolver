@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,16 +6,14 @@ using CSPSolver.Model;
 using CSPSolver.State;
 using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
-using CSPSolver.Constraint.Plus;
-using CSPSolver.Search;
-using CSPSolver.Constraint.Minus;
-using CSPSolver.Constraint.Multiply;
-using CSPSolver.Constraint.Divide;
-using CSPSolver.Constraint.Logic;
-using CSPSolver.Constraint.AllDiff;
-using CSPSolver.common.variables;
+using CSPSolver.Math.Plus;
+using CSPSolver.Math.Minus;
+using CSPSolver.Math.Multiply;
+using CSPSolver.Math.Divide;
 
 using static CSPSolver.Model.ModelConstraint;
+
+using static CSPSolver.Model.ModelRealVar;
 
 namespace CSPSolverTests.Solve
 {
@@ -411,6 +406,23 @@ namespace CSPSolverTests.Solve
             }
 
             CheckAll(mb, test, 21);
+        }
+
+        [TestMethod]
+        public void TruncateTest()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(1, 3);
+            var y = mb.AddIntDomainVar(0, 10);
+
+            mb.AddConstraint(Truncate(x) == y);
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 3);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)

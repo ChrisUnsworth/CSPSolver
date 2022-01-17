@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Multiply
+namespace CSPSolver.Math.Multiply
 {
     public readonly struct NegativeMultiplyIntVar : IIntVar, ICompoundVariable
     {
@@ -54,13 +56,13 @@ namespace CSPSolver.Constraint.Multiply
             return result;
         }
 
-        public bool SetMax(IState state, int max) => 
+        public bool SetMax(IState state, int max) =>
             _v1.SetMin(state, max / _v2.GetDomainMax(state))
           | _v2.SetMin(state, max / _v1.GetDomainMax(state));
 
         public bool SetMin(IState state, int min) =>
-            _v1.SetMax(state, (int)Math.Floor((double)min / _v2.GetDomainMin(state)))
-          | _v2.SetMax(state, (int)Math.Floor((double)min / _v1.GetDomainMin(state)));
+            _v1.SetMax(state, (int)Floor((double)min / _v2.GetDomainMin(state)))
+          | _v2.SetMax(state, (int)Floor((double)min / _v1.GetDomainMin(state)));
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 

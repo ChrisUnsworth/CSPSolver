@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Constraint.Divide
+namespace CSPSolver.Math.Divide
 {
     public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
     {
@@ -38,10 +40,10 @@ namespace CSPSolver.Constraint.Divide
 
             if (v2Max > 0)
             {
-                max = v1Max / Math.Max(1, v2Min);
-                max = Math.Max(max, v1Min / v2Max);
+                max = v1Max / Max(1, v2Min);
+                max = Max(max, v1Min / v2Max);
             }
-            if (v2Min < 0) max = Math.Max(max, v1Min / Math.Min(-1, v2Max));
+            if (v2Min < 0) max = Max(max, v1Min / Min(-1, v2Max));
 
             return max;
         }
@@ -55,14 +57,14 @@ namespace CSPSolver.Constraint.Divide
 
             if (v2Min >= 0)
             {
-                return v1Min >= 0 
-                    ? v1Min / v2Max 
-                    : v1Min / Math.Max(1, v2Min);
+                return v1Min >= 0
+                    ? v1Min / v2Max
+                    : v1Min / Max(1, v2Min);
             }
 
-            if (v2Max <= 0) return v1Max < 0 ? v1Max / v2Min : v1Max / Math.Min(-1, v2Max);
+            if (v2Max <= 0) return v1Max < 0 ? v1Max / v2Min : v1Max / Min(-1, v2Max);
 
-            return Math.Min(v1Max / -1, v1Min / 1);
+            return Min(v1Max / -1, v1Min / 1);
         }
 
         public void Initialise(IState state) { /* holds no state */ }
@@ -100,45 +102,47 @@ namespace CSPSolver.Constraint.Divide
                 if (v1Min >= 0) // Positive numerator
                 {
                     if (max <= 0) return _v1.SetMax(state, max) || result;
-                    return _v1.SetMax(state, ((max + 1) * v2Max) - 1)
-                         | (v1Min > 0 && _v2.SetMin(state, (v1Min / (max + 1)) + 1))
-                         || result;
-                } else if (v1Max < 0) // Negative numerator
-                {                    
-                    if (max >= 0) return result;
-                    return _v1.SetMax(state, ((max + 1) * v2Max) - 1)
-                         | _v2.SetMax(state, (v1Min / Math.Min(max + 1, -1)) + Math.Max(-1, max + 1))
-                         || result;
-                }
-
-                // Mixed sign numerator
-                if (max > 0) return _v1.SetMax(state, ((max + 1) * v2Max) - 1) || result;
-                if (max == 0) return _v1.SetMax(state, 0) || result;
-                return _v1.SetMax(state, ((max + 1) * v2Max) - 1)
-                     | _v2.SetMax(state, (v1Min / (max + 1)) - 1)
-                     || result;
-            } else if (v2Max < 0) // Negative denominator
-            {
-                if (v1Min >= 0) // Positive numerator
-                {
-                    if (max >= 0) return result;
-                    return _v1.SetMax(state, ((max + 1) * v2Min) - 1)
-                         | _v2.SetMin(state, (v1Min / (max + 1)) + 1)
+                    return _v1.SetMax(state, (max + 1) * v2Max - 1)
+                         | (v1Min > 0 && _v2.SetMin(state, v1Min / (max + 1) + 1))
                          || result;
                 }
                 else if (v1Max < 0) // Negative numerator
                 {
-                    return _v1.SetMin(state, ((max + 1) * v2Min) + 1)
-                         | _v2.SetMax(state, (v1Max / (max + 1)) - 1)
+                    if (max >= 0) return result;
+                    return _v1.SetMax(state, (max + 1) * v2Max - 1)
+                         | _v2.SetMax(state, v1Min / Min(max + 1, -1) + Max(-1, max + 1))
+                         || result;
+                }
+
+                // Mixed sign numerator
+                if (max > 0) return _v1.SetMax(state, (max + 1) * v2Max - 1) || result;
+                if (max == 0) return _v1.SetMax(state, 0) || result;
+                return _v1.SetMax(state, (max + 1) * v2Max - 1)
+                     | _v2.SetMax(state, v1Min / (max + 1) - 1)
+                     || result;
+            }
+            else if (v2Max < 0) // Negative denominator
+            {
+                if (v1Min >= 0) // Positive numerator
+                {
+                    if (max >= 0) return result;
+                    return _v1.SetMax(state, (max + 1) * v2Min - 1)
+                         | _v2.SetMin(state, v1Min / (max + 1) + 1)
+                         || result;
+                }
+                else if (v1Max < 0) // Negative numerator
+                {
+                    return _v1.SetMin(state, (max + 1) * v2Min + 1)
+                         | _v2.SetMax(state, v1Max / (max + 1) - 1)
                          || result;
                 }
 
                 // Mixed sign numerator
 
-                if (max > 0) return _v1.SetMin(state, ((max + 1) * v2Max) + 1) || result;
+                if (max > 0) return _v1.SetMin(state, (max + 1) * v2Max + 1) || result;
                 if (max == 0) return _v1.SetMin(state, 0) || result;
-                return _v1.SetMin(state, ((max + 1) * v2Max) + 1) 
-                     | _v2.SetMin(state, (v1Max / (max + 1)) + 1)
+                return _v1.SetMin(state, (max + 1) * v2Max + 1)
+                     | _v2.SetMin(state, v1Max / (max + 1) + 1)
                     || result;
             }
 
@@ -148,14 +152,14 @@ namespace CSPSolver.Constraint.Divide
 
             if (v1Min >= 0) // Positive numerator
             {
-                return _v1.SetMin(state, ((max + 1) * -1) - 1)
-                     | _v2.SetMax(state, (v1Min / (max + 1)) + 1)
+                return _v1.SetMin(state, (max + 1) * -1 - 1)
+                     | _v2.SetMax(state, v1Min / (max + 1) + 1)
                      || result;
             }
             else if (v1Max < 0) // Negative numerator
             {
-                return _v1.SetMin(state, ((max + 1) * v2Min) + 1)
-                     | _v2.SetMax(state, (v1Max / (max + 1)) - 1)
+                return _v1.SetMin(state, (max + 1) * v2Min + 1)
+                     | _v2.SetMax(state, v1Max / (max + 1) - 1)
                      || result;
             }
 
@@ -188,11 +192,12 @@ namespace CSPSolver.Constraint.Divide
             {
                 if (v1Min > 0 && v2Max < 0)
                 {
-                    result |= _v2.SetMin(state, (v1Max / (min - 1)) + 1);
-                    result |= _v1.SetMin(state, ((min - 1) * v2Max) - 1);
-                }  else if (v1Max < 0 && v2Min > 0)
+                    result |= _v2.SetMin(state, v1Max / (min - 1) + 1);
+                    result |= _v1.SetMin(state, (min - 1) * v2Max - 1);
+                }
+                else if (v1Max < 0 && v2Min > 0)
                 {
-                    if (v1Max < min) result |= _v2.SetMax(state, (v1Max / (min - 1)) - 1);
+                    if (v1Max < min) result |= _v2.SetMax(state, v1Max / (min - 1) - 1);
                     //result |= _v1.SetMax(state, ((min + 1) * v2Max) + 1);
                 }
             }
@@ -201,17 +206,19 @@ namespace CSPSolver.Constraint.Divide
                 if (v1Min > 0)
                 {
                     result |= _v2.SetMin(state, 1);
-                    result |= _v2.SetMax(state, (int)Math.Ceiling(v1Max / (double)min));
-                } else if (v1Max < 0)
+                    result |= _v2.SetMax(state, (int)Ceiling(v1Max / (double)min));
+                }
+                else if (v1Max < 0)
                 {
                     result |= _v2.SetMax(state, -1);
-                    result |= _v2.SetMin(state, (int)Math.Floor(v1Min / (double)min));
+                    result |= _v2.SetMin(state, (int)Floor(v1Min / (double)min));
                 }
 
                 if (v2Min > 0)
                 {
                     result |= _v1.SetMin(state, v2Min * min);
-                } else if (v2Max < 0)
+                }
+                else if (v2Max < 0)
                 {
                     result |= _v1.SetMax(state, v2Max * min);
                 }

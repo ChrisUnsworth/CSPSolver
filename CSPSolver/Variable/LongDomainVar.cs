@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using static System.Math;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -67,7 +69,7 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = (ulong)(Math.Pow(2, max - Min + 1) - 1);
+            var mask = (ulong)(Pow(2, max - Min + 1) - 1);
             var oldDom = state.GetDomainLong(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
@@ -81,7 +83,7 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = ~(ulong)(Math.Pow(2, min - Min) - 1);
+            var mask = ~(ulong)(Pow(2, min - Min) - 1);
             var oldDom = state.GetDomainLong(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
@@ -93,7 +95,7 @@ namespace CSPSolver.Variable
             return value == GetDomainMax(state);
         }
 
-        public void Initialise(IState state) => state.SetDomainLong(StateRef, Size, (ulong)(Math.Pow(2, Size) - 1));
+        public void Initialise(IState state) => state.SetDomainLong(StateRef, Size, (ulong)(Pow(2, Size) - 1));
 
         public bool IsInstantiated(IState state)
         {
@@ -111,7 +113,7 @@ namespace CSPSolver.Variable
         {
             var oldD = state.GetDomainLong(StateRef, Size);
             if (oldD == 0) return false;
-            var newD = (ulong)Math.Pow(2, value - Min);
+            var newD = (ulong)Pow(2, value - Min);
             if (newD != oldD)
             {
                 state.SetDomainLong(StateRef, Size, newD & oldD);
@@ -126,7 +128,7 @@ namespace CSPSolver.Variable
         public bool RemoveValue(IState state, int value)
         {
             var oldD = state.GetDomainLong(StateRef, Size);
-            var newD = oldD & ~(ulong)Math.Pow(2, value - Min);
+            var newD = oldD & ~(ulong)Pow(2, value - Min);
             if (newD != oldD)
             {
                 state.SetDomainLong(StateRef, Size, newD);

@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 
+using static System.Math;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CSPSolver.common;
 using CSPSolver.State;
 using CSPSolver.Variable;
-using CSPSolver.Constraint.Divide;
+using CSPSolver.Math.Divide;
 
 namespace CSPSolverTests.Variables
 {
     [TestClass]
     public class PositiveDivideRealVarTests
     {
-        private (IState state, RealVar v1, RealVar v2) GetVar(int min1, int max1, int min2, int max2)
+        private static (IState state, RealVar v1, RealVar v2) GetVar(int min1, int max1, int min2, int max2)
         {
             var sb = new StateBuilder();
             var variable1 = new RealVar(min1, sb.AddDouble(), max1, sb.AddDouble());
