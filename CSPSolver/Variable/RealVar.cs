@@ -19,13 +19,15 @@ namespace CSPSolver.Variable
         public IStateRef MinStateRef { get; }
         public IStateRef MaxStateRef { get; }
 
-        public RealVar(double min, IStateRef minStateRef, double max, IStateRef maxStateRef, double epsilon = Double.Epsilon)
+        public RealVar(double min, IStateRef minStateRef, double max, IStateRef maxStateRef, double epsilon = 0)
         {
             Min = min;
             MinStateRef = minStateRef;
             Max = max;
             MaxStateRef = maxStateRef;
-            Epsilon = epsilon;
+            Epsilon = epsilon == 0
+                ? (max - min) / 100
+                : epsilon;
         }
 
         public double GetDomainMax(IState state) => state.GetDouble(MaxStateRef);

@@ -42,13 +42,13 @@ namespace CSPSolver.Math.Round
 
         public bool RemoveValue(IState state, object value) => _realVar.RemoveValue(state, value);
 
-        public bool SetMax(IState state, int max) => _realVar.SetMax(state, max + 1 - Double.Epsilon);
+        public bool SetMax(IState state, int max) => _realVar.SetMax(state, max + 1 - _realVar.Epsilon);
 
         public bool SetMin(IState state, int min) => _realVar.SetMin(state, min);
 
         public bool SetValue(IState state, object value) =>
-            _realVar.SetMax(state, (int)value + 1 - Double.Epsilon) |
-            _realVar.SetMin(state, (double)value);
+            SetMax(state, (int)value) |
+            SetMin(state, (int)value);
 
         public bool TryGetValue(IState state, out int value)
         {

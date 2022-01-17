@@ -12,9 +12,7 @@ namespace CSPSolverTests.Variables
         private static (IState state, RealVar variable) GetVar(double min, double max)
         {
             var sb = new StateBuilder();
-            var stateRef1 = sb.AddDouble();
-            var stateRef2 = sb.AddDouble();
-            var variable = new RealVar(min, stateRef1, max, stateRef2);
+            var variable = new RealVar(min, sb.AddDouble(), max, sb.AddDouble());
             var state = sb.GetState();
             variable.Initialise(state);
             return (state, variable);

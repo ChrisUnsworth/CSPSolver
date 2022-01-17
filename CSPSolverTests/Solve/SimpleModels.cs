@@ -419,7 +419,9 @@ namespace CSPSolverTests.Solve
 
             void test(ISolution solution)
             {
-                Assert.IsTrue(solution.GetValue(x) == solution.GetValue(y));
+                var (min, max) = solution.GetValueRange(x);
+                Assert.IsTrue((int)min == solution.GetValue(y));
+                Assert.IsTrue((int)max == solution.GetValue(y));
             }
 
             CheckAll(mb, test, 3);
