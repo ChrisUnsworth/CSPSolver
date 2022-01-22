@@ -24,7 +24,7 @@ namespace CSPSolver.Model
 
         public static implicit operator ModelIntVar(int i) => new() { Variable = new IntConstVar(i) };
 
-        public static ModelIntVar operator +(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new PlusIntDomain(v1.Variable, v2.Variable) };
+        public static ModelIntVar operator +(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new PlusIntVar(v1.Variable, v2.Variable) };
         public static ModelIntVar operator -(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new MinusIntDomain(v1.Variable, v2.Variable) };
         public static ModelIntVar operator *(ModelIntVar v1, ModelIntVar v2)
         {

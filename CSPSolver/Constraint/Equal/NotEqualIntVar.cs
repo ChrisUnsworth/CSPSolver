@@ -6,7 +6,7 @@ using CSPSolver.common;
 
 namespace CSPSolver.Constraint.Equal
 {
-    public class NotEqualIntVar : IConstraint
+    public readonly struct NotEqualIntVar : IConstraint
     {
         private readonly IIntVar _var1;
         private readonly IIntVar _var2;

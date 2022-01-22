@@ -1,13 +1,13 @@
-﻿using CSPSolver.common;
+﻿using System;
+using System.Collections.Generic;
+
+using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CSPSolver.Search
 {
-    public class Solution : ISolution
+    public readonly struct Solution : ISolution
     {
         private readonly IState _state;
 

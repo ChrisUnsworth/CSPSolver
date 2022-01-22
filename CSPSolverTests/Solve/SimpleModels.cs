@@ -12,7 +12,6 @@ using CSPSolver.Math.Multiply;
 using CSPSolver.Math.Divide;
 
 using static CSPSolver.Model.ModelConstraint;
-
 using static CSPSolver.Model.ModelRealVar;
 
 namespace CSPSolverTests.Solve
@@ -254,7 +253,7 @@ namespace CSPSolverTests.Solve
             var c = mb.AddIntDomainVar(1, 5).Variable;
             var d = mb.AddIntDomainVar(1, 5).Variable;
 
-            mb.AddConstraint(new EqualIntVar(new PlusIntDomain(a, b), new MinusIntDomain(c, d)));
+            mb.AddConstraint(new EqualIntVar(new PlusIntVar(a, b), new MinusIntDomain(c, d)));
 
             void test(ISolution solution)
             {
@@ -425,6 +424,44 @@ namespace CSPSolverTests.Solve
             }
 
             CheckAll(mb, test, 3);
+        }
+
+        [TestMethod]
+        public void TestDoubleEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(1, 3);
+            var y = mb.AddIntDomainVar(0, 10);
+
+            mb.AddConstraint(x == y);
+
+            void test(ISolution solution)
+            {
+                var (min, max) = solution.GetValueRange(x);
+                Assert.IsTrue(min == solution.GetValue(y));
+                Assert.IsTrue(max == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 3);
+        }
+
+        [TestMethod]
+        public void TestDoubleNotEqual()
+        {
+            // TODO: needs revisiting when variable/value ordering works with RealVal
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(1, 3);
+            var y = mb.AddIntDomainVar(0, 10);
+
+            mb.AddConstraint(x != y);
+
+            void test(ISolution solution)
+            {
+                var (min, max) = solution.GetValueRange(x);
+                Assert.IsTrue(min != solution.GetValue(y) || max != solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 11);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)

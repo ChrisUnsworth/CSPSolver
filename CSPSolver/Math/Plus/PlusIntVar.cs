@@ -1,11 +1,12 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.variables;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using CSPSolver.common;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Math.Plus
 {
-    public readonly struct PlusIntDomain : IIntVar, ICompoundVariable
+    public readonly struct PlusIntVar : IIntVar, ICompoundVariable
     {
         private readonly IIntVar _v1;
         private readonly IIntVar _v2;
@@ -16,7 +17,7 @@ namespace CSPSolver.Math.Plus
 
         public int Max { get; }
 
-        public PlusIntDomain(IIntVar v1, IIntVar v2)
+        public PlusIntVar(IIntVar v1, IIntVar v2)
         {
             _v1 = v1;
             _v2 = v2;

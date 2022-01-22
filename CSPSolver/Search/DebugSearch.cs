@@ -9,7 +9,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Search
 {
-    public partial class DebugSearch : IEnumerator<ISolution>, IEnumerable<ISolution>
+    public class DebugSearch : IEnumerator<ISolution>, IEnumerable<ISolution>
     {
 
         public readonly IModel _model;
