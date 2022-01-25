@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
-using CSPSolver.Constraint.AllDiff;
 using CSPSolver.State;
 using CSPSolver.Variable;
-using CSPSolver;
+
+using static System.Math;
 
 namespace CSPSolver.Model
 {
@@ -91,24 +89,33 @@ namespace CSPSolver.Model
             return intVars;
         }
 
-        public ModelRealVar AddRealVar(double min, double max, double epsilon = 0, bool isDecisionVar = false)
+        public ModelRealVar AddRealVar(double min, double max, int dp, bool isDecisionVar = false)
         {
-            var realVar = epsilon == 0
-                ? new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble())
-                : new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), epsilon);
+            var maxRange = max * Pow(10, dp);
+            var minRange = min * Pow(10, dp);
+            IRealVar realVar;
+
+            if (maxRange <= int.MaxValue && minRange > int.MinValue)
+            {
+                realVar = new SmallRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp);
+            }
+            else
+            {
+                realVar = new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), Pow(10, -dp));
+            }
 
             if (isDecisionVar) _variables.Add(realVar);
             else _nonDecisionVariables.Add(realVar);
             return new ModelRealVar { Variable = realVar };
         }
 
-        public ModelRealVar[] AddRealVarArray(double min, double max, int count, double epsilon = 0, bool isDecisionVar = false)
+        public ModelRealVar[] AddRealVarArray(double min, double max, int count, int dp, bool isDecisionVar = false)
         {
             var realVars = new ModelRealVar[count];
 
             for (int i = 0; i < count; i++)
             {
-                realVars[i] = AddRealVar(min, max, epsilon, isDecisionVar);
+                realVars[i] = AddRealVar(min, max, dp, isDecisionVar);
             }
 
             return realVars;

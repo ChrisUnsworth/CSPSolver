@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -53,13 +50,13 @@ namespace CSPSolver.Variable
             var max = GetDomainMax(state);
             var min = GetDomainMin(state);
 
-            if (val <= max && val >= max - Epsilon)
+            if (val <= max && val > max - Epsilon)
             {
                 state.SetDouble(MaxStateRef, max - Epsilon);
                 result = true;
             }
 
-            if (val >= min && val <= min + Epsilon)
+            if (val >= min && val < min + Epsilon)
             {
                 state.SetDouble(MinStateRef, min + Epsilon);
                 result = true;
@@ -97,13 +94,13 @@ namespace CSPSolver.Variable
         {
             var result = false;
 
-            if (value > GetDomainMin(state))
+            if ((value - Epsilon) >= GetDomainMin(state))
             {
                 result = true;
                 state.SetDouble(MinStateRef, value);
             }
 
-            if (value < GetDomainMax(state))
+            if ((value + Epsilon) <= GetDomainMax(state))
             {
                 result = true;
                 state.SetDouble(MaxStateRef, value);
@@ -115,7 +112,7 @@ namespace CSPSolver.Variable
         public bool TryGetValue(IState state, out double value)
         {
             value = GetDomainMax(state);
-            return (value - Epsilon) <= GetDomainMin(state);
+            return (value - Epsilon) < GetDomainMin(state);
         }
 
         public Type VariableType() => typeof(double);

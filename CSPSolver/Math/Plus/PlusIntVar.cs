@@ -32,9 +32,9 @@ namespace CSPSolver.Math.Plus
 
         public void Initialise(IState state) { /* holds no state */ }
 
-        public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
+        public bool IsEmpty(IState state) => _v1.IsEmpty(state) || _v2.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) && _v2.IsInstantiated(state);
 
         public bool RemoveValue(IState state, object value)
         {
@@ -64,7 +64,7 @@ namespace CSPSolver.Math.Plus
 
         public bool TryGetValue(IState state, out int value)
         {
-            if (_v1.TryGetValue(state, out int v1) & _v2.TryGetValue(state, out int v2))
+            if (_v1.TryGetValue(state, out int v1) && _v2.TryGetValue(state, out int v2))
             {
                 value = v1 + v2;
                 return true;

@@ -411,7 +411,7 @@ namespace CSPSolverTests.Solve
         public void TruncateTest()
         {
             var mb = new ModelBuilder();
-            var x = mb.AddRealVar(1, 3);
+            var x = mb.AddRealVar(1, 3, 4);
             var y = mb.AddIntDomainVar(0, 10);
 
             mb.AddConstraint(Truncate(x) == y);
@@ -430,7 +430,7 @@ namespace CSPSolverTests.Solve
         public void TestDoubleEqual()
         {
             var mb = new ModelBuilder();
-            var x = mb.AddRealVar(1, 3);
+            var x = mb.AddRealVar(1, 3, 4);
             var y = mb.AddIntDomainVar(0, 10);
 
             mb.AddConstraint(x == y);
@@ -448,20 +448,19 @@ namespace CSPSolverTests.Solve
         [TestMethod]
         public void TestDoubleNotEqual()
         {
-            // TODO: needs revisiting when variable/value ordering works with RealVal
             var mb = new ModelBuilder();
-            var x = mb.AddRealVar(1, 3);
-            var y = mb.AddIntDomainVar(0, 10);
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
 
             mb.AddConstraint(x != y);
 
             void test(ISolution solution)
             {
-                var (min, max) = solution.GetValueRange(x);
-                Assert.IsTrue(min != solution.GetValue(y) || max != solution.GetValue(y));
+                Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
+                Console.WriteLine($"{solution.GetValue(x)} != {solution.GetValue(y)}");
             }
 
-            CheckAll(mb, test, 11);
+            CheckAll(mb, test, 12);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
