@@ -457,10 +457,45 @@ namespace CSPSolverTests.Solve
             void test(ISolution solution)
             {
                 Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
-                Console.WriteLine($"{solution.GetValue(x)} != {solution.GetValue(y)}");
             }
 
             CheckAll(mb, test, 12);
+        }
+
+        [TestMethod]
+        public void TestRealPlus()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
+            var z = mb.AddRealVar(0, 1, 1, true);
+
+            mb.AddConstraint(x + y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) + solution.GetValue(y), 1), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 16);
+        }
+
+        [TestMethod]
+        public void TestRealMinus()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
+            var z = mb.AddRealVar(0, 1, 1, true);
+
+            mb.AddConstraint(x - y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) - solution.GetValue(y), 1), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 10);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
