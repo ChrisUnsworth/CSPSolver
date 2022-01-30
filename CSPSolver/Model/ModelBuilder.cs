@@ -93,7 +93,12 @@ namespace CSPSolver.Model
         {
             var maxRange = max * Pow(10, dp);
             var minRange = min * Pow(10, dp);
-            IRealVar realVar;
+            IRealVar realVar = (minRange, maxRange) switch
+            {
+                ( > int.MinValue, <= int.MaxValue)   => new SmallRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
+                ( > long.MinValue, <= long.MaxValue) => new LongRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
+                _                                    => new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), Pow(10, -dp)) 
+            };
 
             if (maxRange <= int.MaxValue && minRange > int.MinValue)
             {
