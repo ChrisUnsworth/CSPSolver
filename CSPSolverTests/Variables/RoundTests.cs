@@ -5,18 +5,20 @@ using CSPSolver.common;
 using CSPSolver.State;
 using CSPSolver.Math.Round;
 
+using static System.Math;
+
 namespace CSPSolverTests.Variables
 {
     [TestClass]
-    public class TruncateTests
+    public class RoundTests
     {
-        private static (IState state, RealVar variable, Truncate truncate) GetVar(double min, double max)
+        private static (IState state, RealVar variable, Round truncate) GetVar(double min, double max)
         {
             var sb = new StateBuilder();
             var variable = new RealVar(min, sb.AddDouble(), max, sb.AddDouble());
             var state = sb.GetState();
             variable.Initialise(state);
-            return (state, variable, new Truncate(variable));
+            return (state, variable, new Round(variable));
         }
 
         [TestMethod]
@@ -26,13 +28,17 @@ namespace CSPSolverTests.Variables
             var max = 7.8;
             var (s, v, t) = GetVar(min, max);
 
-            Assert.AreEqual((int)max, t.GetDomainMax(s));
+            Assert.AreEqual(Round(max), t.GetDomainMax(s));
 
-            max = 6.2;
+            max = 6.6;
 
             v.SetMax(s, max);
 
-            Assert.AreEqual((int)max, t.GetDomainMax(s));
+            max = 6.4;
+
+            v.SetMax(s, max);
+
+            Assert.AreEqual(Round(max), t.GetDomainMax(s));
         }
 
         [TestMethod]
@@ -42,13 +48,17 @@ namespace CSPSolverTests.Variables
             var max = -2.8;
             var (s, v, t) = GetVar(min, max);
 
-            Assert.AreEqual((int)max, t.GetDomainMax(s));
+            Assert.AreEqual(Round(max), t.GetDomainMax(s));
 
             max = -6.2;
 
             v.SetMax(s, max);
 
-            Assert.AreEqual((int)max, t.GetDomainMax(s));
+            max = -6.6;
+
+            v.SetMax(s, max);
+
+            Assert.AreEqual(Round(max), t.GetDomainMax(s));
         }
 
         [TestMethod]
@@ -58,13 +68,13 @@ namespace CSPSolverTests.Variables
             var max = 7.8;
             var (s, v, t) = GetVar(min, max);
 
-            Assert.AreEqual((int)min, t.GetDomainMin(s));
+            Assert.AreEqual(Round(min), t.GetDomainMin(s));
 
             min = 6.2;
 
             v.SetMin(s, min);
 
-            Assert.AreEqual((int)min, t.GetDomainMin(s));
+            Assert.AreEqual(Round(min), t.GetDomainMin(s));
         }
 
         [TestMethod]
@@ -74,13 +84,13 @@ namespace CSPSolverTests.Variables
             var max = -1.8;
             var (s, v, t) = GetVar(min, max);
 
-            Assert.AreEqual((int)min, t.GetDomainMin(s));
+            Assert.AreEqual(Round(min), t.GetDomainMin(s));
 
             min = -6.2;
 
             v.SetMin(s, min);
 
-            Assert.AreEqual((int)min, t.GetDomainMin(s));
+            Assert.AreEqual(Round(min), t.GetDomainMin(s));
         }
     }
 }

@@ -6,23 +6,24 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Math.Round
 {
-    public readonly struct Truncate : IIntVar, ICompoundVariable
+    public readonly struct RealRound : IRealVar, ICompoundVariable
     {
         private readonly IRealVar _realVar;
+        private readonly int _dp;
 
-        public Truncate(IRealVar realVar) => _realVar = realVar;
+        public double Epsilon => _realVar.Epsilon;
 
-        public int Min => (int)_realVar.Min;
+        public RealRound(IRealVar realVar, int dp) => (_realVar, _dp) = (realVar, dp);
 
-        public int Size => Max - Min + 1;
+        public double Min => System.Math.Round(_realVar.Min, _dp);
 
-        public int Max => (int)_realVar.Max;
+        public double Max => System.Math.Round(_realVar.Max, _dp);
 
         public IEnumerable<IVariable> GetChildren() { yield return _realVar; }
 
-        public int GetDomainMax(IState state) => (int)_realVar.GetDomainMax(state);
+        public double GetDomainMax(IState state) => System.Math.Round(_realVar.GetDomainMax(state), _dp);
 
-        public int GetDomainMin(IState state) => (int)_realVar.GetDomainMin(state);
+        public double GetDomainMin(IState state) => System.Math.Round(_realVar.GetDomainMin(state), _dp);
 
         public void Initialise(IState state) => _realVar.Initialise(state);
 
@@ -42,26 +43,20 @@ namespace CSPSolver.Math.Round
 
         public bool RemoveValue(IState state, object value) => _realVar.RemoveValue(state, value);
 
-        public bool SetMax(IState state, int max) =>
-            max >= 0
-                ? _realVar.SetMax(state, max + 1 - _realVar.Epsilon)
-                : _realVar.SetMax(state, max);
+        public bool SetMax(IState state, double max) => _realVar.SetMax(state, max + (0.5 * System.Math.Pow(10, -_dp)) - Epsilon);
 
-        public bool SetMin(IState state, int min) => 
-            min >= 0
-                ? _realVar.SetMin(state, min)
-                : _realVar.SetMin(state, -1 + _realVar.Epsilon);
+        public bool SetMin(IState state, double min) => _realVar.SetMin(state, min - (0.5 * System.Math.Pow(10, -_dp)) + Epsilon);
 
         public bool SetValue(IState state, object value) =>
             SetMax(state, (int)value) |
             SetMin(state, (int)value);
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(IState state, out double value)
         {
             value = GetDomainMin(state);
             return value == GetDomainMax(state);
         }
 
-        public Type VariableType() => typeof(int);
+        public Type VariableType() => typeof(double);
     }
 }

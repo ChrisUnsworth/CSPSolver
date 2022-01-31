@@ -34,5 +34,9 @@ namespace CSPSolver.Model
         public static ModelConstraint operator !=(ModelRealVar v1, ModelRealVar v2) => new(new NotEqualRealVar(v1.Variable, v2.Variable));
 
         public static ModelIntVar Truncate(ModelRealVar v) => new() { Variable = new Truncate(v.Variable) };
+
+        public static ModelIntVar Floor(ModelRealVar v) => new() { Variable = new Floor(v.Variable) };
+
+        public static ModelIntVar Ceiling(ModelRealVar v) => new() { Variable = new Ceil(v.Variable) };
     }
 }

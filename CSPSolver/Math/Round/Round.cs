@@ -4,25 +4,27 @@ using System.Collections.Generic;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
+using static System.Math;
+
 namespace CSPSolver.Math.Round
 {
-    public readonly struct Truncate : IIntVar, ICompoundVariable
+    public readonly struct Round : IIntVar, ICompoundVariable
     {
         private readonly IRealVar _realVar;
 
-        public Truncate(IRealVar realVar) => _realVar = realVar;
+        public Round(IRealVar realVar) => _realVar = realVar;
 
-        public int Min => (int)_realVar.Min;
+        public int Min => (int)System.Math.Round(_realVar.Min);
 
         public int Size => Max - Min + 1;
 
-        public int Max => (int)_realVar.Max;
+        public int Max => (int)System.Math.Round(_realVar.Max);
 
         public IEnumerable<IVariable> GetChildren() { yield return _realVar; }
 
-        public int GetDomainMax(IState state) => (int)_realVar.GetDomainMax(state);
+        public int GetDomainMax(IState state) => (int)System.Math.Round(_realVar.GetDomainMax(state));
 
-        public int GetDomainMin(IState state) => (int)_realVar.GetDomainMin(state);
+        public int GetDomainMin(IState state) => (int)System.Math.Round(_realVar.GetDomainMin(state));
 
         public void Initialise(IState state) => _realVar.Initialise(state);
 
@@ -42,15 +44,9 @@ namespace CSPSolver.Math.Round
 
         public bool RemoveValue(IState state, object value) => _realVar.RemoveValue(state, value);
 
-        public bool SetMax(IState state, int max) =>
-            max >= 0
-                ? _realVar.SetMax(state, max + 1 - _realVar.Epsilon)
-                : _realVar.SetMax(state, max);
+        public bool SetMax(IState state, int max) => _realVar.SetMax(state, max + 0.5 - _realVar.Epsilon);
 
-        public bool SetMin(IState state, int min) => 
-            min >= 0
-                ? _realVar.SetMin(state, min)
-                : _realVar.SetMin(state, -1 + _realVar.Epsilon);
+        public bool SetMin(IState state, int min) => _realVar.SetMin(state, min - 0.5 + _realVar.Epsilon);
 
         public bool SetValue(IState state, object value) =>
             SetMax(state, (int)value) |
