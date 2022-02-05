@@ -516,6 +516,78 @@ namespace CSPSolverTests.Solve
             CheckAll(mb, test, 25);
         }
 
+        [TestMethod]
+        public void TestRealGreaterThan()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x > y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} > {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealLessThan()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x < y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} < {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealGreaterThanEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x >= y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} >= {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 15);
+        }
+
+        [TestMethod]
+        public void TestRealLessThanEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x <= y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} <= {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 15);
+        }
+
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
         {
             var count = 0;

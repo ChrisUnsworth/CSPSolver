@@ -3,6 +3,7 @@
 using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.Constraint.Equal;
+using CSPSolver.Constraint.Inequality;
 using CSPSolver.Math.Divide;
 using CSPSolver.Math.Minus;
 using CSPSolver.Math.Multiply;
@@ -35,6 +36,10 @@ namespace CSPSolver.Model
         public static ModelConstraint operator ==(ModelRealVar v1, ModelRealVar v2) => new(new EqualRealVar(v1.Variable, v2.Variable));
 
         public static ModelConstraint operator !=(ModelRealVar v1, ModelRealVar v2) => new(new NotEqualRealVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator >(ModelRealVar v1, ModelRealVar v2) => new(new GreaterThanRealVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator <(ModelRealVar v1, ModelRealVar v2) => new(new GreaterThanRealVar(v2.Variable, v1.Variable));
+        public static ModelConstraint operator >=(ModelRealVar v1, ModelRealVar v2) => new(new GreaterEqualRealVar(v1.Variable, v2.Variable));
+        public static ModelConstraint operator <=(ModelRealVar v1, ModelRealVar v2) => new(new GreaterEqualRealVar(v2.Variable, v1.Variable));
 
         public static ModelIntVar Truncate(ModelRealVar v) => new() { Variable = new Truncate(v.Variable) };
 
