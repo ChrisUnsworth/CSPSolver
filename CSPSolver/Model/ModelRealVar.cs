@@ -5,6 +5,7 @@ using CSPSolver.common.variables;
 using CSPSolver.Constraint.Equal;
 using CSPSolver.Math.Divide;
 using CSPSolver.Math.Minus;
+using CSPSolver.Math.Multiply;
 using CSPSolver.Math.Plus;
 using CSPSolver.Math.Round;
 using CSPSolver.Variable;
@@ -24,6 +25,8 @@ namespace CSPSolver.Model
             if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new DividePositiveRealVar(v1.Variable, v2.Variable) };
             throw new NotImplementedException();
         }
+
+        public static ModelRealVar operator *(ModelRealVar v1, ModelRealVar v2) =>  new() { Variable = new MixedSignMultiplyRealVar(v1.Variable, v2.Variable) };
 
         public static ModelRealVar operator +(ModelRealVar v1, ModelRealVar v2) => new() { Variable = new PlusRealVar(v1.Variable, v2.Variable) };
 

@@ -486,7 +486,7 @@ namespace CSPSolverTests.Solve
             var mb = new ModelBuilder();
             var x = mb.AddRealVar(0.2, 0.5, 1, true);
             var y = mb.AddRealVar(0.2, 0.5, 1, true);
-            var z = mb.AddRealVar(0, 1, 1, true);
+            var z = mb.AddRealVar(0, 1, 1);
 
             mb.AddConstraint(x - y == z);
 
@@ -496,6 +496,24 @@ namespace CSPSolverTests.Solve
             }
 
             CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealMultiply()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var z = mb.AddRealVar(-1, 1, 3);
+
+            mb.AddConstraint(x * y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) * solution.GetValue(y), 3), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 25);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
