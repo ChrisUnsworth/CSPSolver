@@ -9,9 +9,10 @@
     <PackageProjectUrl>https://github.com/ChrisUnsworth/CSPSolver</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ChrisUnsworth/CSPSolver</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.0.0002</Version>
+    <Version>1.1.0002</Version>
     <ApplicationIcon />
     <StartupObject />
+    <PackageReleaseNotes>Added Real valued variables and supporting constraints</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
