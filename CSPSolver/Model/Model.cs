@@ -16,6 +16,8 @@ namespace CSPSolver.Model
 
         public IVariable[] Variables { get; }
 
+        private IVariable[] NonDecisionVariables { get; }
+
         public IConstraint[] Constraints { get; }
 
         IEnumerable<IVariable> IModel.Variables => Variables;
@@ -24,11 +26,12 @@ namespace CSPSolver.Model
 
         private readonly ImmutableDictionary<IVariable, List<IConstraint>> _constraintLookup;
 
-        public Model(IConstraint[] constraints, IVariable[] variables, IVariable objective = null, bool? maximise = null)
+        public Model(IConstraint[] constraints, IVariable[] variables, IVariable[] nonDecisionVariables, IVariable objective = null, bool? maximise = null)
         {
             Maximise = maximise ?? true;
             Objective = objective;
             Variables = variables;
+            NonDecisionVariables = nonDecisionVariables;
             Constraints = constraints;
             var keyValuePairs = constraints
                 .SelectMany(c => c.Variables.Select(v => (v, c)))
@@ -81,11 +84,12 @@ namespace CSPSolver.Model
 
         public bool IsSolved(IState state) => Variables.All(v => v.IsInstantiated(state));
 
-        public bool HasEmptyDomain(IState state) => Variables.Any(v => v.IsEmpty(state));
+        public bool HasEmptyDomain(IState state) => Variables.Concat(NonDecisionVariables).Any(v => v.IsEmpty(state));
 
         public void Initialise(IState state)
         {
             foreach (var v in Variables) v.Initialise(state);
+            foreach (var v in NonDecisionVariables) v.Initialise(state);
         }
     }
 }

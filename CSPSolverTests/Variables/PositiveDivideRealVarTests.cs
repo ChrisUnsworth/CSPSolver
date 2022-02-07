@@ -14,13 +14,13 @@ using CSPSolver.Math.Divide;
 namespace CSPSolverTests.Variables
 {
     [TestClass]
-    public class PositiveDivideIntVarTests
+    public class PositiveDivideRealVarTests
     {
-        private static (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
+        private static (IState state, RealVar v1, RealVar v2) GetVar(int min1, int max1, int min2, int max2)
         {
             var sb = new StateBuilder();
-            var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));
-            var variable2 = new IntSmallDomainVar(min2, size2, sb.AddDomain(size2));
+            var variable1 = new RealVar(min1, sb.AddDouble(), max1, sb.AddDouble());
+            var variable2 = new RealVar(min2, sb.AddDouble(), max2, sb.AddDouble());
             var state = sb.GetState();
             variable1.Initialise(state);
             variable2.Initialise(state);
@@ -31,7 +31,7 @@ namespace CSPSolverTests.Variables
         public void MaxTest()
         {
             var (state, v1, v2) = GetVar(1, 10, 1, 10);
-            var divide = new PositiveDivideIntVar(v1, v2);
+            var divide = new DividePositiveRealVar(v1, v2);
 
             Assert.AreEqual(10, divide.GetDomainMax(state));
 
@@ -46,12 +46,12 @@ namespace CSPSolverTests.Variables
         public void MinTest()
         {
             var (state, v1, v2) = GetVar(1, 10, 1, 10);
-            var divide = new PositiveDivideIntVar(v1, v2);
+            var divide = new DividePositiveRealVar(v1, v2);
 
-            Assert.AreEqual(0, divide.GetDomainMin(state));
+            Assert.AreEqual(0.1, divide.GetDomainMin(state));
 
             v1.SetMin(state, 6);
-            Assert.AreEqual(0, divide.GetDomainMin(state));
+            Assert.AreEqual(0.6, divide.GetDomainMin(state));
 
             v2.SetMax(state, 3);
             Assert.AreEqual(2, divide.GetDomainMin(state));
@@ -60,22 +60,22 @@ namespace CSPSolverTests.Variables
         [TestMethod]
         public void SetMaxTest()
         {
-            var (state, v1, v2) = GetVar(7, 4, 2, 4);
-            var divide = new PositiveDivideIntVar(v1, v2);
+            var (state, v1, v2) = GetVar(7, 10, 2, 6);
+            var divide = new DividePositiveRealVar(v1, v2);
 
-            Assert.IsFalse(divide.SetMax(state, 3));
+            Assert.IsFalse(divide.SetMax(state, 4));
             Assert.AreEqual(10, v1.GetDomainMax(state));
             Assert.AreEqual(2, v2.GetDomainMin(state));
             Assert.IsFalse(divide.IsEmpty(state));
 
-            Assert.IsTrue(divide.SetMax(state, 1));
-            Assert.AreEqual(9, v1.GetDomainMax(state));
-            Assert.AreEqual(4, v2.GetDomainMin(state));
+            Assert.IsTrue(divide.SetMax(state, 2));
+            Assert.AreEqual(10, v1.GetDomainMax(state));
+            Assert.AreEqual(3.5, v2.GetDomainMin(state));
             Assert.IsFalse(divide.IsEmpty(state));
 
-            Assert.IsFalse(divide.SetMax(state, 1));
-            Assert.AreEqual(9, v1.GetDomainMax(state));
-            Assert.AreEqual(4, v2.GetDomainMin(state));
+            Assert.IsFalse(divide.SetMax(state, 2));
+            Assert.AreEqual(10, v1.GetDomainMax(state));
+            Assert.AreEqual(3.5, v2.GetDomainMin(state));
             Assert.IsFalse(divide.IsEmpty(state));
 
             Assert.IsTrue(divide.SetMax(state, 0));
@@ -86,7 +86,7 @@ namespace CSPSolverTests.Variables
         public void SetMinTest()
         {
             var (state, v1, v2) = GetVar(1, 10, 1, 10);
-            var divide = new PositiveDivideIntVar(v1, v2);
+            var divide = new DividePositiveRealVar(v1, v2);
 
             Assert.IsFalse(divide.SetMin(state, 1));
             Assert.AreEqual(1, v1.GetDomainMin(state));

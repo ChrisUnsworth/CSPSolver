@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CSPSolver.common;
 using CSPSolver.State;
 using CSPSolver.Variable;
-using CSPSolver.Constraint.Divide;
+using CSPSolver.Math.Divide;
 using CSPSolver.Constraint.Equal;
 
 namespace CSPSolverTests.Variables

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
-using CSPSolver.Constraint.Minus;
-using CSPSolver.Constraint.Plus;
-using CSPSolver.Constraint.Multiply;
-using CSPSolver.Constraint.Divide;
+using CSPSolver.Math.Minus;
+using CSPSolver.Math.Plus;
+using CSPSolver.Math.Multiply;
+using CSPSolver.Math.Divide;
 using CSPSolver.Variable;
 using CSPSolver.Constraint.Inequality;
 using CSPSolver.common.variables;
@@ -24,7 +24,7 @@ namespace CSPSolver.Model
 
         public static implicit operator ModelIntVar(int i) => new() { Variable = new IntConstVar(i) };
 
-        public static ModelIntVar operator +(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new PlusIntDomain(v1.Variable, v2.Variable) };
+        public static ModelIntVar operator +(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new PlusIntVar(v1.Variable, v2.Variable) };
         public static ModelIntVar operator -(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new MinusIntDomain(v1.Variable, v2.Variable) };
         public static ModelIntVar operator *(ModelIntVar v1, ModelIntVar v2)
         {

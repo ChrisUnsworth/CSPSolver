@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,16 +6,13 @@ using CSPSolver.Model;
 using CSPSolver.State;
 using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
-using CSPSolver.Constraint.Plus;
-using CSPSolver.Search;
-using CSPSolver.Constraint.Minus;
-using CSPSolver.Constraint.Multiply;
-using CSPSolver.Constraint.Divide;
-using CSPSolver.Constraint.Logic;
-using CSPSolver.Constraint.AllDiff;
-using CSPSolver.common.variables;
+using CSPSolver.Math.Plus;
+using CSPSolver.Math.Minus;
+using CSPSolver.Math.Multiply;
+using CSPSolver.Math.Divide;
 
 using static CSPSolver.Model.ModelConstraint;
+using static CSPSolver.Model.ModelRealVar;
 
 namespace CSPSolverTests.Solve
 {
@@ -259,7 +253,7 @@ namespace CSPSolverTests.Solve
             var c = mb.AddIntDomainVar(1, 5).Variable;
             var d = mb.AddIntDomainVar(1, 5).Variable;
 
-            mb.AddConstraint(new EqualIntVar(new PlusIntDomain(a, b), new MinusIntDomain(c, d)));
+            mb.AddConstraint(new EqualIntVar(new PlusIntVar(a, b), new MinusIntDomain(c, d)));
 
             void test(ISolution solution)
             {
@@ -411,6 +405,187 @@ namespace CSPSolverTests.Solve
             }
 
             CheckAll(mb, test, 21);
+        }
+
+        [TestMethod]
+        public void TruncateTest()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(1, 3, 4);
+            var y = mb.AddIntDomainVar(0, 10);
+
+            mb.AddConstraint(Truncate(x) == y);
+
+            void test(ISolution solution)
+            {
+                var (min, max) = solution.GetValueRange(x);
+                Assert.IsTrue((int)min == solution.GetValue(y));
+                Assert.IsTrue((int)max == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 3);
+        }
+
+        [TestMethod]
+        public void TestDoubleEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(1, 3, 4);
+            var y = mb.AddIntDomainVar(0, 10);
+
+            mb.AddConstraint(x == y);
+
+            void test(ISolution solution)
+            {
+                var (min, max) = solution.GetValueRange(x);
+                Assert.IsTrue(min == solution.GetValue(y));
+                Assert.IsTrue(max == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 3);
+        }
+
+        [TestMethod]
+        public void TestDoubleNotEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
+
+            mb.AddConstraint(x != y);
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 12);
+        }
+
+        [TestMethod]
+        public void TestRealPlus()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
+            var z = mb.AddRealVar(0, 1, 1, true);
+
+            mb.AddConstraint(x + y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) + solution.GetValue(y), 1), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 16);
+        }
+
+        [TestMethod]
+        public void TestRealMinus()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(0.2, 0.5, 1, true);
+            var y = mb.AddRealVar(0.2, 0.5, 1, true);
+            var z = mb.AddRealVar(0, 1, 1);
+
+            mb.AddConstraint(x - y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) - solution.GetValue(y), 1), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealMultiply()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var z = mb.AddRealVar(-1, 1, 3);
+
+            mb.AddConstraint(x * y == z);
+
+            void test(ISolution solution)
+            {
+                Assert.AreEqual(Math.Round(solution.GetValue(x) * solution.GetValue(y), 3), solution.GetValue(z));
+            }
+
+            CheckAll(mb, test, 25);
+        }
+
+        [TestMethod]
+        public void TestRealGreaterThan()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x > y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} > {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealLessThan()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x < y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} < {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 10);
+        }
+
+        [TestMethod]
+        public void TestRealGreaterThanEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x >= y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} >= {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 15);
+        }
+
+        [TestMethod]
+        public void TestRealLessThanEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+            mb.AddConstraint(x <= y);
+
+            void test(ISolution solution)
+            {
+                //Console.WriteLine($"{solution.GetValue(x)} <= {solution.GetValue(y)}");
+                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 15);
         }
 
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)

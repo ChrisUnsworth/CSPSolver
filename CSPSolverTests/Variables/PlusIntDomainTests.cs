@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CSPSolver.common;
-using CSPSolver.Constraint.Plus;
+using CSPSolver.Math.Plus;
 using CSPSolver.State;
 using CSPSolver.Variable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +12,7 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class PlusIntDomainTests
     {
-        private (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
+        private static (IState state, IntSmallDomainVar v1, IntSmallDomainVar v2) GetVar(int min1, int size1, int min2, int size2)
         {
             var sb = new StateBuilder();
             var variable1 = new IntSmallDomainVar(min1, size1, sb.AddDomain(size1));
@@ -27,7 +27,7 @@ namespace CSPSolverTests.Variables
         public void PlusMaxTest()
         {
             var (state, v1, v2) = GetVar(1, 3, 1, 3);
-            var plus = new PlusIntDomain(v1, v2);
+            var plus = new PlusIntVar(v1, v2);
 
             Assert.AreEqual(6, plus.GetDomainMax(state));
 
@@ -42,7 +42,7 @@ namespace CSPSolverTests.Variables
         public void PlusMinTest()
         {
             var (state, v1, v2) = GetVar(1, 3, 1, 3);
-            var plus = new PlusIntDomain(v1, v2);
+            var plus = new PlusIntVar(v1, v2);
 
             Assert.AreEqual(2, plus.GetDomainMin(state));
 
@@ -57,7 +57,7 @@ namespace CSPSolverTests.Variables
         public void SetMaxTest()
         {
             var (state, v1, v2) = GetVar(1, 3, 1, 3);
-            var plus = new PlusIntDomain(v1, v2);
+            var plus = new PlusIntVar(v1, v2);
 
             plus.SetMax(state, 4);
             Assert.AreEqual(3, v1.GetDomainMax(state));
@@ -79,7 +79,7 @@ namespace CSPSolverTests.Variables
         public void SetMinTest()
         {
             var (state, v1, v2) = GetVar(1, 3, 1, 3);
-            var plus = new PlusIntDomain(v1, v2);
+            var plus = new PlusIntVar(v1, v2);
 
             Assert.IsFalse(plus.SetMin(state, 1));
             Assert.AreEqual(1, v1.GetDomainMin(state));

@@ -1,12 +1,13 @@
-﻿using CSPSolver.common;
-using CSPSolver.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+
+using CSPSolver.common;
+using CSPSolver.common.variables;
+using CSPSolver.Model;
 
 namespace CSPSolver.Search
 {
-    public class Solution : ISolution
+    public readonly struct Solution : ISolution
     {
         private readonly IState _state;
 
@@ -22,6 +23,14 @@ namespace CSPSolver.Search
 
             throw new ApplicationException("Value not found for given variable.");
         }
+
+        public (double min, double max) GetValueRange(IVariable<double> v)
+            => v switch
+            {
+                IRealVar r => (r.GetDomainMin(_state), r.GetDomainMax(_state)),
+                ModelRealVar m => GetValueRange(m.GetVariable()),
+                _ => throw new NotImplementedException()
+            };
 
         public IList<T> GetValues<T>(IList<IVariable<T>> v)
         {
