@@ -6,15 +6,19 @@ using System.Collections.Generic;
 
 using CSPSolver.State;
 using CSPSolver.common.variables;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSPSolver.Search
 {
-    public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
+    public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>, IAsyncEnumerable<ISolution>, IAsyncEnumerator<ISolution>
     {
         private readonly IModel _model;
         private readonly Stack<IState> _frontier;
         private readonly SearchConfig _searchConfig;
         private readonly StatePool _statePool;
+        private long _nodeCount;
+        private CancellationToken _cancellationToken = default;
 
         public Search(IModelBuilder mb, SearchConfig? searchConfig = null)
         {
@@ -25,6 +29,7 @@ namespace CSPSolver.Search
             _frontier = new Stack<IState>();
             _frontier.Push(initialState);
             _searchConfig = searchConfig ?? SearchConfig.Default();
+            _nodeCount = 0;
         }
 
         public ISolution Current { get; private set; }
@@ -43,6 +48,7 @@ namespace CSPSolver.Search
             var initialState = _statePool.Empty();
             _model.Initialise(initialState);
             _frontier.Push(initialState);
+            _nodeCount = 0;
         }
 
         public bool MoveNext() => Solve();
@@ -51,6 +57,7 @@ namespace CSPSolver.Search
         {
             while (_frontier.Any())
             {
+                _cancellationToken.ThrowIfCancellationRequested();
                 var state = _frontier.Pop();
 
                 if (Current != null && _model.Objective != null)
@@ -79,6 +86,8 @@ namespace CSPSolver.Search
                 {
                     _statePool.Return(state);
                 }
+
+                _nodeCount++;
             }
             
             return false;
@@ -87,5 +96,15 @@ namespace CSPSolver.Search
         public IEnumerator<ISolution> GetEnumerator() => this;
 
         IEnumerator IEnumerable.GetEnumerator() => this;
+
+        public IAsyncEnumerator<ISolution> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            _cancellationToken = cancellationToken;
+            return this;
+        }
+
+        public ValueTask<bool> MoveNextAsync() => new(Task.Run(() => Solve()));
+
+        public ValueTask DisposeAsync() => new(Task.Run(() => Dispose()));
     }
 }

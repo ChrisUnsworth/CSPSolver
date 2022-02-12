@@ -9,4 +9,8 @@
     <ProjectReference Include="..\CSPSolver\CSPSolver.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sudoku\" />
+  </ItemGroup>
+
 </Project>
