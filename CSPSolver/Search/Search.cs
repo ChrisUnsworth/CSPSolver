@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CSPSolver.Search
 {
-    public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>, IAsyncEnumerable<ISolution>, IAsyncEnumerator<ISolution>
+    public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
     {
         private readonly IModel _model;
         private readonly Stack<IState> _frontier;
@@ -97,14 +97,14 @@ namespace CSPSolver.Search
 
         IEnumerator IEnumerable.GetEnumerator() => this;
 
-        public IAsyncEnumerator<ISolution> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<ISolution> GetSolutionsAsync(CancellationToken cancellationToken = default)
         {
             _cancellationToken = cancellationToken;
-            return this;
+
+            foreach (var solution in this)
+            {
+                yield return solution;
+            }
         }
-
-        public ValueTask<bool> MoveNextAsync() => new(Task.Run(() => Solve()));
-
-        public ValueTask DisposeAsync() => new(Task.Run(() => Dispose()));
     }
 }
