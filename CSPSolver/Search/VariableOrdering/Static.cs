@@ -6,16 +6,17 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Search.VariableOrdering
 {
-    public readonly struct LargestDomain : IVariableOrderingHeuristic
+    public readonly struct Static : IVariableOrderingHeuristic
     {
+        private readonly IDecisionVariable[] _variables;
+        public Static(IDecisionVariable[] variables) => _variables = variables;
+
         public IVariable Next(in IModel model, in IState state)
         {
             var s = state;
-            return model.Variables
+            return _variables
                 .Where(_ => !_.IsInstantiated(s))
-                .OrderByDescending(_ => _.Size(s))
                 .FirstOrDefault();
-            
         }
     }
 }

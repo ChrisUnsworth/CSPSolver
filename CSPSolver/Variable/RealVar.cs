@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Diagnostics.CodeAnalysis;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -119,5 +119,13 @@ namespace CSPSolver.Variable
 
         public int Size(in IState state) =>
             (int)((GetDomainMax(state) - GetDomainMin(state)) / Epsilon);
+
+        public override int GetHashCode() => MinStateRef.UniqueIdentifier;
+
+        public override bool Equals([NotNullWhen(true)] object obj) => obj is RealVar realOther && Equals(realOther);
+
+        public bool Equals(IDecisionVariable other) => other is RealVar realOther && Equals(realOther);
+
+        private bool Equals(RealVar other) => MinStateRef.UniqueIdentifier == other.MinStateRef.UniqueIdentifier;
     }
 }

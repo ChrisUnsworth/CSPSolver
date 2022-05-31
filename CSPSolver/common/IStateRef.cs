@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSPSolver.common
+﻿namespace CSPSolver.common
 {
     public interface IStateRef
     {
+        public int UniqueIdentifier { get; }
     }
 }

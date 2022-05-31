@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using static System.Math;
 
@@ -142,5 +143,13 @@ namespace CSPSolver.Variable
         public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
 
         int IDecisionVariable.Size(in IState state) => BitCounter.Count(GetDomain(state).domain);
+
+        public override int GetHashCode() => StateRef.UniqueIdentifier;
+
+        public override bool Equals([NotNullWhen(true)] object obj) => obj is LongDomainVar intOther && Equals(intOther);
+
+        public bool Equals(IDecisionVariable other) => other is LongDomainVar boolOther && Equals(boolOther);
+
+        private bool Equals(LongDomainVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
     }
 }

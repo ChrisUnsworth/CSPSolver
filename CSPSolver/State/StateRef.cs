@@ -8,5 +8,7 @@ namespace CSPSolver.State
 
         public int Idx { get; }
         public int Offset { get;  }
+
+        public int UniqueIdentifier => (Idx << 5) + Offset;
     }
 }

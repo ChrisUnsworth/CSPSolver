@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -246,5 +247,13 @@ namespace CSPSolver.Variable
 
         int IDecisionVariable.Size(in IState state) =>
             GetDomain(state).domain.Sum(BitCounter.Count);
+
+        public override int GetHashCode() => StateRef.UniqueIdentifier;
+
+        public override bool Equals([NotNullWhen(true)] object obj) => obj is IntDomainVar intOther && Equals(intOther);
+
+        public bool Equals(IDecisionVariable other) => other is IntDomainVar boolOther && Equals(boolOther);
+
+        private bool Equals(IntDomainVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Diagnostics.CodeAnalysis;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -110,5 +110,13 @@ namespace CSPSolver.Variable
         public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
 
         int IDecisionVariable.Size(in IState state) => IsInstantiated(state) ? 1 : 2;
+
+        public override int GetHashCode() => StateRef.UniqueIdentifier;
+
+        public override bool Equals([NotNullWhen(true)] object obj) => obj is BoolVar boolOther && Equals(boolOther);
+
+        public bool Equals(IDecisionVariable other) => other is BoolVar boolOther && Equals(boolOther);
+
+        private bool Equals(BoolVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
     }
 }

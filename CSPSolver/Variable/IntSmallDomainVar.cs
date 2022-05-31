@@ -7,6 +7,7 @@ using static System.Math;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.utils;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSPSolver.Variable
 {
@@ -142,5 +143,13 @@ namespace CSPSolver.Variable
         public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
 
         int IDecisionVariable.Size(in IState state) => BitCounter.Count(GetDomain(state).domain);
+
+        public override int GetHashCode() => StateRef.UniqueIdentifier;
+
+        public override bool Equals([NotNullWhen(true)] object obj) => obj is IntSmallDomainVar intOther && Equals(intOther);
+
+        public bool Equals(IDecisionVariable other) => other is IntSmallDomainVar boolOther && Equals(boolOther);
+
+        private bool Equals(IntSmallDomainVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
     }
 }
