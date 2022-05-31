@@ -2,6 +2,7 @@
 using System.Linq;
 
 using CSPSolver.common;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Logic
 {

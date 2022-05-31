@@ -6,10 +6,11 @@ using static System.Math;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
+using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct IntSmallDomainVar : ISmallIntDomainVar
+    public readonly struct IntSmallDomainVar : ISmallIntDomainVar, IDecisionVariable
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -24,11 +25,11 @@ namespace CSPSolver.Variable
             Size = size;
         }
 
-        public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size) + Min;
+        public int GetDomainMax(in IState state) => state.GetDomainMax(StateRef, Size) + Min;
 
-        public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size) + Min;
+        public int GetDomainMin(in IState state) => state.GetDomainMin(StateRef, Size) + Min;
 
-        public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
+        public (uint domain, int min, int size) GetDomain(in IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
         public bool SetDomain(IState state, uint domain)
         {
@@ -45,19 +46,19 @@ namespace CSPSolver.Variable
 
         public bool DomainMinus(IState state, uint domain) => SetDomain(state, ~domain);
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             value = GetDomainMin(state);
             return value == GetDomainMax(state);
         }
 
-        public bool IsInstantiated(IState state)
+        public bool IsInstantiated(in IState state)
         {
             var dom = state.GetDomain(StateRef, Size);
             return dom != 0 && (dom & (dom - 1)) == 0;
         }
 
-        public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
+        public bool IsEmpty(in IState state) => state.GetDomain(StateRef, Size) == 0;
 
         public Type VariableType() => typeof(int);
 
@@ -138,6 +139,8 @@ namespace CSPSolver.Variable
             }
         }
 
-        public string PrettyDomain(IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+        public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+
+        int IDecisionVariable.Size(in IState state) => BitCounter.Count(GetDomain(state).domain);
     }
 }

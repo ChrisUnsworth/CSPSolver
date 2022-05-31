@@ -6,10 +6,11 @@ using static System.Math;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
+using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct LongDomainVar: ILongDomainVar
+    public readonly struct LongDomainVar: ILongDomainVar, IDecisionVariable
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -24,7 +25,7 @@ namespace CSPSolver.Variable
             Size = size;
         }
 
-        public (ulong domain, int min, int size) GetDomain(IState state) => (state.GetDomainLong(StateRef, Size), Min, Size);
+        public (ulong domain, int min, int size) GetDomain(in IState state) => (state.GetDomainLong(StateRef, Size), Min, Size);
 
         public bool SetDomain(IState state, ulong domain)
         {
@@ -57,9 +58,9 @@ namespace CSPSolver.Variable
             }
         }
 
-        public int GetDomainMax(IState state) => state.GetDomainMaxLong(StateRef, Size) + Min;
+        public int GetDomainMax(in IState state) => state.GetDomainMaxLong(StateRef, Size) + Min;
 
-        public int GetDomainMin(IState state) => state.GetDomainMinLong(StateRef, Size) + Min;
+        public int GetDomainMin(in IState state) => state.GetDomainMinLong(StateRef, Size) + Min;
 
         public bool SetMax(IState state, int max)
         {
@@ -89,7 +90,7 @@ namespace CSPSolver.Variable
             return SetDomain(state, newDom);
         }
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             value = GetDomainMin(state);
             return value == GetDomainMax(state);
@@ -97,13 +98,13 @@ namespace CSPSolver.Variable
 
         public void Initialise(IState state) => state.SetDomainLong(StateRef, Size, (ulong)(Pow(2, Size) - 1));
 
-        public bool IsInstantiated(IState state)
+        public bool IsInstantiated(in IState state)
         {
             var dom = state.GetDomainLong(StateRef, Size);
             return dom != 0 && (dom & (dom - 1)) == 0;
         }
 
-        public bool IsEmpty(IState state) => state.GetDomainLong(StateRef, Size) == 0;
+        public bool IsEmpty(in IState state) => state.GetDomainLong(StateRef, Size) == 0;
 
         public Type VariableType() => typeof(int);
 
@@ -138,6 +139,8 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public string PrettyDomain(IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+        public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+
+        int IDecisionVariable.Size(in IState state) => BitCounter.Count(GetDomain(state).domain);
     }
 }

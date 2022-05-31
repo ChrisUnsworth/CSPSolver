@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using CSPSolver.common;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Logic
 {

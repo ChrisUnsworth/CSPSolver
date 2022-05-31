@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CSPSolver.common.variables;
+using System.Collections.Generic;
 
 namespace CSPSolver.common
 {

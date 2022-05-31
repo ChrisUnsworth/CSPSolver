@@ -4,7 +4,7 @@ namespace CSPSolver.common.variables
 {
     public interface ISmallIntDomainVar: IIntVar
     {
-        (uint domain, int min, int size) GetDomain(IState state);
+        (uint domain, int min, int size) GetDomain(in IState state);
 
         bool SetDomain(IState state, uint domain);
 

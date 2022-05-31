@@ -4,10 +4,11 @@ using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
+using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct IntDomainVar: IIntDomainVar
+    public readonly struct IntDomainVar: IIntDomainVar, IDecisionVariable
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -22,9 +23,9 @@ namespace CSPSolver.Variable
             Size = size;
         }
 
-        public (uint[] domain, int min, int size) GetDomain(IState state) => (state.GetLargeDomain(StateRef, Size), Min, Size);
+        public (uint[] domain, int min, int size) GetDomain(in IState state) => (state.GetLargeDomain(StateRef, Size), Min, Size);
 
-        public bool SetDomain(IState state, uint[] domain)
+        public bool SetDomain(IState state, in uint[] domain)
         {
             if (!domain.SequenceEqual(state.GetLargeDomain(StateRef, Size)))
             {
@@ -35,7 +36,7 @@ namespace CSPSolver.Variable
             return false;
         }
 
-        public bool DomainMinus(IState state, uint[] domain)
+        public bool DomainMinus(IState state, in uint[] domain)
         {
             var oldDomain = state.GetLargeDomain(StateRef, Size);
             var isDifferent = false;
@@ -77,9 +78,9 @@ namespace CSPSolver.Variable
 
         }
 
-        public int GetDomainMax(IState state) => state.GetLargeDomainMax(StateRef, Size) + Min;
+        public int GetDomainMax(in IState state) => state.GetLargeDomainMax(StateRef, Size) + Min;
 
-        public int GetDomainMin(IState state) => state.GetLargeDomainMin(StateRef, Size) + Min;
+        public int GetDomainMin(in IState state) => state.GetLargeDomainMin(StateRef, Size) + Min;
 
         public bool SetMax(IState state, int max)
         {
@@ -137,7 +138,7 @@ namespace CSPSolver.Variable
             return isDifferent;
         }
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             value = GetDomainMin(state);
             return value == GetDomainMax(state);
@@ -155,7 +156,7 @@ namespace CSPSolver.Variable
             state.SetLargeDomain(StateRef, Size, domain);
         }
 
-        public bool IsInstantiated(IState state)
+        public bool IsInstantiated(in IState state)
         {
             int i = 0;
             var domain = state.GetLargeDomain(StateRef, Size);
@@ -178,7 +179,7 @@ namespace CSPSolver.Variable
             return true;
         }
 
-        public bool IsEmpty(IState state)
+        public bool IsEmpty(in IState state)
         {
             foreach (var subdom in state.GetLargeDomain(StateRef, Size))
             {
@@ -241,6 +242,9 @@ namespace CSPSolver.Variable
         }
 
 
-        public string PrettyDomain(IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+        public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+
+        int IDecisionVariable.Size(in IState state) =>
+            GetDomain(state).domain.Sum(BitCounter.Count);
     }
 }

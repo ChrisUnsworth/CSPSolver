@@ -6,9 +6,9 @@
 
         double Max { get; }
 
-        double GetDomainMax(IState state);
+        double GetDomainMax(in IState state);
 
-        double GetDomainMin(IState state);
+        double GetDomainMin(in IState state);
 
         double Epsilon { get; }
 

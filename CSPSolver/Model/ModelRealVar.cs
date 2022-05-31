@@ -1,6 +1,4 @@
 ﻿using System;
-
-using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.Constraint.Equal;
 using CSPSolver.Constraint.Inequality;

@@ -29,15 +29,15 @@ namespace CSPSolver.Math.Divide
             Size = Max - Min + 1;
         }
 
-        public int GetDomainMax(IState state) => _v1.GetDomainMax(state) / _v2.GetDomainMin(state);
+        public int GetDomainMax(in IState state) => _v1.GetDomainMax(state) / _v2.GetDomainMin(state);
 
-        public int GetDomainMin(IState state) => _v1.GetDomainMin(state) / _v2.GetDomainMax(state);
+        public int GetDomainMin(in IState state) => _v1.GetDomainMin(state) / _v2.GetDomainMax(state);
 
         public void Initialise(IState state) { /* holds no state */ }
 
-        public bool IsEmpty(IState state) => _v1.IsEmpty(state) || _v2.IsEmpty(state);
+        public bool IsEmpty(in IState state) => _v1.IsEmpty(state) || _v2.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) && _v2.IsInstantiated(state);
+        public bool IsInstantiated(in IState state) => _v1.IsInstantiated(state) && _v2.IsInstantiated(state);
 
         public bool RemoveValue(IState state, object value) =>
             (_v2.TryGetValue(state, out int v2) && _v1.RemoveValue(state, (int)value * v2))
@@ -57,7 +57,7 @@ namespace CSPSolver.Math.Divide
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             if (_v1.TryGetValue(state, out int v1) & _v2.TryGetValue(state, out int v2))
             {
@@ -71,7 +71,7 @@ namespace CSPSolver.Math.Divide
 
         public Type VariableType() => typeof(int);
 
-        public string PrettyDomain(IState state) => $"{_v1.PrettyDomain(state)} / {_v2.PrettyDomain(state)}";
+        public string PrettyDomain(in IState state) => $"{_v1.PrettyDomain(state)} / {_v2.PrettyDomain(state)}";
 
         public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
     }

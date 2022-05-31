@@ -14,19 +14,19 @@ namespace CSPSolver.Model
 
         public IVariable Objective { get; }
 
-        public IVariable[] Variables { get; }
+        public IDecisionVariable[] Variables { get; }
 
         private IVariable[] NonDecisionVariables { get; }
 
         public IConstraint[] Constraints { get; }
 
-        IEnumerable<IVariable> IModel.Variables => Variables;
+        IEnumerable<IDecisionVariable> IModel.Variables => Variables;
 
         IEnumerable<IConstraint> IModel.Constraints => Constraints;
 
         private readonly ImmutableDictionary<IVariable, List<IConstraint>> _constraintLookup;
 
-        public Model(IConstraint[] constraints, IVariable[] variables, IVariable[] nonDecisionVariables, IVariable objective = null, bool? maximise = null)
+        public Model(IConstraint[] constraints, IDecisionVariable[] variables, IVariable[] nonDecisionVariables, IVariable objective = null, bool? maximise = null)
         {
             Maximise = maximise ?? true;
             Objective = objective;

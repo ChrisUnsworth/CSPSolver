@@ -19,17 +19,17 @@ namespace CSPSolver.Variable
 
         public double Epsilon => 1;
 
-        public double GetDomainMax(IState state) => _intVar.GetDomainMax(state);
+        public double GetDomainMax(in IState state) => _intVar.GetDomainMax(state);
 
-        public double GetDomainMin(IState state) => _intVar.GetDomainMin(state);
+        public double GetDomainMin(in IState state) => _intVar.GetDomainMin(state);
 
         public void Initialise(IState state) => _intVar.Initialise(state);
 
-        public bool IsEmpty(IState state) => _intVar.IsEmpty(state);
+        public bool IsEmpty(in IState state) => _intVar.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => _intVar.IsInstantiated(state);
+        public bool IsInstantiated(in IState state) => _intVar.IsInstantiated(state);
 
-        public string PrettyDomain(IState state) => _intVar.PrettyDomain(state);
+        public string PrettyDomain(in IState state) => _intVar.PrettyDomain(state);
 
         public bool RemoveValue(IState state, object value) => _intVar.RemoveValue(state, (int)value);
 
@@ -39,7 +39,7 @@ namespace CSPSolver.Variable
 
         public bool SetValue(IState state, object value) => _intVar.SetValue(state, (int)Round((double)value));
 
-        public bool TryGetValue(IState state, out double value)
+        public bool TryGetValue(in IState state, out double value)
         {
             var result = _intVar.TryGetValue(state, out int intVal);
             value = intVal;

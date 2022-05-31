@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CSPSolver.common.variables;
+using System.Collections.Generic;
 
 namespace CSPSolver.common
 {
@@ -8,7 +9,7 @@ namespace CSPSolver.common
 
         IVariable Objective { get; }
 
-        IEnumerable<IVariable> Variables { get; }
+        IEnumerable<IDecisionVariable> Variables { get; }
 
         IEnumerable<IConstraint> Constraints { get; }
 

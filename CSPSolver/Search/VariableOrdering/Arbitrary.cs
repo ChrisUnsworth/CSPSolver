@@ -1,9 +1,10 @@
 ﻿using CSPSolver.common;
 using CSPSolver.common.search;
+using CSPSolver.common.variables;
 
-namespace CSPSolver.Search.strategy
+namespace CSPSolver.Search.VariableOrdering
 {
-    public readonly struct ArbitraryVariableOrdering : IVariableOrderingHeuristic
+    public readonly struct Arbitrary : IVariableOrderingHeuristic
     {
         public IVariable Next(in IModel model, in IState state)
         {

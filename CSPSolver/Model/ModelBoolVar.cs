@@ -1,5 +1,4 @@
-﻿using CSPSolver.common;
-using CSPSolver.common.variables;
+﻿using CSPSolver.common.variables;
 using CSPSolver.Constraint.Bool;
 using CSPSolver.Constraint.Logic;
 

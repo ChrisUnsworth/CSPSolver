@@ -30,24 +30,24 @@ namespace CSPSolver.Math.Multiply
             Size = Max - Min + 1;
         }
 
-        private int[] GetDomainExtremes(IState state)
+        private int[] GetDomainExtremes(in IState state)
         {
             (int v1Min, int v1Max, int v2Min, int v2Max) = GetVariableDomainExtremes(state);
             return new int[] { v1Max * v2Max, v1Max * v2Min, v1Min * v2Max, v1Min * v2Min };
         }
 
-        private (int v1Min, int v1Max, int v2Min, int v2Max) GetVariableDomainExtremes(IState state)
+        private (int v1Min, int v1Max, int v2Min, int v2Max) GetVariableDomainExtremes(in IState state)
             => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
 
-        public int GetDomainMax(IState state) => GetDomainExtremes(state).Max();
+        public int GetDomainMax(in IState state) => GetDomainExtremes(state).Max();
 
-        public int GetDomainMin(IState state) => GetDomainExtremes(state).Min();
+        public int GetDomainMin(in IState state) => GetDomainExtremes(state).Min();
 
         public void Initialise(IState state) { /* holds no state */ }
 
-        public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
+        public bool IsEmpty(in IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+        public bool IsInstantiated(in IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
 
         public bool RemoveValue(IState state, object value)
         {
@@ -118,7 +118,7 @@ namespace CSPSolver.Math.Multiply
             return SetMax(extremes, state, (int)value) | SetMin(extremes, state, (int)value);
         }
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             if (_v1.TryGetValue(state, out int v1) & _v2.TryGetValue(state, out int v2))
             {
@@ -132,7 +132,7 @@ namespace CSPSolver.Math.Multiply
 
         public Type VariableType() => typeof(int);
 
-        public string PrettyDomain(IState state) => $"{_v1.PrettyDomain(state)} * {_v2.PrettyDomain(state)}";
+        public string PrettyDomain(in IState state) => $"{_v1.PrettyDomain(state)} * {_v2.PrettyDomain(state)}";
 
         public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
     }

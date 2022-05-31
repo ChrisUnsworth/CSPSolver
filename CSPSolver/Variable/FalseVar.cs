@@ -18,15 +18,15 @@ namespace CSPSolver.Variable
 
         public FalseVar(IStateRef stateRef) => StateRef = stateRef;
 
-        public bool IsTrue(IState state) => false;
+        public bool IsTrue(in IState state) => false;
 
-        public bool CanBeTrue(IState state) => false;
+        public bool CanBeTrue(in IState state) => false;
 
-        public bool IsFalse(IState state) => !IsEmpty(state);
+        public bool IsFalse(in IState state) => !IsEmpty(state);
 
-        public bool CanBeFalse(IState state) => !IsEmpty(state);
+        public bool CanBeFalse(in IState state) => !IsEmpty(state);
 
-        public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
+        public (uint domain, int min, int size) GetDomain(in IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
         public bool SetDomain(IState state, uint domain)
         {
@@ -48,9 +48,9 @@ namespace CSPSolver.Variable
             if (CanBeFalse(state)) yield return 0;
         }
 
-        public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size);
+        public int GetDomainMax(in IState state) => state.GetDomainMax(StateRef, Size);
 
-        public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size);
+        public int GetDomainMin(in IState state) => state.GetDomainMin(StateRef, Size);
 
         public bool SetMax(IState state, int max)
         {
@@ -64,13 +64,13 @@ namespace CSPSolver.Variable
             return SetDomain(state, 0);
         }
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             value = 0;
             return !IsEmpty(state);
         }
 
-        public bool TryGetValue(IState state, out bool value)
+        public bool TryGetValue(in IState state, out bool value)
         {
             value = false;
             return IsFalse(state);
@@ -78,9 +78,9 @@ namespace CSPSolver.Variable
 
         public void Initialise(IState state) => state.SetDomain(StateRef, Size, 1);
 
-        public bool IsInstantiated(IState state) => IsFalse(state);
+        public bool IsInstantiated(in IState state) => IsFalse(state);
 
-        public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
+        public bool IsEmpty(in IState state) => state.GetDomain(StateRef, Size) == 0;
 
         public Type VariableType() => typeof(bool);
 
@@ -98,6 +98,6 @@ namespace CSPSolver.Variable
                 _ => false,
             };
 
-        public string PrettyDomain(IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
+        public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
     }
 }

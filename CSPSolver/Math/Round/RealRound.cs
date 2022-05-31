@@ -21,17 +21,17 @@ namespace CSPSolver.Math.Round
 
         public IEnumerable<IVariable> GetChildren() { yield return _realVar; }
 
-        public double GetDomainMax(IState state) => System.Math.Round(_realVar.GetDomainMax(state), _dp);
+        public double GetDomainMax(in IState state) => System.Math.Round(_realVar.GetDomainMax(state), _dp);
 
-        public double GetDomainMin(IState state) => System.Math.Round(_realVar.GetDomainMin(state), _dp);
+        public double GetDomainMin(in IState state) => System.Math.Round(_realVar.GetDomainMin(state), _dp);
 
         public void Initialise(IState state) => _realVar.Initialise(state);
 
-        public bool IsEmpty(IState state) => _realVar.IsEmpty(state);
+        public bool IsEmpty(in IState state) => _realVar.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => GetDomainMax(state) == GetDomainMin(state);
+        public bool IsInstantiated(in IState state) => GetDomainMax(state) == GetDomainMin(state);
 
-        public string PrettyDomain(IState state)
+        public string PrettyDomain(in IState state)
         {
             var min = GetDomainMin(state);
             var max = GetDomainMax(state);
@@ -51,7 +51,7 @@ namespace CSPSolver.Math.Round
             SetMax(state, (int)value) |
             SetMin(state, (int)value);
 
-        public bool TryGetValue(IState state, out double value)
+        public bool TryGetValue(in IState state, out double value)
         {
             value = GetDomainMin(state);
             return value == GetDomainMax(state);

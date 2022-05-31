@@ -29,24 +29,24 @@ namespace CSPSolver.Math.Multiply
             Max = extremes.Max();
         }
 
-        private double[] GetDomainExtremes(IState state)
+        private double[] GetDomainExtremes(in IState state)
         {
             (double v1Min, double v1Max, double v2Min, double v2Max) = GetVariableDomainExtremes(state);
             return new double[] { v1Max * v2Max, v1Max * v2Min, v1Min * v2Max, v1Min * v2Min };
         }
 
-        private (double v1Min, double v1Max, double v2Min, double v2Max) GetVariableDomainExtremes(IState state)
+        private (double v1Min, double v1Max, double v2Min, double v2Max) GetVariableDomainExtremes(in IState state)
             => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
 
-        public double GetDomainMax(IState state) => GetDomainExtremes(state).Max();
+        public double GetDomainMax(in IState state) => GetDomainExtremes(state).Max();
 
-        public double GetDomainMin(IState state) => GetDomainExtremes(state).Min();
+        public double GetDomainMin(in IState state) => GetDomainExtremes(state).Min();
 
         public void Initialise(IState state) { /* holds no state */ }
 
-        public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
+        public bool IsEmpty(in IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+        public bool IsInstantiated(in IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
 
         public bool RemoveValue(IState state, object value)
         {
@@ -115,7 +115,7 @@ namespace CSPSolver.Math.Multiply
             return SetMax(extremes, state, (double)value) | SetMin(extremes, state, (double)value);
         }
 
-        public bool TryGetValue(IState state, out double value)
+        public bool TryGetValue(in IState state, out double value)
         {
             if (_v1.TryGetValue(state, out double v1) & _v2.TryGetValue(state, out double v2))
             {
@@ -129,7 +129,7 @@ namespace CSPSolver.Math.Multiply
 
         public Type VariableType() => typeof(double);
 
-        public string PrettyDomain(IState state) => $"{_v1.PrettyDomain(state)} * {_v2.PrettyDomain(state)}";
+        public string PrettyDomain(in IState state) => $"{_v1.PrettyDomain(state)} * {_v2.PrettyDomain(state)}";
 
         public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
     }

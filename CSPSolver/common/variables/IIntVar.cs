@@ -8,9 +8,9 @@
 
         int Max { get; }
 
-        int GetDomainMax(IState state);
+        int GetDomainMax(in IState state);
 
-        int GetDomainMin(IState state);
+        int GetDomainMin(in IState state);
 
         bool SetMax(IState state, int max);
 

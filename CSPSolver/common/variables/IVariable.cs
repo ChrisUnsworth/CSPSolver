@@ -1,19 +1,19 @@
 ﻿using System;
 
-namespace CSPSolver.common
+namespace CSPSolver.common.variables
 {
     public interface IVariable<T> : IVariable
     {
-        bool TryGetValue(IState state, out T value);
+        bool TryGetValue(in IState state, out T value);
     }
 
     public interface IVariable
     {
         void Initialise(IState state);
 
-        bool IsInstantiated(IState state);
+        bool IsInstantiated(in IState state);
 
-        bool IsEmpty(IState state);
+        bool IsEmpty(in IState state);
 
         Type VariableType();
 
@@ -21,6 +21,6 @@ namespace CSPSolver.common
 
         bool RemoveValue(IState state, object value);
 
-        string PrettyDomain(IState state);
+        string PrettyDomain(in IState state);
     }
 }

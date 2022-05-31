@@ -5,7 +5,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct RealVar : IRealVar
+    public readonly struct RealVar : IRealVar, IDecisionVariable
     {
         public double Min { get; }
 
@@ -27,9 +27,9 @@ namespace CSPSolver.Variable
                 : epsilon;
         }
 
-        public double GetDomainMax(IState state) => state.GetDouble(MaxStateRef);
+        public double GetDomainMax(in IState state) => state.GetDouble(MaxStateRef);
 
-        public double GetDomainMin(IState state) => state.GetDouble(MinStateRef);
+        public double GetDomainMin(in IState state) => state.GetDouble(MinStateRef);
 
         public void Initialise(IState state)
         {
@@ -37,11 +37,11 @@ namespace CSPSolver.Variable
             state.SetDouble(MinStateRef, Min);
         }
 
-        public bool IsEmpty(IState state) => GetDomainMax(state) < GetDomainMin(state);
+        public bool IsEmpty(in IState state) => GetDomainMax(state) < GetDomainMin(state);
 
-        public bool IsInstantiated(IState state) => GetDomainMax(state) - GetDomainMin(state) <= Epsilon;
+        public bool IsInstantiated(in IState state) => GetDomainMax(state) - GetDomainMin(state) <= Epsilon;
 
-        public string PrettyDomain(IState state) => $"{GetDomainMin(state)} ... {GetDomainMax(state)}";
+        public string PrettyDomain(in IState state) => $"{GetDomainMin(state)} ... {GetDomainMax(state)}";
 
         public bool RemoveValue(IState state, object value)
         {
@@ -109,12 +109,15 @@ namespace CSPSolver.Variable
             return result;
         }
 
-        public bool TryGetValue(IState state, out double value)
+        public bool TryGetValue(in IState state, out double value)
         {
             value = GetDomainMax(state);
             return (value - Epsilon) < GetDomainMin(state);
         }
 
         public Type VariableType() => typeof(double);
+
+        public int Size(in IState state) =>
+            (int)((GetDomainMax(state) - GetDomainMin(state)) / Epsilon);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSPSolver.common.variables;
+using System;
 using System.Collections.Generic;
 
 namespace CSPSolver.common.search

@@ -25,19 +25,19 @@ namespace CSPSolver.Variable
 
         public IEnumerable<int> EnumerateDomain(IState state) => Enumerable.Repeat(_value, 1);
 
-        public (uint domain, int min, int size) GetDomain(IState state) => (1, _value, 1);
+        public (uint domain, int min, int size) GetDomain(in IState state) => (1, _value, 1);
 
-        public int GetDomainMax(IState state) => Max;
+        public int GetDomainMax(in IState state) => Max;
 
-        public int GetDomainMin(IState state) => Min;
+        public int GetDomainMin(in IState state) => Min;
 
         public void Initialise(IState state) { }
 
-        public bool IsEmpty(IState state) => false;
+        public bool IsEmpty(in IState state) => false;
 
-        public bool IsInstantiated(IState state) => true;
+        public bool IsInstantiated(in IState state) => true;
 
-        public string PrettyDomain(IState state) => $"{_value}";
+        public string PrettyDomain(in IState state) => $"{_value}";
 
         public bool RemoveValue(IState state, object value) => false;
 
@@ -49,7 +49,7 @@ namespace CSPSolver.Variable
 
         public bool SetValue(IState state, object value) => false;
 
-        public bool TryGetValue(IState state, out int value)
+        public bool TryGetValue(in IState state, out int value)
         {
             value = _value;
             return true;

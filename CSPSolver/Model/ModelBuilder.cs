@@ -14,7 +14,7 @@ namespace CSPSolver.Model
         private readonly IStateBuilder _sb;
         private IIntVar _objective;
         private bool _maximise;
-        private readonly List<IVariable> _variables;
+        private readonly List<IDecisionVariable> _variables;
         private readonly List<IVariable> _nonDecisionVariables;
         private readonly List<IConstraint> _constraints;
 
@@ -23,7 +23,7 @@ namespace CSPSolver.Model
         public ModelBuilder(IStateBuilder sb)
         {
             _sb = sb;
-            _variables = new List<IVariable>();
+            _variables = new List<IDecisionVariable>();
             _nonDecisionVariables = new List<IVariable>();
             _constraints = new List<IConstraint>();
         }
@@ -65,7 +65,7 @@ namespace CSPSolver.Model
         public ModelIntVar AddIntDomainVar(int min, int max, bool isDecisionVar = true)
         {
             var size = max - min + 1;
-            IIntVar intVar = size switch
+            IDecisionVariable intVar = size switch
             {
                 <= 32 => new IntSmallDomainVar(min, size, _sb.AddDomain(size)),
                 <= 64 => new LongDomainVar(min, size, _sb.AddDomain(size)),
@@ -74,7 +74,7 @@ namespace CSPSolver.Model
 
             if (isDecisionVar) _variables.Add(intVar);
             else _nonDecisionVariables.Add(intVar);
-            return new ModelIntVar { Variable = intVar };
+            return new ModelIntVar { Variable = (IIntVar)intVar };
         }
 
         public ModelIntVar[] AddIntVarArray(int min, int max, int count, bool isDecisionVar = true)
@@ -93,7 +93,7 @@ namespace CSPSolver.Model
         {
             var maxRange = max * Pow(10, dp);
             var minRange = min * Pow(10, dp);
-            IRealVar realVar = (minRange, maxRange) switch
+            IDecisionVariable realVar = (minRange, maxRange) switch
             {
                 ( > int.MinValue, <= int.MaxValue)   => new SmallRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
                 ( > long.MinValue, <= long.MaxValue) => new LongRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
@@ -111,7 +111,7 @@ namespace CSPSolver.Model
 
             if (isDecisionVar) _variables.Add(realVar);
             else _nonDecisionVariables.Add(realVar);
-            return new ModelRealVar { Variable = realVar };
+            return new ModelRealVar { Variable = (IRealVar)realVar };
         }
 
         public ModelRealVar[] AddRealVarArray(double min, double max, int count, int dp, bool isDecisionVar = false)

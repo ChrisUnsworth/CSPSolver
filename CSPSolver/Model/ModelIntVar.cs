@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
 using CSPSolver.Math.Minus;
 using CSPSolver.Math.Plus;

@@ -7,7 +7,7 @@ using static System.Math;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct LongRealVar : IRealVar
+    public readonly struct LongRealVar : IRealVar, IDecisionVariable
     {
         public double Min { get; }
 
@@ -27,9 +27,9 @@ namespace CSPSolver.Variable
             Epsilon = Pow(10, -decimalPlaces); ;
         }
 
-        public double GetDomainMax(IState state) => Round(state.GetLong(MaxStateRef) * Epsilon, (int)Abs(Log10(Epsilon)));
+        public double GetDomainMax(in IState state) => Round(state.GetLong(MaxStateRef) * Epsilon, (int)Abs(Log10(Epsilon)));
 
-        public double GetDomainMin(IState state) => Round(state.GetLong(MinStateRef) * Epsilon, (int)Abs(Log10(Epsilon)));
+        public double GetDomainMin(in IState state) => Round(state.GetLong(MinStateRef) * Epsilon, (int)Abs(Log10(Epsilon)));
 
         public void Initialise(IState state)
         {
@@ -37,11 +37,11 @@ namespace CSPSolver.Variable
             state.SetLong(MinStateRef, (int)Round(Min / Epsilon));
         }
 
-        public bool IsEmpty(IState state) => state.GetLong(MaxStateRef) < state.GetLong(MinStateRef);
+        public bool IsEmpty(in IState state) => state.GetLong(MaxStateRef) < state.GetLong(MinStateRef);
 
-        public bool IsInstantiated(IState state) => state.GetLong(MaxStateRef) == state.GetLong(MinStateRef);
+        public bool IsInstantiated(in IState state) => state.GetLong(MaxStateRef) == state.GetLong(MinStateRef);
 
-        public string PrettyDomain(IState state) => $"{GetDomainMin(state)} ... {GetDomainMax(state)}";
+        public string PrettyDomain(in IState state) => $"{GetDomainMin(state)} ... {GetDomainMax(state)}";
 
         public bool RemoveValue(IState state, object value)
         {
@@ -94,7 +94,7 @@ namespace CSPSolver.Variable
         public bool SetValue(IState state, object value) =>
             SetMin(state, (double)value) | SetMax(state, (double)value);
 
-        public bool TryGetValue(IState state, out double value)
+        public bool TryGetValue(in IState state, out double value)
         {
             value = GetDomainMax(state);
             return value == GetDomainMin(state);
@@ -103,5 +103,8 @@ namespace CSPSolver.Variable
         public Type VariableType() => typeof(double);
 
         private long AsLong(double val) => (long)Round((double)val / Epsilon);
+
+        public int Size(in IState state) =>
+            (int)((GetDomainMax(state) - GetDomainMin(state)) / Epsilon);
     }
 }
