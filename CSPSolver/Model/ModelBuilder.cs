@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using CSPSolver.common;
+using CSPSolver.common.search;
 using CSPSolver.common.variables;
+using CSPSolver.Search;
 using CSPSolver.State;
 using CSPSolver.Variable;
 
@@ -17,6 +20,9 @@ namespace CSPSolver.Model
         private readonly List<IDecisionVariable> _variables;
         private readonly List<IVariable> _nonDecisionVariables;
         private readonly List<IConstraint> _constraints;
+        private Func<IVariableOrderingHeuristic, IValueOrderingHeuristic, IBranchStrategy> BranchStrategyBuilder { get; set; } = BranchStrategy.Default;
+        private Func<IModel, IVariableOrderingHeuristic> VariableOrderingBuilder { get; set; } = VariableOrdering.Default;
+        private Func<IModel, IValueOrderingHeuristic> ValueOrderingBuiler { get; set; } = ValueOrdering.Default;
 
         public ModelBuilder() : this(new StateBuilder()) { }
 
@@ -28,7 +34,10 @@ namespace CSPSolver.Model
             _constraints = new List<IConstraint>();
         }
 
-        public IEnumerable<ISolution> Search() => new Search.Search(this);
+        private SearchConfig BuildSearchConfig(IModel model) =>
+            new (BranchStrategyBuilder.Invoke(VariableOrderingBuilder.Invoke(model), ValueOrderingBuiler.Invoke(model)));
+
+        public IEnumerable<ISolution> Search() => new Search.Search(this, BuildSearchConfig);
 
         public void AddObjective(ModelIntVar objective, bool maximise) => AddObjective((IIntVar)objective.GetVariable(), maximise);
 

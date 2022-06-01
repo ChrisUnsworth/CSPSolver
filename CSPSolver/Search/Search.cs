@@ -17,6 +17,11 @@ namespace CSPSolver.Search
         private readonly StatePool _statePool;
 
         public Search(IModelBuilder mb, SearchConfig? searchConfig = null)
+            : this(mb, (_) => searchConfig ?? SearchConfig.Default())
+        {
+        }
+
+        public Search(IModelBuilder mb, Func<IModel, SearchConfig> configBuilder)
         {
             _model = mb.GetModel();
             _statePool = new StatePool(mb.GetStateSize());
@@ -24,7 +29,7 @@ namespace CSPSolver.Search
             _model.Initialise(initialState);
             _frontier = new Stack<IState>();
             _frontier.Push(initialState);
-            _searchConfig = searchConfig ?? SearchConfig.Default();
+            _searchConfig = configBuilder.Invoke(_model);
         }
 
         public ISolution Current { get; private set; }
