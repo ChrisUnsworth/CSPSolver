@@ -13,14 +13,18 @@ namespace CSPSolver.common
 
         IEnumerable<IConstraint> Constraints { get; }
 
-        void Propagate(IState state);
+        void Propagate(IState _);
 
-        bool IsSolved(IState state);
+        bool IsSolved(IState _);
 
-        bool HasEmptyDomain(IState state);
+        bool HasEmptyDomain(IState _);
 
-        string PrettyDomains(IState state);
+        string PrettyDomains(IState _);
 
-        void Initialise(IState state);
+        void Initialise(IState _);
+
+        IEnumerable<IConstraint> IsConstrainedBy(IVariable _);
+
+        IEnumerable<IVariable> IsLinkedTo(IVariable _);
     }
 }

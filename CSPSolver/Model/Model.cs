@@ -1,10 +1,11 @@
-﻿using CSPSolver.common;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using CSPSolver.common.variables;
 using System.Collections.Immutable;
+
+using CSPSolver.common;
+using CSPSolver.common.variables;
 
 namespace CSPSolver.Model
 {
@@ -35,11 +36,16 @@ namespace CSPSolver.Model
             Constraints = constraints;
             var keyValuePairs = constraints
                 .SelectMany(c => c.Variables.Select(v => (v, c)))
-                .SelectMany(x => x.v is ICompoundVariable cv ? cv.GetChildren().Select(v => (v, x.c)) : Enumerable.Repeat(x, 1))
+                .SelectMany(x => Flatten(x.v).Select(v => (v, x.c)))
                 .GroupBy(x => x.v)
                 .ToDictionary(g => g.Key, g => g.Select(y => y.c).ToList());
             _constraintLookup = ImmutableDictionary<IVariable, List<IConstraint>>.Empty.AddRange(keyValuePairs);
         }
+
+        private static IEnumerable<IVariable> Flatten(IVariable variable) =>
+            variable is ICompoundVariable cv
+                    ? cv.GetChildren().SelectMany(Flatten)
+                    : Enumerable.Repeat(variable, 1);
 
         public void Propagate(IState state)
         {
@@ -91,5 +97,10 @@ namespace CSPSolver.Model
             foreach (var v in Variables) v.Initialise(state);
             foreach (var v in NonDecisionVariables) v.Initialise(state);
         }
+
+        public IEnumerable<IConstraint> IsConstrainedBy(IVariable _) => _constraintLookup[_];
+
+        public IEnumerable<IVariable> IsLinkedTo(IVariable _) =>
+            IsConstrainedBy(_).SelectMany(c => c.Variables).Distinct();
     }
 }
