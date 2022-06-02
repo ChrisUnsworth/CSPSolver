@@ -104,8 +104,10 @@ namespace CSPSolver.Variable
 
         private long AsLong(double val) => (long)Round((double)val / Epsilon);
 
-        public int Size(in IState state) =>
+        public int DomainSize(in IState state) =>
             (int)((GetDomainMax(state) - GetDomainMin(state)) / Epsilon);
+
+        public int DomainSize() => (int)((Max - Min) / Epsilon);
 
         public override int GetHashCode() => MinStateRef.UniqueIdentifier;
 
@@ -114,5 +116,9 @@ namespace CSPSolver.Variable
         public bool Equals(IDecisionVariable other) => other is LongRealVar longOther && Equals(longOther);
 
         private bool Equals(LongRealVar other) => MinStateRef.UniqueIdentifier == other.MinStateRef.UniqueIdentifier;
+
+        public static bool operator ==(LongRealVar left, LongRealVar right) => left.Equals(right);
+
+        public static bool operator !=(LongRealVar left, LongRealVar right) => !(left == right);
     }
 }

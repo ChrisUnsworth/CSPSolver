@@ -4,6 +4,8 @@ namespace CSPSolver.common.variables
 {
     public interface IDecisionVariable : IVariable, IEquatable<IDecisionVariable>
     {
-        public int Size(in IState state);
+        public int DomainSize(in IState state);
+
+        public int DomainSize();
     }
 }

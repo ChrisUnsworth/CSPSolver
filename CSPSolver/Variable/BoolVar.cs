@@ -109,7 +109,9 @@ namespace CSPSolver.Variable
 
         public string PrettyDomain(in IState state) => $"{{ {string.Join(", ", EnumerateDomain(state))} }}";
 
-        int IDecisionVariable.Size(in IState state) => IsInstantiated(state) ? 1 : 2;
+        int IDecisionVariable.DomainSize(in IState state) => IsInstantiated(state) ? 1 : 2;
+
+        int IDecisionVariable.DomainSize() => 2;
 
         public override int GetHashCode() => StateRef.UniqueIdentifier;
 
@@ -118,5 +120,9 @@ namespace CSPSolver.Variable
         public bool Equals(IDecisionVariable other) => other is BoolVar boolOther && Equals(boolOther);
 
         private bool Equals(BoolVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
+
+        public static bool operator ==(BoolVar left, BoolVar right) => left.Equals(right);
+
+        public static bool operator !=(BoolVar left, BoolVar right) => !(left == right);
     }
 }

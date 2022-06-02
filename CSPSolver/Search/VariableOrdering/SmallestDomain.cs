@@ -13,7 +13,7 @@ namespace CSPSolver.Search.VariableOrdering
             var s = state;
             return model.Variables
                 .Where(_ => !_.IsInstantiated(s))
-                .OrderBy(_ => _.Size(s))
+                .OrderBy(_ => _.DomainSize(s))
                 .FirstOrDefault();
             
         }

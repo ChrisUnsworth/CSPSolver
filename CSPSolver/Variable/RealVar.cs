@@ -117,8 +117,10 @@ namespace CSPSolver.Variable
 
         public Type VariableType() => typeof(double);
 
-        public int Size(in IState state) =>
+        public int DomainSize(in IState state) =>
             (int)((GetDomainMax(state) - GetDomainMin(state)) / Epsilon);
+
+        public int DomainSize() => (int)((Max - Min) / Epsilon);
 
         public override int GetHashCode() => MinStateRef.UniqueIdentifier;
 
@@ -127,5 +129,9 @@ namespace CSPSolver.Variable
         public bool Equals(IDecisionVariable other) => other is RealVar realOther && Equals(realOther);
 
         private bool Equals(RealVar other) => MinStateRef.UniqueIdentifier == other.MinStateRef.UniqueIdentifier;
+
+        public static bool operator ==(RealVar left, RealVar right) => left.Equals(right);
+
+        public static bool operator !=(RealVar left, RealVar right) => !(left == right);
     }
 }
