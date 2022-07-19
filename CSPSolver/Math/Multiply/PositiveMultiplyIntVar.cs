@@ -43,14 +43,23 @@ namespace CSPSolver.Math.Multiply
             _v2.TryGetValue(state, out int v2) & _v1.RemoveValue(state, (int)value / v2)
           | _v1.TryGetValue(state, out int v1) & _v2.RemoveValue(state, (int)value / v1);
 
-        public bool SetMax(IState state, int max) =>
-            _v1.SetMax(state, max / _v2.GetDomainMin(state))
-          | _v2.SetMax(state, max / _v1.GetDomainMin(state));
+        public bool SetMax(IState state, int max)
+        {
+            var v2Min = _v2.GetDomainMin(state);
+            var v1Min = _v1.GetDomainMin(state);
+            return (v2Min > 0 && _v1.SetMax(state, max / v2Min))
+                 | (v1Min > 0 && _v2.SetMax(state, max / v1Min));
+        }
 
-        public bool SetMin(IState state, int min) =>
-            min > 0
-         && _v1.SetMin(state, (int)Ceiling((double)min / _v2.GetDomainMax(state)))
-           | _v2.SetMin(state, (int)Ceiling((double)min / _v1.GetDomainMax(state)));
+
+        public bool SetMin(IState state, int min)
+        {
+            var v2Max = _v2.GetDomainMax(state);
+            var v1Max = _v1.GetDomainMax(state);
+            return min > 0
+               && (v2Max > 0 && _v1.SetMin(state, (int)Ceiling((double)min / v2Max)))
+                | (v1Max > 0 && _v2.SetMin(state, (int)Ceiling((double)min / v1Max)));
+        }
 
         public bool SetValue(IState state, object value) => SetMax(state, (int)value) | SetMin(state, (int)value);
 
