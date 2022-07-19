@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct RealVar : IRealVar, IDecisionVariable
+    public readonly struct RealVar : IRealVar, IDecisionVariable<double>
     {
         public double Min { get; }
 
@@ -133,5 +136,14 @@ namespace CSPSolver.Variable
         public static bool operator ==(RealVar left, RealVar right) => left.Equals(right);
 
         public static bool operator !=(RealVar left, RealVar right) => !(left == right);
+
+        public IEnumerable<double> Domain(in IState _)
+        {
+            var min = GetDomainMin(_);
+            var max = GetDomainMax(_);
+            var e = Epsilon;
+
+            return Enumerable.Range(0, (int)((max - min) / Epsilon)).Select(i => min + i * e);
+        }
     }
 }

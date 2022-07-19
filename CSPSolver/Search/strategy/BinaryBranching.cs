@@ -17,13 +17,13 @@ namespace CSPSolver.Search.strategy
         public IEnumerable<IState> Branch(in IModel model, in IState state, IStatePool statePool)
         {
             var variable = _variableOrdering.Next(in model, state);
-            var branches = _valueOrdering.Order(model, state, variable);
+            var (option, inverse) = _valueOrdering.Order(model, state, variable).First();
 
             var second = statePool.Copy(state);
             var first = state;
 
-            branches.First().Invoke(first);
-            branches.Last().Invoke(second);
+            option.Invoke(first);
+            inverse.Invoke(second);
 
             return new IState[] { first, second };
         }

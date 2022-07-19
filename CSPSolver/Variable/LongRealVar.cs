@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -7,7 +9,7 @@ using static System.Math;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct LongRealVar : IRealVar, IDecisionVariable
+    public readonly struct LongRealVar : IRealVar, IDecisionVariable<double>
     {
         public double Min { get; }
 
@@ -116,6 +118,15 @@ namespace CSPSolver.Variable
         public bool Equals(IDecisionVariable other) => other is LongRealVar longOther && Equals(longOther);
 
         private bool Equals(LongRealVar other) => MinStateRef.UniqueIdentifier == other.MinStateRef.UniqueIdentifier;
+
+        public IEnumerable<double> Domain(in IState _)
+        {
+            var min = GetDomainMin(_);
+            var max = GetDomainMax(_);
+            var e = Epsilon;
+
+            return Enumerable.Range(0, (int)((max - min) / Epsilon)).Select(i => min + i * e);
+        }
 
         public static bool operator ==(LongRealVar left, LongRealVar right) => left.Equals(right);
 

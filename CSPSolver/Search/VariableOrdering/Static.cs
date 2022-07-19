@@ -11,7 +11,7 @@ namespace CSPSolver.Search.VariableOrdering
         private readonly IDecisionVariable[] _variables;
         public Static(IDecisionVariable[] variables) => _variables = variables;
 
-        public IVariable Next(in IModel model, in IState state)
+        public IDecisionVariable Next(in IModel model, in IState state)
         {
             var s = state;
             return _variables

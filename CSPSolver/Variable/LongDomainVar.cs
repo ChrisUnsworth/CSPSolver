@@ -11,7 +11,7 @@ using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct LongDomainVar: ILongDomainVar, IDecisionVariable
+    public readonly struct LongDomainVar: ILongDomainVar, IDecisionVariable<int>
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -42,6 +42,8 @@ namespace CSPSolver.Variable
         }
 
         public bool DomainMinus(IState state, ulong domain) => SetDomain(state, ~domain);
+
+        public IEnumerable<int> Domain(in IState _) => EnumerateDomain(_);
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {

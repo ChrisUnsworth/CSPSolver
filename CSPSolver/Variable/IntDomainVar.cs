@@ -9,7 +9,7 @@ using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct IntDomainVar: IIntDomainVar, IDecisionVariable
+    public readonly struct IntDomainVar: IIntDomainVar, IDecisionVariable<int>
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -56,6 +56,8 @@ namespace CSPSolver.Variable
             return isDifferent;
         }
 
+        public IEnumerable<int> Domain(in IState _) => EnumerateDomain(_);
+
         public IEnumerable<int> EnumerateDomain(IState state)
         {
             var r = Size % 32;
@@ -76,7 +78,6 @@ namespace CSPSolver.Variable
                     mask <<= 1;
                 }
             }
-
         }
 
         public int GetDomainMax(in IState state) => state.GetLargeDomainMax(StateRef, Size) + Min;

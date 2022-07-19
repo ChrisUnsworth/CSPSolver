@@ -6,7 +6,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct BoolVar: IBoolVar, IDecisionVariable
+    public readonly struct BoolVar: IBoolVar, IDecisionVariable<int>
     {
         public IStateRef StateRef { get; }
 
@@ -120,6 +120,12 @@ namespace CSPSolver.Variable
         public bool Equals(IDecisionVariable other) => other is BoolVar boolOther && Equals(boolOther);
 
         private bool Equals(BoolVar other) => StateRef.UniqueIdentifier == other.StateRef.UniqueIdentifier;
+
+        public IEnumerable<int> Domain(in IState _) =>
+            TryGetValue(_, out int val)
+                ? new[] { val }
+                : new[] { 0, 1 }; 
+                
 
         public static bool operator ==(BoolVar left, BoolVar right) => left.Equals(right);
 

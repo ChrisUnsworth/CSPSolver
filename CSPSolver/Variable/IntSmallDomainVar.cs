@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CSPSolver.Variable
 {
-    public readonly struct IntSmallDomainVar : ISmallIntDomainVar, IDecisionVariable
+    public readonly struct IntSmallDomainVar : ISmallIntDomainVar, IDecisionVariable<int>
     {
         public IStateRef StateRef { get; }
         public int Min { get; }
@@ -123,6 +123,8 @@ namespace CSPSolver.Variable
         }
 
         public void Initialise(IState state) => state.SetDomain(StateRef, Size, (uint)(Pow(2, Size) - 1));
+
+        public IEnumerable<int> Domain(in IState _) => EnumerateDomain(_);
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {

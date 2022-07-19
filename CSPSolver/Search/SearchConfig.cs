@@ -1,5 +1,6 @@
 ﻿using CSPSolver.common.search;
 using CSPSolver.Search.strategy;
+using CSPSolver.Search.ValueOrdering;
 using CSPSolver.Search.VariableOrdering;
 
 namespace CSPSolver.Search

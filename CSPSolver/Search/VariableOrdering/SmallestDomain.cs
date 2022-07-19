@@ -8,7 +8,7 @@ namespace CSPSolver.Search.VariableOrdering
 {
     public readonly struct SmallestDomain : IVariableOrderingHeuristic
     {
-        public IVariable Next(in IModel model, in IState state)
+        public IDecisionVariable Next(in IModel model, in IState state)
         {
             var s = state;
             return model.Variables
