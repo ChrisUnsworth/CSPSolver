@@ -33,8 +33,8 @@ namespace CSPSolver.Variable
 
         public void Initialise(IState state)
         {
-            state.SetLong(MaxStateRef, (int)Round(Max / Epsilon));
-            state.SetLong(MinStateRef, (int)Round(Min / Epsilon));
+            state.SetLong(MaxStateRef, (long)Round(Max / Epsilon));
+            state.SetLong(MinStateRef, (long)Round(Min / Epsilon));
         }
 
         public bool IsEmpty(IState state) => state.GetLong(MaxStateRef) < state.GetLong(MinStateRef);
