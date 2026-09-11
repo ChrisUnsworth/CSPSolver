@@ -7,17 +7,17 @@ namespace CSPSolver.Model
     {
         public abstract IVariable<T> GetVariable();
 
-        public void Initialise(IState state) => throw new NotImplementedException();
+        public void Initialise(IState state) => GetVariable().Initialise(state);
 
-        public bool IsEmpty(IState state) => throw new NotImplementedException();
+        public bool IsEmpty(IState state) => GetVariable().IsEmpty(state);
 
-        public bool IsInstantiated(IState state) => throw new NotImplementedException();
+        public bool IsInstantiated(IState state) => GetVariable().IsInstantiated(state);
 
-        public string PrettyDomain(IState state) => throw new NotImplementedException();
+        public string PrettyDomain(IState state) => GetVariable().PrettyDomain(state);
 
-        public bool RemoveValue(IState state, object value) => throw new NotImplementedException();
+        public bool RemoveValue(IState state, object value) => GetVariable().RemoveValue(state, value);
 
-        public bool SetValue(IState state, object value) => throw new NotImplementedException();
+        public bool SetValue(IState state, object value) => GetVariable().SetValue(state, value);
 
         public bool TryGetValue(IState state, out T value) => GetVariable().TryGetValue(state, out value);
 

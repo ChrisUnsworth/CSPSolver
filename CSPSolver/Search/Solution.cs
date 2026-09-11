@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using CSPSolver.common;
@@ -32,9 +33,6 @@ namespace CSPSolver.Search
                 _ => throw new NotImplementedException()
             };
 
-        public IList<T> GetValues<T>(IList<IVariable<T>> v)
-        {
-            throw new NotImplementedException();
-        }
+        public IList<T> GetValues<T>(IList<IVariable<T>> v) => v.Select(GetValue).ToList();
     }
 }
