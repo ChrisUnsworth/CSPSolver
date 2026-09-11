@@ -15,6 +15,7 @@ namespace CSPSolver.Search
         private readonly Stack<IState> _frontier;
         private readonly SearchConfig _searchConfig;
         private readonly StatePool _statePool;
+        private bool _enumerated;
 
         public Search(IModelBuilder mb, SearchConfig? searchConfig = null)
         {
@@ -43,6 +44,11 @@ namespace CSPSolver.Search
             var initialState = _statePool.Empty();
             _model.Initialise(initialState);
             _frontier.Push(initialState);
+
+            // Current bounds the objective, so leaving it set would start the next
+            // run already limited by the previous run's best.
+            Current = null;
+            _enumerated = false;
         }
 
         public bool MoveNext() => Solve();
@@ -84,8 +90,19 @@ namespace CSPSolver.Search
             return false;
         }
 
-        public IEnumerator<ISolution> GetEnumerator() => this;
+        // A search is expensive, so enumerating one twice is a mistake worth hearing
+        // about rather than silently resuming from where the last pass stopped.
+        public IEnumerator<ISolution> GetEnumerator()
+        {
+            if (_enumerated) throw new InvalidOperationException(SearchedAlready);
 
-        IEnumerator IEnumerable.GetEnumerator() => this;
+            _enumerated = true;
+            return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        internal const string SearchedAlready =
+            "A Search can only be enumerated once. Cache the solutions, or call Reset to search again.";
     }
 }
