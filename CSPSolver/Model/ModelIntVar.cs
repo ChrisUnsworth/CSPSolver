@@ -34,7 +34,7 @@ namespace CSPSolver.Model
         }
         public static ModelIntVar operator /(ModelIntVar v1, ModelIntVar v2)
         {
-            if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new PositiveDivideIntVar(v1.Variable, v2.Variable) };
+            if (v1.Variable.Min >= 0 && v2.Variable.Min >= 1) return new() { Variable = new PositiveDivideIntVar(v1.Variable, v2.Variable) };
             if (v1.Variable.Max < 0 && v2.Variable.Max < 0) return new() { Variable = new NegativeDivideIntVar(v1.Variable, v2.Variable) };
             return new ModelIntVar { Variable = new MixedSignDivideIntVar(v1.Variable, v2.Variable) };
         }
