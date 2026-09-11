@@ -19,6 +19,9 @@ namespace CSPSolver.Model
 
         public override IVariable<int> GetVariable() => Variable;
 
+        // == and != build constraints rather than comparing, so they deliberately
+        // do not agree with Equals. Equals answers whether two model vars stand for
+        // the same underlying variable; == asks the solver to make them equal.
         public override bool Equals(object obj) => obj is ModelIntVar var && EqualityComparer<IIntVar>.Default.Equals(Variable, var.Variable);
         public override int GetHashCode() => HashCode.Combine(Variable);
 
