@@ -26,7 +26,9 @@ namespace CSPSolverTests.Variables
             return (state, variable1, variable2);
         }
 
-        [Ignore]
+        // KNOWN FAILURE - see issue #18. -5/4 and -5/5 are both -1, so this model is
+        // already consistent, yet propagation empties the denominator.
+        [TestMethod]
         public void PropergateTest()
         {
             var sb = new StateBuilder();
@@ -240,23 +242,6 @@ namespace CSPSolverTests.Variables
             v1.SetMin(state, 0);
             v2.SetMin(state, 0);
             Assert.AreEqual(0, divide.GetDomainMin(state));
-        }
-
-
-
-        [Ignore]
-        public void MixedSetMinTest()
-        {
-            var (state, v1, v2) = GetVar(-5, 1, 4, 2);
-            var divide = new MixedSignDivideIntVar(v1, v2);
-
-            Assert.AreEqual(-1, divide.GetDomainMin(state));
-            Assert.AreEqual(-1, divide.GetDomainMax(state));
-
-            Assert.AreEqual(-5, v1.GetDomainMax(state));
-            Assert.AreEqual(-5, v1.GetDomainMin(state));
-            Assert.AreEqual(-5, v2.GetDomainMin(state));
-            Assert.AreEqual(-1, v2.GetDomainMax(state));
         }
     }
 }

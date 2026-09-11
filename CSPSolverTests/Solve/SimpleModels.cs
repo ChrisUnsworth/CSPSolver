@@ -225,7 +225,8 @@ namespace CSPSolverTests.Solve
             CheckAll(mb, test, 46);
         }
 
-        [Ignore]
+        [TestMethod]
+        [Ignore("Blocked on #19: ModelIntVar.operator * throws for mixed-sign operands.")]
         public void MixedSignXmultiplyYequalsZ()
         {
             var mb = GetModelBuilder();

@@ -1,9 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <!-- A test method missing [TestMethod] is invisible to MSTest rather than failing,
+         so it reads as coverage while never running. Fail the build instead. -->
+    <WarningsAsErrors>$(WarningsAsErrors);MSTEST0007</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
