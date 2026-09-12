@@ -23,8 +23,7 @@ namespace CSPSolver.Math.Divide
         {
             _v1 = v1;
             _v2 = v2;
-            Min = GetMin(v1.Min, v1.Max, v2.Min, v2.Max);
-            Max = GetMax(v1.Min, v1.Max, v2.Min, v2.Max);
+            (Min, Max) = Bounds(v1.Min, v1.Max, v2.Min, v2.Max);
             Size = Max - Min + 1;
         }
 
@@ -32,39 +31,41 @@ namespace CSPSolver.Math.Divide
             => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
 
         public int GetDomainMax(IState state)
-            => GetMax(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
-
-        private static int GetMax(int v1Min, int v1Max, int v2Min, int v2Max)
-        {
-            int max = int.MinValue;
-
-            if (v2Max > 0)
-            {
-                max = v1Max / Max(1, v2Min);
-                max = Max(max, v1Min / v2Max);
-            }
-            if (v2Min < 0) max = Max(max, v1Min / Min(-1, v2Max));
-
-            return max;
-        }
+            => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).max;
 
         public int GetDomainMin(IState state)
-            => GetMin(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
+            => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
 
-        private static int GetMin(int v1Min, int v1Max, int v2Min, int v2Max)
+        /// <summary>
+        /// The denominator is never zero, so it covers at most two sign constant
+        /// ranges: [v2Min, -1] and [1, v2Max]. Over either one the quotient is
+        /// monotonic in the numerator and in the magnitude of the denominator, so
+        /// its extremes sit on the corners. A denominator holding only zero yields
+        /// an inverted range, which reads as empty.
+        /// </summary>
+        private static (int min, int max) Bounds(int v1Min, int v1Max, int v2Min, int v2Max)
         {
-            if (v2Max == 0 && v2Min == 0) return int.MaxValue;
+            var min = int.MaxValue;
+            var max = int.MinValue;
 
-            if (v2Min >= 0)
-            {
-                return v1Min >= 0
-                    ? v1Min / v2Max
-                    : v1Min / Max(1, v2Min);
-            }
+            if (v2Min <= -1) Corners(v1Min, v1Max, v2Min, Min(v2Max, -1), ref min, ref max);
+            if (v2Max >= 1) Corners(v1Min, v1Max, Max(v2Min, 1), v2Max, ref min, ref max);
 
-            if (v2Max <= 0) return v1Max < 0 ? v1Max / v2Min : v1Max / Min(-1, v2Max);
+            return (min, max);
+        }
 
-            return Min(v1Max / -1, v1Min / 1);
+        private static void Corners(int v1Min, int v1Max, int lo, int hi, ref int min, ref int max)
+        {
+            Visit(v1Min / lo, ref min, ref max);
+            Visit(v1Min / hi, ref min, ref max);
+            Visit(v1Max / lo, ref min, ref max);
+            Visit(v1Max / hi, ref min, ref max);
+        }
+
+        private static void Visit(int quotient, ref int min, ref int max)
+        {
+            if (quotient < min) min = quotient;
+            if (quotient > max) max = quotient;
         }
 
         public void Initialise(IState state) { /* holds no state */ }
