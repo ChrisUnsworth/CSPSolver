@@ -27,9 +27,6 @@ namespace CSPSolver.Math.Divide
             Size = Max - Min + 1;
         }
 
-        private (int v1Min, int v1Max, int v2Min, int v2Max) GetVariableDomainExtremes(IState state)
-            => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
-
         public int GetDomainMax(IState state)
             => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).max;
 
@@ -78,161 +75,99 @@ namespace CSPSolver.Math.Divide
             (_v2.TryGetValue(state, out int v2) && _v1.RemoveValue(state, (int)value * v2))
           | (_v1.TryGetValue(state, out int v1) && (int)value != 0 && _v2.RemoveValue(state, v1 / (int)value));
 
-        public bool SetMax(IState state, int max) =>
-            SetMax(GetVariableDomainExtremes(state), state, max);
+        public bool SetMax(IState state, int max) => Restrict(state, int.MinValue, max);
 
-        private bool SetMax((int v1Min, int v1Max, int v2Min, int v2Max) extremes, IState state, int max)
+        public bool SetMin(IState state, int min) => Restrict(state, min, int.MaxValue);
+
+        public bool SetValue(IState state, object value) => Restrict(state, (int)value, (int)value);
+
+        /// <summary>
+        /// Narrows the operands so the quotient falls within [lo, hi].
+        /// <para>
+        /// Deliberately sound rather than tight. Everything it removes is genuinely
+        /// infeasible, but it leaves some infeasible values in place. Pruning too
+        /// little costs search nodes; pruning too much loses solutions, which is the
+        /// fault this class carried. #26 covers tightening it now that a completeness
+        /// sweep guards the result.
+        /// </para>
+        /// </summary>
+        private bool Restrict(IState state, int lo, int hi)
+        {
+            var result = ExcludeZeroDenominator(state);
+            if (_v2.IsEmpty(state) || _v1.IsEmpty(state)) return result;
+
+            var v1Min = _v1.GetDomainMin(state);
+            var v1Max = _v1.GetDomainMax(state);
+            var v2Min = _v2.GetDomainMin(state);
+            var v2Max = _v2.GetDomainMax(state);
+
+            // Only quotients the operands can actually produce are worth considering,
+            // and clamping here keeps the unbounded end of SetMin and SetMax finite.
+            var (qMin, qMax) = Bounds(v1Min, v1Max, v2Min, v2Max);
+            if (lo < qMin) lo = qMin;
+            if (hi > qMax) hi = qMax;
+
+            if (lo > hi) return EmptyNumerator(state) | result;
+
+            // x = q * y + r, where r carries the sign of x and |r| < |y|. So every
+            // reachable numerator lies within the product range widened by the
+            // largest denominator magnitude.
+            var slack = Max(Abs((long)v2Min), Abs((long)v2Max)) - 1;
+            var (productMin, productMax) = Products(lo, hi, v2Min, v2Max);
+
+            return _v1.SetMin(state, Saturate(productMin - slack))
+                 | _v1.SetMax(state, Saturate(productMax + slack))
+                 | result;
+        }
+
+        /// <summary>
+        /// Zero is never a legal denominator. A bounds interface can only remove it
+        /// at an endpoint, which is enough: a denominator narrowing towards zero
+        /// reaches an endpoint of zero before search can settle on it.
+        /// </summary>
+        private bool ExcludeZeroDenominator(IState state)
         {
             var result = false;
-            (int v1Min, int v1Max, int v2Min, int v2Max) = extremes;
 
-            if (v2Min == 0)
-            {
-                result |= _v2.SetMin(state, 1);
-                v2Min++;
-            }
-
-            if (v2Max == 0)
-            {
-                result |= _v2.SetMax(state, -1);
-                v2Max--;
-            }
-
-            if (v2Min > 0) // Positive denominator
-            {
-                if (v1Min >= 0) // Positive numerator
-                {
-                    if (max <= 0) return _v1.SetMax(state, max) || result;
-                    return _v1.SetMax(state, (max + 1) * v2Max - 1)
-                         | (v1Min > 0 && _v2.SetMin(state, v1Min / (max + 1) + 1))
-                         || result;
-                }
-                else if (v1Max < 0) // Negative numerator
-                {
-                    if (max >= 0) return result;
-                    return _v1.SetMax(state, (max + 1) * v2Max - 1)
-                         | _v2.SetMax(state, v1Min / Min(max + 1, -1) + Max(-1, max + 1))
-                         || result;
-                }
-
-                // Mixed sign numerator
-                if (max > 0) return _v1.SetMax(state, (max + 1) * v2Max - 1) || result;
-                if (max == 0) return _v1.SetMax(state, 0) || result;
-                return _v1.SetMax(state, (max + 1) * v2Max - 1)
-                     | _v2.SetMax(state, v1Min / (max + 1) - 1)
-                     || result;
-            }
-            else if (v2Max < 0) // Negative denominator
-            {
-                if (v1Min >= 0) // Positive numerator
-                {
-                    if (max >= 0) return result;
-                    return _v1.SetMax(state, (max + 1) * v2Min - 1)
-                         | _v2.SetMin(state, v1Min / (max + 1) + 1)
-                         || result;
-                }
-                else if (v1Max < 0) // Negative numerator
-                {
-                    return _v1.SetMin(state, (max + 1) * v2Min + 1)
-                         | _v2.SetMax(state, v1Max / (max + 1) - 1)
-                         || result;
-                }
-
-                // Mixed sign numerator
-
-                if (max > 0) return _v1.SetMin(state, (max + 1) * v2Max + 1) || result;
-                if (max == 0) return _v1.SetMin(state, 0) || result;
-                return _v1.SetMin(state, (max + 1) * v2Max + 1)
-                     | _v2.SetMin(state, v1Max / (max + 1) + 1)
-                    || result;
-            }
-
-            // Mixed sign denominator
-
-            if (max >= 0) return result;
-
-            if (v1Min >= 0) // Positive numerator
-            {
-                return _v1.SetMin(state, (max + 1) * -1 - 1)
-                     | _v2.SetMax(state, v1Min / (max + 1) + 1)
-                     || result;
-            }
-            else if (v1Max < 0) // Negative numerator
-            {
-                return _v1.SetMin(state, (max + 1) * v2Min + 1)
-                     | _v2.SetMax(state, v1Max / (max + 1) - 1)
-                     || result;
-            }
-
-            // Mixed sign numerator
+            if (_v2.GetDomainMin(state) == 0) result |= _v2.SetMin(state, 1);
+            if (_v2.GetDomainMax(state) == 0) result |= _v2.SetMax(state, -1);
 
             return result;
         }
 
-        public bool SetMin(IState state, int min) =>
-            SetMin(GetVariableDomainExtremes(state), state, min);
+        private bool EmptyNumerator(IState state) => _v1.SetMax(state, Saturate((long)_v1.Min - 1));
 
-        private bool SetMin((int v1Min, int v1Max, int v2Min, int v2Max) extremes, IState state, int min)
+        private static (long min, long max) Products(int qLo, int qHi, int v2Min, int v2Max)
         {
-            var result = false;
-            (int v1Min, int v1Max, int v2Min, int v2Max) = extremes;
+            var min = long.MaxValue;
+            var max = long.MinValue;
 
-            if (v2Min == 0)
-            {
-                result |= _v2.SetMin(state, 1);
-                v2Min++;
-            }
+            if (v2Min <= -1) ProductCorners(qLo, qHi, v2Min, Min(v2Max, -1), ref min, ref max);
+            if (v2Max >= 1) ProductCorners(qLo, qHi, Max(v2Min, 1), v2Max, ref min, ref max);
 
-            if (v2Max == 0)
-            {
-                result |= _v2.SetMax(state, -1);
-                v2Max--;
-            }
-
-            if (min < 0)
-            {
-                if (v1Min > 0 && v2Max < 0)
-                {
-                    result |= _v2.SetMin(state, v1Max / (min - 1) + 1);
-                    result |= _v1.SetMin(state, (min - 1) * v2Max - 1);
-                }
-                else if (v1Max < 0 && v2Min > 0)
-                {
-                    if (v1Max < min) result |= _v2.SetMax(state, v1Max / (min - 1) - 1);
-                    //result |= _v1.SetMax(state, ((min + 1) * v2Max) + 1);
-                }
-            }
-            else
-            {
-                if (v1Min > 0)
-                {
-                    result |= _v2.SetMin(state, 1);
-                    result |= _v2.SetMax(state, (int)Ceiling(v1Max / (double)min));
-                }
-                else if (v1Max < 0)
-                {
-                    result |= _v2.SetMax(state, -1);
-                    result |= _v2.SetMin(state, (int)Floor(v1Min / (double)min));
-                }
-
-                if (v2Min > 0)
-                {
-                    result |= _v1.SetMin(state, v2Min * min);
-                }
-                else if (v2Max < 0)
-                {
-                    result |= _v1.SetMax(state, v2Max * min);
-                }
-            }
-
-            return result;
+            return (min, max);
         }
 
-        public bool SetValue(IState state, object value)
+        private static void ProductCorners(long qLo, long qHi, long lo, long hi, ref long min, ref long max)
         {
-            var extremes = GetVariableDomainExtremes(state);
-            return SetMax(extremes, state, (int)value) | SetMin(extremes, state, (int)value);
+            Visit(qLo * lo, ref min, ref max);
+            Visit(qLo * hi, ref min, ref max);
+            Visit(qHi * lo, ref min, ref max);
+            Visit(qHi * hi, ref min, ref max);
         }
+
+        private static void Visit(long product, ref long min, ref long max)
+        {
+            if (product < min) min = product;
+            if (product > max) max = product;
+        }
+
+        private static int Saturate(long value) =>
+            value < int.MinValue 
+                ? int.MinValue
+                : value > int.MaxValue 
+                    ? int.MaxValue
+                    : (int)value;
 
         public bool TryGetValue(IState state, out int value)
         {
@@ -250,6 +185,6 @@ namespace CSPSolver.Math.Divide
 
         public string PrettyDomain(IState state) => $"{_v1.PrettyDomain(state)} / {_v2.PrettyDomain(state)}";
 
-        public IEnumerable<IVariable> GetChildren() => new IVariable[] { _v1, _v2 };
+        public IEnumerable<IVariable> GetChildren() => [_v1, _v2];
     }
 }
