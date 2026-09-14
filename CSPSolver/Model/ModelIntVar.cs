@@ -33,7 +33,7 @@ namespace CSPSolver.Model
         {
             if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new PositiveMultiplyIntVar(v1.Variable, v2.Variable) };
             if (v1.Variable.Max < 0 && v2.Variable.Max < 0) return new() { Variable = new NegativeMultiplyIntVar(v1.Variable, v2.Variable) };
-            throw new NotImplementedException(); //new ModelIntVar { variable = new MixedSignMultiplyIntVar(v1.variable, v2.variable) };
+            return new() { Variable = new MixedSignMultiplyIntVar(v1.Variable, v2.Variable) };
         }
         public static ModelIntVar operator /(ModelIntVar v1, ModelIntVar v2)
         {
