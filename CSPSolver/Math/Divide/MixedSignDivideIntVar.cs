@@ -85,10 +85,8 @@ namespace CSPSolver.Math.Divide
         /// Narrows the operands so the quotient falls within [lo, hi].
         /// <para>
         /// Deliberately sound rather than tight. Everything it removes is genuinely
-        /// infeasible, but it leaves some infeasible values in place. Pruning too
-        /// little costs search nodes; pruning too much loses solutions, which is the
-        /// fault this class carried. #26 covers tightening it now that a completeness
-        /// sweep guards the result.
+        /// infeasible, but it leaves some infeasible values in place, which costs
+        /// search nodes rather than solutions. #26 covers tightening it.
         /// </para>
         /// </summary>
         private bool Restrict(IState state, int lo, int hi)
