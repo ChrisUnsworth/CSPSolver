@@ -17,11 +17,11 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class DomainSizeTests
     {
-        // Enumeration stops below the sizes that do not terminate. Search does not
-        // come back for a domain of 64 values or more, which is a separate fault
-        // from the bounds being wrong, and hanging the suite would hide every other
-        // result. Bounds are still swept over the full range below.
-        private const int LargestEnumerable = 63;
+        // Enumeration stops at the largest size backed by LongDomainVar. Search does
+        // not return for 65 values or more, where IntDomainVar takes over, and
+        // hanging the suite would hide every other result. Bounds are still swept
+        // over the full range below, and they are correct up there.
+        private const int LargestEnumerable = 64;
         private const int LargestSize = 200;
 
         [TestMethod]

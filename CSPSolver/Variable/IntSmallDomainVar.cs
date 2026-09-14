@@ -7,6 +7,8 @@ using static System.Math;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
+using CSPSolver.utils;
+
 namespace CSPSolver.Variable
 {
     public readonly struct IntSmallDomainVar : ISmallIntDomainVar
@@ -67,7 +69,7 @@ namespace CSPSolver.Variable
         {
             var oldD = state.GetDomain(StateRef, Size);
             if (oldD == 0) return false;
-            var newD = (uint)Pow(2, value - Min);
+            var newD = 1u << (value - Min);
             if (newD != oldD)
             {
                 state.SetDomain(StateRef, Size, newD & oldD);
@@ -82,7 +84,7 @@ namespace CSPSolver.Variable
         public bool RemoveValue(IState state, int value)
         {
             var oldD = state.GetDomain(StateRef, Size);
-            var newD = oldD & ~(uint)Pow(2, value - Min);
+            var newD = oldD & ~(1u << (value - Min));
             if (newD != oldD)
             {
                 state.SetDomain(StateRef, Size, newD);
@@ -100,7 +102,7 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = (uint)Pow(2, max - Min + 1) - 1;
+            var mask = BitMask.Small(max - Min + 1);
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
@@ -114,13 +116,13 @@ namespace CSPSolver.Variable
                 return SetDomain(state, 0);
             }
 
-            var mask = ~(uint)(Pow(2, min - Min) - 1);
+            var mask = ~BitMask.Small(min - Min);
             var oldDom = state.GetDomain(StateRef, Size);
             var newDom = oldDom & mask;
             return SetDomain(state, newDom);
         }
 
-        public void Initialise(IState state) => state.SetDomain(StateRef, Size, (uint)(Pow(2, Size) - 1));
+        public void Initialise(IState state) => state.SetDomain(StateRef, Size, BitMask.Small(Size));
 
         public IEnumerable<int> EnumerateDomain(IState state)
         {

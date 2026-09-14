@@ -7,6 +7,8 @@ using static System.Math;
 using CSPSolver.common;
 using CSPSolver.common.search;
 
+using CSPSolver.utils;
+
 namespace CSPSolver.State
 {
     public readonly struct IntState : IState
@@ -28,13 +30,23 @@ namespace CSPSolver.State
         }
 
         public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx , size);
-        private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & ((uint)Pow(2, size) - 1);
+        private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & BitMask.Small(size);
 
         public ulong GetDomainLong(in IStateRef idx, in int size) => GetLargeDomain(idx, size).Reverse().Aggregate(0ul, (r, d) => d | (r << 32));
 
-        public int GetDomainMax(in IStateRef idx, in int size) => (int)Log2(GetDomain((StateRef)idx, size));
+        public int GetDomainMax(in IStateRef idx, in int size) =>
+            GetDomain((StateRef)idx, size) switch
+            {
+                0 => int.MinValue, // an empty domain reads as an inverted range
+                var domain => BitOperations.Log2(domain)
+            };
 
-        public int GetDomainMaxLong(in IStateRef idx, in int size) => (int)Log2(GetDomainLong((StateRef)idx, size));
+        public int GetDomainMaxLong(in IStateRef idx, in int size) =>
+            GetDomainLong((StateRef)idx, size) switch
+            {
+                0 => int.MinValue, // an empty domain reads as an inverted range
+                var domain => BitOperations.Log2(domain)
+            };
 
         public int GetLargeDomainMax(in IStateRef idx, in int size)
         {
@@ -44,7 +56,7 @@ namespace CSPSolver.State
             {
                 if (domain[i] != 0)
                 {
-                    return (int)Log2(domain[i]) + 32 * i;
+                    return BitOperations.Log2(domain[i]) + 32 * i;
                 }
             }
 
@@ -101,7 +113,7 @@ namespace CSPSolver.State
 
         private void SetDomain(in StateRef idx, in int size, in uint value)
         {
-            _data[idx.Idx] = _data[idx.Idx] & ~(((uint)Pow(2, size) - 1) << idx.Offset);
+            _data[idx.Idx] = _data[idx.Idx] & ~(BitMask.Small(size) << idx.Offset);
             _data[idx.Idx] = _data[idx.Idx] + (value << idx.Offset);
         }
 
