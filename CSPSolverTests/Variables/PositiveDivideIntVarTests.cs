@@ -116,5 +116,48 @@ namespace CSPSolverTests.Variables
             Assert.IsTrue(divide.SetMin(state, 11));
             Assert.IsTrue(divide.IsEmpty(state));
         }
+        [TestMethod]
+        public void DenominatorContainingZeroIsRejected()
+        {
+            var (_, v1, v2) = GetVar(1, 10, 0, 4); // denominator is 0 .. 3
+
+            // A domain only shrinks, so barring zero once at construction keeps it
+            // out for the whole search and leaves the bounds free of guards.
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new PositiveDivideIntVar(v1, v2));
+        }
+
+        [TestMethod]
+        public void DenominatorOfOnlyZeroIsRejected()
+        {
+            var (_, v1, v2) = GetVar(1, 10, 0, 1); // denominator is exactly { 0 }
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new PositiveDivideIntVar(v1, v2));
+        }
+
+        [TestMethod]
+        public void NegativeUpperBoundEmptiesTheNumerator()
+        {
+            var (state, v1, v2) = GetVar(1, 10, 1, 3);
+            var divide = new PositiveDivideIntVar(v1, v2);
+
+            // Both domains are non negative, so no negative quotient is reachable.
+            // -1 is the case that used to divide by (max + 1).
+            divide.SetMax(state, -1);
+
+            Assert.IsTrue(v1.IsEmpty(state));
+        }
+
+        [TestMethod]
+        public void UpperBoundOfZeroForcesNumeratorUnderDenominator()
+        {
+            var (state, v1, v2) = GetVar(1, 10, 1, 3); // v1 1..10, v2 1..3
+
+            var divide = new PositiveDivideIntVar(v1, v2);
+
+            divide.SetMax(state, 0); // quotient 0 means v1 < v2
+
+            Assert.AreEqual(2, v1.GetDomainMax(state));
+            Assert.IsFalse(v1.IsEmpty(state));
+        }
     }
 }

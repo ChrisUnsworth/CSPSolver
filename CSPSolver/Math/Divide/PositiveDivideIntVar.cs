@@ -22,6 +22,8 @@ namespace CSPSolver.Math.Divide
         public PositiveDivideIntVar(IIntVar v1, IIntVar v2)
         {
             if (v1.Min < 0 || v2.Min < 0) throw new ArgumentOutOfRangeException($"{nameof(PositiveDivideIntVar)} only acts over posative domains.");
+            // A domain only ever shrinks, so a denominator starting at one can never reach zero.
+            if (v2.Min < 1) throw new ArgumentOutOfRangeException($"{nameof(PositiveDivideIntVar)} cannot divide by a domain containing zero.");
             _v1 = v1;
             _v2 = v2;
             Min = v1.Min / v2.Max;
@@ -44,11 +46,13 @@ namespace CSPSolver.Math.Divide
           | (_v1.TryGetValue(state, out int v1) && (int)value != 0 && _v2.RemoveValue(state, v1 / (int)value));
 
         public bool SetMax(IState state, int max) =>
-            max == 0
+            max > 0
+                ? _v1.SetMax(state, (max + 1) * _v2.GetDomainMax(state) - 1)
+                  | _v2.SetMin(state, _v1.GetDomainMin(state) / (max + 1) + 1)
+                : max == 0
                 ? _v1.SetMax(state, _v2.GetDomainMax(state) - 1)
                   | _v2.SetMin(state, _v1.GetDomainMin(state) + 1)
-                : _v1.SetMax(state, (max + 1) * _v2.GetDomainMax(state) - 1)
-                  | _v2.SetMin(state, _v1.GetDomainMin(state) / (max + 1) + 1);
+                : _v1.SetMax(state, -1); // a non negative quotient cannot meet a negative bound
 
         public bool SetMin(IState state, int min) =>
             min > 0

@@ -19,6 +19,9 @@ namespace CSPSolver.Model
 
         public override IVariable<int> GetVariable() => Variable;
 
+        // == and != build constraints rather than comparing, so they deliberately
+        // do not agree with Equals. Equals answers whether two model vars stand for
+        // the same underlying variable; == asks the solver to make them equal.
         public override bool Equals(object obj) => obj is ModelIntVar var && EqualityComparer<IIntVar>.Default.Equals(Variable, var.Variable);
         public override int GetHashCode() => HashCode.Combine(Variable);
 
@@ -30,11 +33,11 @@ namespace CSPSolver.Model
         {
             if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new PositiveMultiplyIntVar(v1.Variable, v2.Variable) };
             if (v1.Variable.Max < 0 && v2.Variable.Max < 0) return new() { Variable = new NegativeMultiplyIntVar(v1.Variable, v2.Variable) };
-            throw new NotImplementedException(); //new ModelIntVar { variable = new MixedSignMultiplyIntVar(v1.variable, v2.variable) };
+            return new() { Variable = new MixedSignMultiplyIntVar(v1.Variable, v2.Variable) };
         }
         public static ModelIntVar operator /(ModelIntVar v1, ModelIntVar v2)
         {
-            if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new PositiveDivideIntVar(v1.Variable, v2.Variable) };
+            if (v1.Variable.Min >= 0 && v2.Variable.Min >= 1) return new() { Variable = new PositiveDivideIntVar(v1.Variable, v2.Variable) };
             if (v1.Variable.Max < 0 && v2.Variable.Max < 0) return new() { Variable = new NegativeDivideIntVar(v1.Variable, v2.Variable) };
             return new ModelIntVar { Variable = new MixedSignDivideIntVar(v1.Variable, v2.Variable) };
         }

@@ -24,24 +24,41 @@ namespace CSPSolver.Math.Multiply
         {
             _v1 = v1;
             _v2 = v2;
-            var extremes = new int[] { v1.Max * v2.Max, v1.Max * v2.Min, v1.Min * v2.Max, v1.Min * v2.Min };
-            Min = extremes.Min();
-            Max = extremes.Max();
+            (Min, Max) = Bounds(v1.Min, v1.Max, v2.Min, v2.Max);
             Size = Max - Min + 1;
-        }
-
-        private int[] GetDomainExtremes(IState state)
-        {
-            (int v1Min, int v1Max, int v2Min, int v2Max) = GetVariableDomainExtremes(state);
-            return new int[] { v1Max * v2Max, v1Max * v2Min, v1Min * v2Max, v1Min * v2Min };
         }
 
         private (int v1Min, int v1Max, int v2Min, int v2Max) GetVariableDomainExtremes(IState state)
             => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
 
-        public int GetDomainMax(IState state) => GetDomainExtremes(state).Max();
+        public int GetDomainMax(IState state)
+            => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).max;
 
-        public int GetDomainMin(IState state) => GetDomainExtremes(state).Min();
+        public int GetDomainMin(IState state)
+            => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
+
+        /// <summary>
+        /// A product is monotonic in each operand, so over a pair of ranges its
+        /// extremes sit on the corners.
+        /// </summary>
+        private static (int min, int max) Bounds(int v1Min, int v1Max, int v2Min, int v2Max)
+        {
+            var min = int.MaxValue;
+            var max = int.MinValue;
+
+            Visit(v1Max * v2Max, ref min, ref max);
+            Visit(v1Max * v2Min, ref min, ref max);
+            Visit(v1Min * v2Max, ref min, ref max);
+            Visit(v1Min * v2Min, ref min, ref max);
+
+            return (min, max);
+        }
+
+        private static void Visit(int product, ref int min, ref int max)
+        {
+            if (product < min) min = product;
+            if (product > max) max = product;
+        }
 
         public void Initialise(IState state) { /* holds no state */ }
 

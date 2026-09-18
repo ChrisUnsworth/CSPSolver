@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -18,6 +19,13 @@ namespace CSPSolver.Model
         public IRealVar Variable { get; set; }
 
         public override IVariable<double> GetVariable() => Variable;
+
+        // == and != build constraints rather than comparing, so they deliberately
+        // do not agree with Equals. Equals answers whether two model vars stand for
+        // the same underlying variable; == asks the solver to make them equal.
+        public override bool Equals(object obj) => obj is ModelRealVar var && EqualityComparer<IRealVar>.Default.Equals(Variable, var.Variable);
+
+        public override int GetHashCode() => HashCode.Combine(Variable);
 
         public static implicit operator ModelRealVar(ModelIntVar i) => new() { Variable = new RealVarIntWrapper(i.Variable) };
 

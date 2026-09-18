@@ -225,7 +225,7 @@ namespace CSPSolverTests.Solve
             CheckAll(mb, test, 46);
         }
 
-        [Ignore]
+        [TestMethod]
         public void MixedSignXmultiplyYequalsZ()
         {
             var mb = GetModelBuilder();

@@ -17,6 +17,7 @@ namespace CSPSolver.Search
         public readonly SearchConfig _searchConfig;
         public readonly StatePool _statePool;
         public readonly SearchTree Root;
+        private bool _enumerated;
 
         public DebugSearch(IModelBuilder mb, SearchConfig? searchConfig = null)
         {
@@ -36,7 +37,13 @@ namespace CSPSolver.Search
 
         public void Dispose() { }
 
-        public void Reset() => _frontier.Push(Root);
+        public void Reset()
+        {
+            _frontier.Clear();
+            _frontier.Push(Root);
+            Current = null;
+            _enumerated = false;
+        }
 
         public bool MoveNext() => Solve();
 
@@ -77,8 +84,14 @@ namespace CSPSolver.Search
             return false;
         }
 
-        public IEnumerator<ISolution> GetEnumerator() => this;
+        public IEnumerator<ISolution> GetEnumerator()
+        {
+            if (_enumerated) throw new InvalidOperationException(Search.SearchedAlready);
 
-        IEnumerator IEnumerable.GetEnumerator() => this;
+            _enumerated = true;
+            return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
