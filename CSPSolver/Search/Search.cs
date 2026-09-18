@@ -66,13 +66,18 @@ namespace CSPSolver.Search
                     if (_model.Maximise) objective.SetMin(state, best + 1);
                     else objective.SetMax(state, best - 1);
 
-                    if (_model.Objective.IsEmpty(state)) break;
+                    if (_model.Objective.IsEmpty(state))
+                    {
+                        _statePool.Return(state);
+                        break;
+                    }
                 }
 
                 _model.Propagate(state);
                 if (_model.IsSolved(state))
                 {
                     Current = new Solution(_statePool.Copy(state));
+                    _statePool.Return(state);
                     return true;
                 }
                 else if (!_model.HasEmptyDomain(state))
@@ -86,7 +91,14 @@ namespace CSPSolver.Search
                     _statePool.Return(state);
                 }
             }
-            
+
+            // Reaching here with a non-empty frontier means the objective bound broke
+            // out above; whatever was left unexplored needs returning too.
+            while (_frontier.Any())
+            {
+                _statePool.Return(_frontier.Pop());
+            }
+
             return false;
         }
 
