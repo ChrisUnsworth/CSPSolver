@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/ChrisUnsworth/CSPSolver</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ChrisUnsworth/CSPSolver</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.1.0002</Version>
+    <Version>1.1.3</Version>
     <ApplicationIcon />
     <StartupObject />
-    <PackageReleaseNotes>Added Real valued variables and supporting constraints</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed mixed-sign multiply/divide, single-use Search enumeration and pool leaks, IntDomainVar hang above 64 values, and ModelVar/ModelRealVar equality gaps</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
