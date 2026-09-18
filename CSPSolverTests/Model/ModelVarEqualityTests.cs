@@ -61,5 +61,47 @@ namespace CSPSolverTests.Model
             Assert.IsInstanceOfType<ModelConstraint>(x == y);
             Assert.IsFalse(x.Equals(y));
         }
+
+        [TestMethod]
+        public void BoolVarsOverTheSameVariableAreEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddBoolVar();
+            var same = new ModelBoolVar { Variable = x.Variable };
+
+            Assert.IsTrue(x.Equals(same));
+            Assert.AreEqual(x.GetHashCode(), same.GetHashCode());
+        }
+
+        [TestMethod]
+        public void BoolVarsOverDifferentVariablesAreNotEqual()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            Assert.IsFalse(x.Equals(y));
+        }
+
+        [TestMethod]
+        public void BoolVarIsNotEqualToNullOrAnotherType()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddBoolVar();
+
+            Assert.IsFalse(x.Equals(null));
+            Assert.IsFalse(x.Equals("not a variable"));
+        }
+
+        [TestMethod]
+        public void BoolVarEqualityOperatorBuildsAConstraintRatherThanComparing()
+        {
+            var mb = new ModelBuilder();
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            Assert.IsInstanceOfType<ModelConstraint>(x == y);
+            Assert.IsFalse(x.Equals(y));
+        }
     }
 }
