@@ -5,7 +5,6 @@ using System.Linq;
 using static System.Math;
 
 using CSPSolver.common;
-using CSPSolver.common.search;
 
 using CSPSolver.utils;
 
@@ -60,7 +59,7 @@ namespace CSPSolver.State
                 }
             }
 
-            throw new EmptyDomainException();
+            return int.MinValue; // an empty domain reads as an inverted range
         }
 
         public int GetDomainMin(in IStateRef idx, in int size) => BitOperations.TrailingZeroCount(GetDomain((StateRef)idx, size));
@@ -79,7 +78,7 @@ namespace CSPSolver.State
                 }
             }
 
-            throw new EmptyDomainException();
+            return domain.Length * 32; // an empty domain reads as an inverted range
         }
 
         public uint[] GetLargeDomain(in IStateRef idx, in int size)

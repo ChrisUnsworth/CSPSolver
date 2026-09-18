@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CSPSolver.Model;
 using CSPSolver.State;
+using CSPSolver.Variable;
 
 namespace CSPSolverTests.Variables
 {
@@ -17,11 +18,7 @@ namespace CSPSolverTests.Variables
     [TestClass]
     public class DomainSizeTests
     {
-        // Enumeration stops at the largest size backed by LongDomainVar. Search does
-        // not return for 65 values or more, where IntDomainVar takes over, and
-        // hanging the suite would hide every other result. Bounds are still swept
-        // over the full range below, and they are correct up there.
-        private const int LargestEnumerable = 64;
+        private const int LargestEnumerable = 200;
         private const int LargestSize = 200;
 
         [TestMethod]
@@ -66,6 +63,22 @@ namespace CSPSolverTests.Variables
                 faults.Count,
                 $"{faults.Count} of {LargestEnumerable} sizes enumerate the wrong values:{Environment.NewLine}" +
                 string.Join(Environment.NewLine, faults.Take(12)));
+        }
+
+        [TestMethod]
+        public void InitialisingALargeDomainLeavesAPackedNeighbourAlone()
+        {
+            // A domain whose size is not a multiple of 32 leaves spare bits in its
+            // last word, and StateBuilder packs the next small domain into them.
+            var sb = new StateBuilder();
+            var large = new IntDomainVar(0, 65, sb.AddDomain(65));
+            var neighbour = sb.AddDomain(5);
+            var state = sb.GetState();
+
+            state.SetDomain(neighbour, 5, 0b10101);
+            large.Initialise(state);
+
+            Assert.AreEqual(0b10101u, state.GetDomain(neighbour, 5));
         }
 
         private static (string backing, int min, int max) Bounds(int size)

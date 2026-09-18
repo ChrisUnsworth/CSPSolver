@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using System.Collections.Generic;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
+using CSPSolver.utils;
 
 namespace CSPSolver.Variable
 {
@@ -87,7 +89,7 @@ namespace CSPSolver.Variable
             int intVal = max - Min;
             int i = intVal < 0 ? -1 : intVal / 32;
             int r = intVal % 32;
-            uint mask = (1u << (r + 1)) - 1;
+            uint mask = BitMask.Small(r + 1);
             var isDifferent = false;
             var domain = state.GetLargeDomain(StateRef, Size);
 
@@ -146,10 +148,15 @@ namespace CSPSolver.Variable
         public void Initialise(IState state)
         {
             var domain = state.GetLargeDomain(StateRef, Size);
+            var remainder = Size % 32;
 
             for (int i = 0; i < domain.Length; i++)
             {
-                domain[i] = 0b_1111_1111_1111_1111_1111_1111_1111_1111;
+                // The last word's high bits are shared with whatever domain StateBuilder
+                // packs next, so they must stay zero whenever Size isn't a multiple of 32.
+                domain[i] = remainder != 0 && i == domain.Length - 1
+                    ? BitMask.Small(remainder)
+                    : uint.MaxValue;
             }
 
             state.SetLargeDomain(StateRef, Size, domain);
@@ -157,25 +164,17 @@ namespace CSPSolver.Variable
 
         public bool IsInstantiated(IState state)
         {
-            int i = 0;
+            var bits = 0;
             var domain = state.GetLargeDomain(StateRef, Size);
 
-            for (; i <= domain.Length; i++)
+            // Instantiated means a single value left, so a single bit across the
+            // whole domain. Two is as far as this needs to count.
+            for (var i = 0; i < domain.Length && bits < 2; i++)
             {
-                if (i == domain.Length) return false;
-                if (domain[i] != 0)
-                {
-                    if ((domain[i] & (domain[i] - 1)) == 0) break;
-                    return false;
-                }
+                bits += BitOperations.PopCount(domain[i]);
             }
 
-            for (; i < domain.Length; i++)
-            {
-                if (domain[i] != 0) return false;
-            }
-
-            return true;
+            return bits == 1;
         }
 
         public bool IsEmpty(IState state)
