@@ -31,8 +31,10 @@ namespace CSPSolver.Model
 
         public static ModelRealVar operator /(ModelRealVar v1, ModelRealVar v2)
         {
-            if (v1.Variable.Min >= 0 && v2.Variable.Min >= 0) return new() { Variable = new DividePositiveRealVar(v1.Variable, v2.Variable) };
-            throw new NotImplementedException();
+            // DividePositiveRealVar has no zero-exclusion of its own, unlike its int
+            // counterpart -- the denominator must already be strictly positive.
+            if (v1.Variable.Min >= 0 && v2.Variable.Min > 0) return new() { Variable = new DividePositiveRealVar(v1.Variable, v2.Variable) };
+            return new() { Variable = new MixedSignDivideRealVar(v1.Variable, v2.Variable) };
         }
 
         public static ModelRealVar operator *(ModelRealVar v1, ModelRealVar v2) =>  new() { Variable = new MixedSignMultiplyRealVar(v1.Variable, v2.Variable) };
