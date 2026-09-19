@@ -33,8 +33,8 @@ namespace CSPSolver.Variable
 
         public void Initialise(IState state)
         {
-            state.SetLong(MaxStateRef, (long)Round(Max / Epsilon));
-            state.SetLong(MinStateRef, (long)Round(Min / Epsilon));
+            state.SetLong(MaxStateRef, AsFloorLong(Max));
+            state.SetLong(MinStateRef, AsCeilLong(Min));
         }
 
         public bool IsEmpty(IState state) => state.GetLong(MaxStateRef) < state.GetLong(MinStateRef);
@@ -67,7 +67,9 @@ namespace CSPSolver.Variable
 
         public bool SetMax(IState state, double max)
         {
-            var maxLong = AsLong(max);
+            // Floor, not nearest: rounding a shrinking max up onto the grid could
+            // keep a point that's actually above the real bound just narrowed to.
+            var maxLong = AsFloorLong(max);
 
             if (maxLong < state.GetLong(MaxStateRef))
             {
@@ -80,7 +82,9 @@ namespace CSPSolver.Variable
 
         public bool SetMin(IState state, double min)
         {
-            var minLong = AsLong(min);
+            // Ceiling, not nearest: rounding a growing min down onto the grid could
+            // keep a point that's actually below the real bound just narrowed to.
+            var minLong = AsCeilLong(min);
 
             if (minLong > state.GetLong(MinStateRef))
             {
@@ -103,5 +107,12 @@ namespace CSPSolver.Variable
         public Type VariableType() => typeof(double);
 
         private long AsLong(double val) => (long)Round((double)val / Epsilon);
+
+        // See SmallRealVar's AsFloorInt/AsCeilInt: val / Epsilon lands a tick off an
+        // exact grid point often enough that a bare floor/ceiling would knock a real
+        // grid point off the domain, so nudge by a tolerance tiny next to one step.
+        private long AsFloorLong(double val) => (long)Floor(val / Epsilon + 1e-9);
+
+        private long AsCeilLong(double val) => (long)Ceiling(val / Epsilon - 1e-9);
     }
 }
