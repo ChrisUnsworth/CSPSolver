@@ -166,6 +166,42 @@ namespace CSPSolverTests.Logic
             CheckAll(mb, test, 2);
         }
 
+        [TestMethod]
+        public void BoolVarEqualityOperatorTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            mb.AddConstraint(x == y);
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) == solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 2);
+        }
+
+        [TestMethod]
+        public void BoolVarInequalityOperatorTest()
+        {
+            var mb = GetModelBuilder();
+
+            var x = mb.AddBoolVar();
+            var y = mb.AddBoolVar();
+
+            mb.AddConstraint(x != y);
+
+            void test(ISolution solution)
+            {
+                Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
+            }
+
+            CheckAll(mb, test, 2);
+        }
+
         private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
         {
             var search = new Search(mb);
