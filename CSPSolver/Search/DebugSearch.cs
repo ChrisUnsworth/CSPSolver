@@ -7,91 +7,90 @@ using System.Collections.Generic;
 using CSPSolver.State;
 using CSPSolver.common.variables;
 
-namespace CSPSolver.Search
+namespace CSPSolver.Search;
+
+public class DebugSearch : IEnumerator<ISolution>, IEnumerable<ISolution>
 {
-    public class DebugSearch : IEnumerator<ISolution>, IEnumerable<ISolution>
+
+    public readonly IModel _model;
+    public readonly Stack<SearchTree> _frontier;
+    public readonly SearchConfig _searchConfig;
+    public readonly StatePool _statePool;
+    public readonly SearchTree Root;
+    private bool _enumerated;
+
+    public DebugSearch(IModelBuilder mb, SearchConfig? searchConfig = null)
     {
+        _model = mb.GetModel();
+        _statePool = new StatePool(mb.GetStateSize());
+        var initialState = _statePool.Empty();
+        _model.Initialise(initialState);
+        Root = new SearchTree(initialState, null);
+        _frontier = new Stack<SearchTree>();
+        _frontier.Push(Root);
+        _searchConfig = searchConfig ?? SearchConfig.Default();
+    }
 
-        public readonly IModel _model;
-        public readonly Stack<SearchTree> _frontier;
-        public readonly SearchConfig _searchConfig;
-        public readonly StatePool _statePool;
-        public readonly SearchTree Root;
-        private bool _enumerated;
+    public ISolution Current { get; private set; }
 
-        public DebugSearch(IModelBuilder mb, SearchConfig? searchConfig = null)
+    object IEnumerator.Current => Current;
+
+    public void Dispose() { }
+
+    public void Reset()
+    {
+        _frontier.Clear();
+        _frontier.Push(Root);
+        Current = null;
+        _enumerated = false;
+    }
+
+    public bool MoveNext() => Solve();
+
+    private bool Solve()
+    {
+        while (_frontier.Any())
         {
-            _model = mb.GetModel();
-            _statePool = new StatePool(mb.GetStateSize());
-            var initialState = _statePool.Empty();
-            _model.Initialise(initialState);
-            Root = new SearchTree(initialState, null);
-            _frontier = new Stack<SearchTree>();
-            _frontier.Push(Root);
-            _searchConfig = searchConfig ?? SearchConfig.Default();
-        }
+            var node = _frontier.Pop();
 
-        public ISolution Current { get; private set; }
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() { }
-
-        public void Reset()
-        {
-            _frontier.Clear();
-            _frontier.Push(Root);
-            Current = null;
-            _enumerated = false;
-        }
-
-        public bool MoveNext() => Solve();
-
-        private bool Solve()
-        {
-            while (_frontier.Any())
+            if (Current != null && _model.Objective != null)
             {
-                var node = _frontier.Pop();
+                var objective = _model.Objective as IIntVar;
+                var best = Current.GetValue(objective);
+                if (_model.Maximise) objective.SetMin(node.Before, best + 1);
+                else objective.SetMax(node.Before, best - 1);
 
-                if (Current != null && _model.Objective != null)
-                {
-                    var objective = _model.Objective as IIntVar;
-                    var best = Current.GetValue(objective);
-                    if (_model.Maximise) objective.SetMin(node.Before, best + 1);
-                    else objective.SetMax(node.Before, best - 1);
-
-                    if (_model.Objective.IsEmpty(node.Before)) break;
-                }
-
-                if (node.After != null) _statePool.Return(node.After);
-                node.After = _statePool.Copy(node.Before);
-
-                _model.Propagate(node.After);
-                if (_model.IsSolved(node.After))
-                {
-                    Current = new Solution(_statePool.Copy(node.After));
-                    return true;
-                }
-                else if (!_model.HasEmptyDomain(node.After))
-                {
-                    foreach (var branch in _searchConfig.Branching.Branch(_model, node.After, _statePool).Reverse())
-                    {
-                        _frontier.Push(node.AddChild(branch));
-                    }
-                }
+                if (_model.Objective.IsEmpty(node.Before)) break;
             }
 
-            return false;
+            if (node.After != null) _statePool.Return(node.After);
+            node.After = _statePool.Copy(node.Before);
+
+            _model.Propagate(node.After);
+            if (_model.IsSolved(node.After))
+            {
+                Current = new Solution(_statePool.Copy(node.After));
+                return true;
+            }
+            else if (!_model.HasEmptyDomain(node.After))
+            {
+                foreach (var branch in _searchConfig.Branching.Branch(_model, node.After, _statePool).Reverse())
+                {
+                    _frontier.Push(node.AddChild(branch));
+                }
+            }
         }
 
-        public IEnumerator<ISolution> GetEnumerator()
-        {
-            if (_enumerated) throw new InvalidOperationException(Search.SearchedAlready);
-
-            _enumerated = true;
-            return this;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        return false;
     }
+
+    public IEnumerator<ISolution> GetEnumerator()
+    {
+        if (_enumerated) throw new InvalidOperationException(Search.SearchedAlready);
+
+        _enumerated = true;
+        return this;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

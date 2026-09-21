@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSPSolver.common.search
+namespace CSPSolver.common.search;
+
+public interface IVariableOrderingHeuristic
 {
-    public interface IVariableOrderingHeuristic
-    {
-        IVariable Next(in IModel model, in IState state);
-    }
+    IVariable Next(in IModel model, in IState state);
 }

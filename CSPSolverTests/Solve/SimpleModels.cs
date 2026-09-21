@@ -14,591 +14,590 @@ using CSPSolver.Math.Divide;
 using static CSPSolver.Model.ModelConstraint;
 using static CSPSolver.Model.ModelRealVar;
 
-namespace CSPSolverTests.Solve
+namespace CSPSolverTests.Solve;
+
+[TestClass]
+public class SimpleModels
 {
-    [TestClass]
-    public class SimpleModels
+    private static ModelBuilder GetModelBuilder() => new(new StateBuilder());
+
+    [TestMethod]
+    public void XequalsConst()
     {
-        private static ModelBuilder GetModelBuilder() => new(new StateBuilder());
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
 
-        [TestMethod]
-        public void XequalsConst()
+        mb.AddConstraint(x == 3);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x == 3);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(3, solution.GetValue(x));
-            }
-
-            CheckAll(mb, test, 1);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(3, solution.GetValue(x));
         }
 
-        [TestMethod]
-        public void XNotEqualsConst()
+        CheckAll(mb, test, 1);
+    }
+
+    [TestMethod]
+    public void XNotEqualsConst()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x != 3);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x != 3);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreNotEqual(3, solution.GetValue(x));
-            }
-
-            CheckAll(mb, test, 4);
+            Assert.IsNotNull(solution);
+            Assert.AreNotEqual(3, solution.GetValue(x));
         }
 
-        [TestMethod]
-        public void XequalsY()
+        CheckAll(mb, test, 4);
+    }
+
+    [TestMethod]
+    public void XequalsY()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+        var y = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x == y);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-            var y = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x == y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(x), solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 5);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(x), solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XplusYequalsZ()
+        CheckAll(mb, test, 5);
+    }
+
+    [TestMethod]
+    public void XplusYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 10);
+        var y = mb.AddIntDomainVar(1, 10);
+        var z = mb.AddIntDomainVar(1, 10);
+
+        mb.AddConstraint(x + y == z);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 10);
-            var y = mb.AddIntDomainVar(1, 10);
-            var z = mb.AddIntDomainVar(1, 10);
-
-            mb.AddConstraint(x + y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) + solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 45);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) + solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void NegativeXplusYequalsZ()
+        CheckAll(mb, test, 45);
+    }
+
+    [TestMethod]
+    public void NegativeXplusYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(-10, -1);
+        var y = mb.AddIntDomainVar(-10, -1);
+        var z = mb.AddIntDomainVar(-10, -1);
+
+        mb.AddConstraint(x + y == z);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(-10, -1);
-            var y = mb.AddIntDomainVar(-10, -1);
-            var z = mb.AddIntDomainVar(-10, -1);
-
-            mb.AddConstraint(x + y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) + solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 45);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) + solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XminusYequalsZ()
+        CheckAll(mb, test, 45);
+    }
+
+    [TestMethod]
+    public void XminusYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 10);
+        var y = mb.AddIntDomainVar(1, 10);
+        var z = mb.AddIntDomainVar(1, 10);
+
+        mb.AddConstraint(x - y == z);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 10);
-            var y = mb.AddIntDomainVar(1, 10);
-            var z = mb.AddIntDomainVar(1, 10);
-
-            mb.AddConstraint(x - y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) - solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 45);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) - solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void MixedSignXminusYequalsZ()
+        CheckAll(mb, test, 45);
+    }
+
+    [TestMethod]
+    public void MixedSignXminusYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(-5, 5).Variable;
+        var y = mb.AddIntDomainVar(-5, 5).Variable;
+        var z = mb.AddIntDomainVar(-5, 5).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new MinusIntDomain(x, y), z));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(-5, 5).Variable;
-            var y = mb.AddIntDomainVar(-5, 5).Variable;
-            var z = mb.AddIntDomainVar(-5, 5).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new MinusIntDomain(x, y), z));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) - solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 91);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) - solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XmultiplyYequalsZ()
+        CheckAll(mb, test, 91);
+    }
+
+    [TestMethod]
+    public void XmultiplyYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 10).Variable;
+        var y = mb.AddIntDomainVar(1, 10).Variable;
+        var z = mb.AddIntDomainVar(1, 20).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new PositiveMultiplyIntVar(x, y), z));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 10).Variable;
-            var y = mb.AddIntDomainVar(1, 10).Variable;
-            var z = mb.AddIntDomainVar(1, 20).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new PositiveMultiplyIntVar(x, y), z));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 46);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XdivideYequalsZ()
+        CheckAll(mb, test, 46);
+    }
+
+    [TestMethod]
+    public void XdivideYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 10).Variable;
+        var y = mb.AddIntDomainVar(1, 10).Variable;
+        var z = mb.AddIntDomainVar(0, 5).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new PositiveDivideIntVar(x, y), z));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 10).Variable;
-            var y = mb.AddIntDomainVar(1, 10).Variable;
-            var z = mb.AddIntDomainVar(0, 5).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new PositiveDivideIntVar(x, y), z));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 95);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void NegativeXdivideYequalsZ()
+        CheckAll(mb, test, 95);
+    }
+
+    [TestMethod]
+    public void NegativeXdivideYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(-10, -1).Variable;
+        var y = mb.AddIntDomainVar(-10, -1).Variable;
+        var z = mb.AddIntDomainVar(0, 5).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new NegativeDivideIntVar(x, y), z));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(-10, -1).Variable;
-            var y = mb.AddIntDomainVar(-10, -1).Variable;
-            var z = mb.AddIntDomainVar(0, 5).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new NegativeDivideIntVar(x, y), z));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 95);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) / solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void NegativeXmultiplyYequalsZ()
+        CheckAll(mb, test, 95);
+    }
+
+    [TestMethod]
+    public void NegativeXmultiplyYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(-10, -1).Variable;
+        var y = mb.AddIntDomainVar(-10, -1).Variable;
+        var z = mb.AddIntDomainVar(1, 20).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new NegativeMultiplyIntVar(x, y), z));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(-10, -1).Variable;
-            var y = mb.AddIntDomainVar(-10, -1).Variable;
-            var z = mb.AddIntDomainVar(1, 20).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new NegativeMultiplyIntVar(x, y), z));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 46);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void MixedSignXmultiplyYequalsZ()
+        CheckAll(mb, test, 46);
+    }
+
+    [TestMethod]
+    public void MixedSignXmultiplyYequalsZ()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(-3, 3);
+        var y = mb.AddIntDomainVar(-3, 3);
+        var z = mb.AddIntDomainVar(-10, 10);
+
+        mb.AddConstraint(x * y == z);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(-3, 3);
-            var y = mb.AddIntDomainVar(-3, 3);
-            var z = mb.AddIntDomainVar(-10, 10);
-
-            mb.AddConstraint(x * y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 49);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(z), solution.GetValue(x) * solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void AplusBEqualsCminusD()
+        CheckAll(mb, test, 49);
+    }
+
+    [TestMethod]
+    public void AplusBEqualsCminusD()
+    {
+        var mb = GetModelBuilder();
+        var a = mb.AddIntDomainVar(1, 5).Variable;
+        var b = mb.AddIntDomainVar(1, 5).Variable;
+        var c = mb.AddIntDomainVar(1, 5).Variable;
+        var d = mb.AddIntDomainVar(1, 5).Variable;
+
+        mb.AddConstraint(new EqualIntVar(new PlusIntVar(a, b), new MinusIntDomain(c, d)));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var a = mb.AddIntDomainVar(1, 5).Variable;
-            var b = mb.AddIntDomainVar(1, 5).Variable;
-            var c = mb.AddIntDomainVar(1, 5).Variable;
-            var d = mb.AddIntDomainVar(1, 5).Variable;
-
-            mb.AddConstraint(new EqualIntVar(new PlusIntVar(a, b), new MinusIntDomain(c, d)));
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(a) + solution.GetValue(b), solution.GetValue(c) - solution.GetValue(d));
-            }
-
-            CheckAll(mb, test, 10);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(a) + solution.GetValue(b), solution.GetValue(c) - solution.GetValue(d));
         }
 
-        [TestMethod]
-        public void AplusBEqualsCminusDInline()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void AplusBEqualsCminusDInline()
+    {
+        var mb = GetModelBuilder();
+        var a = mb.AddIntDomainVar(1, 5);
+        var b = mb.AddIntDomainVar(1, 5);
+        var c = mb.AddIntDomainVar(1, 5);
+        var d = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(a + b == c - d);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var a = mb.AddIntDomainVar(1, 5);
-            var b = mb.AddIntDomainVar(1, 5);
-            var c = mb.AddIntDomainVar(1, 5);
-            var d = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(a + b == c - d);
-
-            void test(ISolution solution)
-            {
-                Assert.IsNotNull(solution);
-                Assert.AreEqual(solution.GetValue(a) + solution.GetValue(b), solution.GetValue(c) - solution.GetValue(d));
-            }
-
-            CheckAll(mb, test, 10);
+            Assert.IsNotNull(solution);
+            Assert.AreEqual(solution.GetValue(a) + solution.GetValue(b), solution.GetValue(c) - solution.GetValue(d));
         }
 
-        [TestMethod]
-        public void AplusConstEqualsCminusDInline()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void AplusConstEqualsCminusDInline()
+    {
+        var mb = GetModelBuilder();
+        var a = mb.AddIntDomainVar(1, 5);
+        var b = 2;
+        var c = mb.AddIntDomainVar(1, 5);
+        var d = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(a + b == c - d);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var a = mb.AddIntDomainVar(1, 5);
-            var b = 2;
-            var c = mb.AddIntDomainVar(1, 5);
-            var d = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(a + b == c - d);
-
-            void test(ISolution solution)
-            {
-                Assert.AreEqual(solution.GetValue(a) + b, solution.GetValue(c) - solution.GetValue(d));
-            }
-
-            CheckAll(mb, test, 3);
+            Assert.AreEqual(solution.GetValue(a) + b, solution.GetValue(c) - solution.GetValue(d));
         }
 
-        [TestMethod]
-        public void XGreaterThanY()
+        CheckAll(mb, test, 3);
+    }
+
+    [TestMethod]
+    public void XGreaterThanY()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+        var y = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x > y);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-            var y = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x > y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 10);
+            Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XGreaterEqualY()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void XGreaterEqualY()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+        var y = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x >= y);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-            var y = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x >= y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 15);
+            Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XLessThanY()
+        CheckAll(mb, test, 15);
+    }
+
+    [TestMethod]
+    public void XLessThanY()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+        var y = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x < y);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-            var y = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x < y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 10);
+            Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void XLessEqualY()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void XLessEqualY()
+    {
+        var mb = GetModelBuilder();
+        var x = mb.AddIntDomainVar(1, 5);
+        var y = mb.AddIntDomainVar(1, 5);
+
+        mb.AddConstraint(x <= y);
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var x = mb.AddIntDomainVar(1, 5);
-            var y = mb.AddIntDomainVar(1, 5);
-
-            mb.AddConstraint(x <= y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 15);
+            Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void AllDiffTest()
+        CheckAll(mb, test, 15);
+    }
+
+    [TestMethod]
+    public void AllDiffTest()
+    {
+        var mb = GetModelBuilder();
+        var vars = mb.AddIntVarArray(1, 3, 3);
+
+        mb.AddConstraint(AllDiff(vars));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var vars = mb.AddIntVarArray(1, 3, 3);
-
-            mb.AddConstraint(AllDiff(vars));
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
-                Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
-                Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
-            }
-
-            CheckAll(mb, test, 6);
+            Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[1]));
+            Assert.IsTrue(solution.GetValue(vars[0]) != solution.GetValue(vars[2]));
+            Assert.IsTrue(solution.GetValue(vars[1]) != solution.GetValue(vars[2]));
         }
 
-        [TestMethod]
-        public void NotAllDiffTest()
+        CheckAll(mb, test, 6);
+    }
+
+    [TestMethod]
+    public void NotAllDiffTest()
+    {
+        var mb = GetModelBuilder();
+        var vars = mb.AddIntVarArray(1, 3, 3);
+
+        mb.AddConstraint(Not(AllDiff(vars)));
+
+        void test(ISolution solution)
         {
-            var mb = GetModelBuilder();
-            var vars = mb.AddIntVarArray(1, 3, 3);
-
-            mb.AddConstraint(Not(AllDiff(vars)));
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue((solution.GetValue(vars[0]) == solution.GetValue(vars[1]))
-                           || (solution.GetValue(vars[0]) == solution.GetValue(vars[2]))
-                           || (solution.GetValue(vars[1]) == solution.GetValue(vars[2])));
-            }
-
-            CheckAll(mb, test, 21);
+            Assert.IsTrue((solution.GetValue(vars[0]) == solution.GetValue(vars[1]))
+                          || (solution.GetValue(vars[0]) == solution.GetValue(vars[2]))
+                          || (solution.GetValue(vars[1]) == solution.GetValue(vars[2])));
         }
 
-        [TestMethod]
-        public void TruncateTest()
+        CheckAll(mb, test, 21);
+    }
+
+    [TestMethod]
+    public void TruncateTest()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(1, 3, 4);
+        var y = mb.AddIntDomainVar(0, 10);
+
+        mb.AddConstraint(Truncate(x) == y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(1, 3, 4);
-            var y = mb.AddIntDomainVar(0, 10);
-
-            mb.AddConstraint(Truncate(x) == y);
-
-            void test(ISolution solution)
-            {
-                var (min, max) = solution.GetValueRange(x);
-                Assert.IsTrue((int)min == solution.GetValue(y));
-                Assert.IsTrue((int)max == solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 3);
+            var (min, max) = solution.GetValueRange(x);
+            Assert.IsTrue((int)min == solution.GetValue(y));
+            Assert.IsTrue((int)max == solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestDoubleEqual()
+        CheckAll(mb, test, 3);
+    }
+
+    [TestMethod]
+    public void TestDoubleEqual()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(1, 3, 4);
+        var y = mb.AddIntDomainVar(0, 10);
+
+        mb.AddConstraint(x == y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(1, 3, 4);
-            var y = mb.AddIntDomainVar(0, 10);
-
-            mb.AddConstraint(x == y);
-
-            void test(ISolution solution)
-            {
-                var (min, max) = solution.GetValueRange(x);
-                Assert.IsTrue(min == solution.GetValue(y));
-                Assert.IsTrue(max == solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 3);
+            var (min, max) = solution.GetValueRange(x);
+            Assert.IsTrue(min == solution.GetValue(y));
+            Assert.IsTrue(max == solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestDoubleNotEqual()
+        CheckAll(mb, test, 3);
+    }
+
+    [TestMethod]
+    public void TestDoubleNotEqual()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(0.2, 0.5, 1, true);
+        var y = mb.AddRealVar(0.2, 0.5, 1, true);
+
+        mb.AddConstraint(x != y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(0.2, 0.5, 1, true);
-            var y = mb.AddRealVar(0.2, 0.5, 1, true);
-
-            mb.AddConstraint(x != y);
-
-            void test(ISolution solution)
-            {
-                Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 12);
+            Assert.IsTrue(solution.GetValue(x) != solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestRealPlus()
+        CheckAll(mb, test, 12);
+    }
+
+    [TestMethod]
+    public void TestRealPlus()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(0.2, 0.5, 1, true);
+        var y = mb.AddRealVar(0.2, 0.5, 1, true);
+        var z = mb.AddRealVar(0, 1, 1, true);
+
+        mb.AddConstraint(x + y == z);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(0.2, 0.5, 1, true);
-            var y = mb.AddRealVar(0.2, 0.5, 1, true);
-            var z = mb.AddRealVar(0, 1, 1, true);
-
-            mb.AddConstraint(x + y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.AreEqual(Math.Round(solution.GetValue(x) + solution.GetValue(y), 1), solution.GetValue(z));
-            }
-
-            CheckAll(mb, test, 16);
+            Assert.AreEqual(Math.Round(solution.GetValue(x) + solution.GetValue(y), 1), solution.GetValue(z));
         }
 
-        [TestMethod]
-        public void TestRealMinus()
+        CheckAll(mb, test, 16);
+    }
+
+    [TestMethod]
+    public void TestRealMinus()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(0.2, 0.5, 1, true);
+        var y = mb.AddRealVar(0.2, 0.5, 1, true);
+        var z = mb.AddRealVar(0, 1, 1);
+
+        mb.AddConstraint(x - y == z);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(0.2, 0.5, 1, true);
-            var y = mb.AddRealVar(0.2, 0.5, 1, true);
-            var z = mb.AddRealVar(0, 1, 1);
-
-            mb.AddConstraint(x - y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.AreEqual(Math.Round(solution.GetValue(x) - solution.GetValue(y), 1), solution.GetValue(z));
-            }
-
-            CheckAll(mb, test, 10);
+            Assert.AreEqual(Math.Round(solution.GetValue(x) - solution.GetValue(y), 1), solution.GetValue(z));
         }
 
-        [TestMethod]
-        public void TestRealMultiply()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void TestRealMultiply()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var z = mb.AddRealVar(-1, 1, 3);
+
+        mb.AddConstraint(x * y == z);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var z = mb.AddRealVar(-1, 1, 3);
-
-            mb.AddConstraint(x * y == z);
-
-            void test(ISolution solution)
-            {
-                Assert.AreEqual(Math.Round(solution.GetValue(x) * solution.GetValue(y), 3), solution.GetValue(z));
-            }
-
-            CheckAll(mb, test, 25);
+            Assert.AreEqual(Math.Round(solution.GetValue(x) * solution.GetValue(y), 3), solution.GetValue(z));
         }
 
-        [TestMethod]
-        public void TestRealGreaterThan()
+        CheckAll(mb, test, 25);
+    }
+
+    [TestMethod]
+    public void TestRealGreaterThan()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+        mb.AddConstraint(x > y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
-
-            mb.AddConstraint(x > y);
-
-            void test(ISolution solution)
-            {
-                //Console.WriteLine($"{solution.GetValue(x)} > {solution.GetValue(y)}");
-                Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 10);
+            //Console.WriteLine($"{solution.GetValue(x)} > {solution.GetValue(y)}");
+            Assert.IsTrue(solution.GetValue(x) > solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestRealLessThan()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void TestRealLessThan()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+        mb.AddConstraint(x < y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
-
-            mb.AddConstraint(x < y);
-
-            void test(ISolution solution)
-            {
-                //Console.WriteLine($"{solution.GetValue(x)} < {solution.GetValue(y)}");
-                Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 10);
+            //Console.WriteLine($"{solution.GetValue(x)} < {solution.GetValue(y)}");
+            Assert.IsTrue(solution.GetValue(x) < solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestRealGreaterThanEqual()
+        CheckAll(mb, test, 10);
+    }
+
+    [TestMethod]
+    public void TestRealGreaterThanEqual()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+        mb.AddConstraint(x >= y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
-
-            mb.AddConstraint(x >= y);
-
-            void test(ISolution solution)
-            {
-                //Console.WriteLine($"{solution.GetValue(x)} >= {solution.GetValue(y)}");
-                Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 15);
+            //Console.WriteLine($"{solution.GetValue(x)} >= {solution.GetValue(y)}");
+            Assert.IsTrue(solution.GetValue(x) >= solution.GetValue(y));
         }
 
-        [TestMethod]
-        public void TestRealLessThanEqual()
+        CheckAll(mb, test, 15);
+    }
+
+    [TestMethod]
+    public void TestRealLessThanEqual()
+    {
+        var mb = new ModelBuilder();
+        var x = mb.AddRealVar(-0.2, 0.2, 1, true);
+        var y = mb.AddRealVar(-0.2, 0.2, 1, true);
+
+        mb.AddConstraint(x <= y);
+
+        void test(ISolution solution)
         {
-            var mb = new ModelBuilder();
-            var x = mb.AddRealVar(-0.2, 0.2, 1, true);
-            var y = mb.AddRealVar(-0.2, 0.2, 1, true);
-
-            mb.AddConstraint(x <= y);
-
-            void test(ISolution solution)
-            {
-                //Console.WriteLine($"{solution.GetValue(x)} <= {solution.GetValue(y)}");
-                Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
-            }
-
-            CheckAll(mb, test, 15);
+            //Console.WriteLine($"{solution.GetValue(x)} <= {solution.GetValue(y)}");
+            Assert.IsTrue(solution.GetValue(x) <= solution.GetValue(y));
         }
 
-        private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
+        CheckAll(mb, test, 15);
+    }
+
+    private static void CheckAll(ModelBuilder mb, Action<ISolution> test, int expected)
+    {
+        var count = 0;
+
+        foreach (var solution in mb.Search())
         {
-            var count = 0;
-
-            foreach (var solution in mb.Search())
-            {
-                test(solution);
-                count++;
-            }
-
-            Assert.AreEqual(expected, count);
+            test(solution);
+            count++;
         }
+
+        Assert.AreEqual(expected, count);
     }
 }
