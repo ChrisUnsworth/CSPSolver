@@ -15,7 +15,10 @@ public class StatePool: IStatePool
     public StatePool(int size)
     {
         _size = size;
-        _arrayPool = ArrayPool<uint>.Create(_size, 10);
+        // maxArrayLength must be positive even though Rent(0) itself is fine -- a
+        // model with no state at all (e.g. built entirely from constants) would
+        // otherwise fail to even construct a pool.
+        _arrayPool = ArrayPool<uint>.Create(System.Math.Max(_size, 1), 10);
     }
 
     public IState Copy(IState state)
