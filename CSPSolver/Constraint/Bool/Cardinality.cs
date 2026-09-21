@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;

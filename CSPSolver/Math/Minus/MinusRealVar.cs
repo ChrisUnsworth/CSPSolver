@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
-using static System.Math;
-
 namespace CSPSolver.Math.Minus;
 
 public readonly struct MinusRealVar : IRealVar, ICompoundVariable

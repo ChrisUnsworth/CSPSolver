@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CSPSolver.common;
+﻿namespace CSPSolver.common;
 
 public interface IStatePool
 {

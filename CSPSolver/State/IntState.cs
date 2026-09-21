@@ -2,8 +2,6 @@
 using System.Numerics;
 using System.Linq;
 
-using static System.Math;
-
 using CSPSolver.common;
 
 using CSPSolver.utils;

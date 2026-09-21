@@ -4,3 +4,4 @@ root = true
 indent_style = space
 indent_size = 4
 csharp_style_namespace_declarations = file_scoped:warning
+dotnet_diagnostic.IDE0005.severity = warning

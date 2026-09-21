@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSPSolver.common.search;
+﻿namespace CSPSolver.common.search;
 
 public interface IVariableOrderingHeuristic
 {

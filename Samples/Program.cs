@@ -1,8 +1,4 @@
-﻿using System;
-
-using CSPSolver.Model;
-
-namespace Samples;
+﻿namespace Samples;
 
 public class Program
 {

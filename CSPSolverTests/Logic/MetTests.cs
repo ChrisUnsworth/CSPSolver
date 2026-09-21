@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSPSolver.common;
+﻿using CSPSolver.common;
 using CSPSolver.common.variables;
 using CSPSolver.Constraint.AllDiff;
 using CSPSolver.Constraint.Equal;
 using CSPSolver.Constraint.Inequality;
-using CSPSolver.Model;
 using CSPSolver.State;
 using CSPSolver.Variable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

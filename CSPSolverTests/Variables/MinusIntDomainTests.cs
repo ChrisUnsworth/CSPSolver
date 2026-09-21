@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CSPSolver.common;
+﻿using CSPSolver.common;
 using CSPSolver.Math.Minus;
 using CSPSolver.State;
 using CSPSolver.Variable;
