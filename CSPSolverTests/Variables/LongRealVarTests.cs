@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CSPSolver.Variable;
 using CSPSolver.common;
@@ -7,12 +7,12 @@ using CSPSolver.State;
 namespace CSPSolverTests.Variables;
 
 [TestClass]
-public class SmallRealVarTests
+public class LongRealVarTests
 {
-    private static (IState state, SmallRealVar variable) GetVar(double min, double max, int dp)
+    private static (IState state, LongRealVar variable) GetVar(double min, double max, int dp)
     {
         var sb = new StateBuilder();
-        var variable = new SmallRealVar(min, sb.AddInt(), max, sb.AddInt(), dp);
+        var variable = new LongRealVar(min, sb.AddLong(), max, sb.AddLong(), dp);
         var state = sb.GetState();
         variable.Initialise(state);
         return (state, variable);
@@ -21,17 +21,17 @@ public class SmallRealVarTests
     [TestMethod]
     public void GetInitialiseTest()
     {
-        var (s, v) = GetVar(3.3, 6.6, 1);
-        Assert.AreEqual(3.3, v.GetDomainMin(s));
-        Assert.AreEqual(6.6, v.GetDomainMax(s));
+        var (s, v) = GetVar(0, 1e9, 3);
+        Assert.AreEqual(0d, v.GetDomainMin(s));
+        Assert.AreEqual(1e9, v.GetDomainMax(s));
     }
 
     [TestMethod]
     public void SetMaxTest()
     {
-        var max = 6457.6547;
-        var min = 333.355;
-        var (s, v) = GetVar(min, max, 4);
+        var max = 1e9;
+        var min = 0d;
+        var (s, v) = GetVar(min, max, 3);
 
         Assert.IsFalse(v.SetMax(s, max + 10));
         Assert.IsFalse(v.IsEmpty(s));
@@ -59,9 +59,9 @@ public class SmallRealVarTests
     [TestMethod]
     public void SetMinTest()
     {
-        var max = 6457.6547;
-        var min = 333.355;
-        var (s, v) = GetVar(min, max, 4);
+        var max = 1e9;
+        var min = 0d;
+        var (s, v) = GetVar(min, max, 3);
 
         Assert.IsFalse(v.SetMin(s, min - 10));
         Assert.IsFalse(v.IsEmpty(s));
