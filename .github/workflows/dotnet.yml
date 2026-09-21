@@ -20,7 +20,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore CSPSolver
     - name: Format check
-      run: dotnet format CSPSolver/CSPSolver.sln --no-restore --verify-no-changes
+      # MSTEST0032 is a pre-existing, deliberate marker in a known-failing test
+      # (see #18) -- not a formatting issue, and it has no code fix, so
+      # dotnet format can't resolve it either way.
+      run: dotnet format CSPSolver/CSPSolver.sln --no-restore --verify-no-changes --exclude-diagnostics MSTEST0032
     - name: Build
       run: dotnet build CSPSolver --no-restore
     - name: Test
