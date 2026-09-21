@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSPSolver.common
-{
-    public interface IStatePool
-    {
-        IState Copy(IState state);
+namespace CSPSolver.common;
 
-        void Return(IState state);
-    }
+public interface IStatePool
+{
+    IState Copy(IState state);
+
+    void Return(IState state);
 }

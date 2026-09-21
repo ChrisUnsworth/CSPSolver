@@ -4,28 +4,27 @@ using System.Collections.Generic;
 using CSPSolver.common;
 using CSPSolver.common.search;
 
-namespace CSPSolver.Search.strategy
+namespace CSPSolver.Search.strategy;
+
+public readonly struct  BinaryBranching : IBranchStrategy
 {
-    public readonly struct  BinaryBranching : IBranchStrategy
+    private readonly IVariableOrderingHeuristic _variableOrdering;
+    private readonly IValueOrderingHeuristic _valueOrdering;
+
+    public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) => 
+        (_variableOrdering, _valueOrdering) = (variableOrdering, valueOrdering);
+
+    public IEnumerable<IState> Branch(in IModel model, in IState state, IStatePool statePool)
     {
-        private readonly IVariableOrderingHeuristic _variableOrdering;
-        private readonly IValueOrderingHeuristic _valueOrdering;
+        var variable = _variableOrdering.Next(in model, state);
+        var branches = _valueOrdering.Order(model, state, variable);
 
-        public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) => 
-            (_variableOrdering, _valueOrdering) = (variableOrdering, valueOrdering);
+        var second = statePool.Copy(state);
+        var first = state;
 
-        public IEnumerable<IState> Branch(in IModel model, in IState state, IStatePool statePool)
-        {
-            var variable = _variableOrdering.Next(in model, state);
-            var branches = _valueOrdering.Order(model, state, variable);
+        branches.First().Invoke(first);
+        branches.Last().Invoke(second);
 
-            var second = statePool.Copy(state);
-            var first = state;
-
-            branches.First().Invoke(first);
-            branches.Last().Invoke(second);
-
-            return new IState[] { first, second };
-        }
+        return new IState[] { first, second };
     }
 }

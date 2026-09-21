@@ -2,13 +2,12 @@
 
 using CSPSolver.Model;
 
-namespace Samples
+namespace Samples;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            Sum42.Run();
-        }
+        Sum42.Run();
     }
 }

@@ -1,12 +1,11 @@
 ﻿using CSPSolver.common;
 
-namespace CSPSolver.State
-{
-    public readonly struct StateRef : IStateRef
-    {
-        public StateRef(int idx, int offset) => (Idx, Offset) = (idx, offset);
+namespace CSPSolver.State;
 
-        public int Idx { get; }
-        public int Offset { get;  }
-    }
+public readonly struct StateRef : IStateRef
+{
+    public StateRef(int idx, int offset) => (Idx, Offset) = (idx, offset);
+
+    public int Idx { get; }
+    public int Offset { get;  }
 }

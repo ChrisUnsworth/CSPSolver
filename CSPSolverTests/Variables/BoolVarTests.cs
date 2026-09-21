@@ -4,145 +4,144 @@ using CSPSolver.Variable;
 using CSPSolver.common;
 using CSPSolver.State;
 
-namespace CSPSolverTests.Variables
+namespace CSPSolverTests.Variables;
+
+[TestClass]
+public class BoolVarTests
 {
-    [TestClass]
-    public class BoolVarTests
+    private static (IState state, BoolVar variable) GetVar()
     {
-        private static (IState state, BoolVar variable) GetVar()
-        {
-            var sb = new StateBuilder();
-            var stateRef = sb.AddDomain(2);
-            var variable = new BoolVar(stateRef);
-            var state = sb.GetState();
-            variable.Initialise(state);
-            return (state, variable);
-        }
+        var sb = new StateBuilder();
+        var stateRef = sb.AddDomain(2);
+        var variable = new BoolVar(stateRef);
+        var state = sb.GetState();
+        variable.Initialise(state);
+        return (state, variable);
+    }
 
-        [TestMethod]
-        public void GetInitialiseTest()
-        {
-            var (s, v) = GetVar();
-            Assert.AreEqual(0, v.GetDomainMin(s));
-            Assert.AreEqual(1, v.GetDomainMax(s));
-        }
+    [TestMethod]
+    public void GetInitialiseTest()
+    {
+        var (s, v) = GetVar();
+        Assert.AreEqual(0, v.GetDomainMin(s));
+        Assert.AreEqual(1, v.GetDomainMax(s));
+    }
 
-        [TestMethod]
-        public void IsTrueTest()
-        {
-            var (s, v) = GetVar();
+    [TestMethod]
+    public void IsTrueTest()
+    {
+        var (s, v) = GetVar();
 
-            Assert.IsFalse(v.IsTrue(s));
+        Assert.IsFalse(v.IsTrue(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsTrue(v.IsTrue(s));
+        Assert.IsTrue(v.IsTrue(s));
 
-            (s, v) = GetVar();
+        (s, v) = GetVar();
 
-            Assert.IsFalse(v.IsTrue(s));
+        Assert.IsFalse(v.IsTrue(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsFalse(v.IsTrue(s));
+        Assert.IsFalse(v.IsTrue(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsFalse(v.IsTrue(s));
-        }
+        Assert.IsFalse(v.IsTrue(s));
+    }
 
-        [TestMethod]
-        public void CanBeTrueTest()
-        {
-            var (s, v) = GetVar();
+    [TestMethod]
+    public void CanBeTrueTest()
+    {
+        var (s, v) = GetVar();
 
-            Assert.IsTrue(v.CanBeTrue(s));
+        Assert.IsTrue(v.CanBeTrue(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsTrue(v.CanBeTrue(s));
+        Assert.IsTrue(v.CanBeTrue(s));
 
-            (s, v) = GetVar();
+        (s, v) = GetVar();
 
-            Assert.IsTrue(v.CanBeTrue(s));
+        Assert.IsTrue(v.CanBeTrue(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsFalse(v.CanBeTrue(s));
+        Assert.IsFalse(v.CanBeTrue(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsFalse(v.CanBeTrue(s));
-        }
+        Assert.IsFalse(v.CanBeTrue(s));
+    }
 
-        [TestMethod]
-        public void IsFalseTest()
-        {
-            var (s, v) = GetVar();
+    [TestMethod]
+    public void IsFalseTest()
+    {
+        var (s, v) = GetVar();
 
-            Assert.IsFalse(v.IsFalse(s));
+        Assert.IsFalse(v.IsFalse(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsTrue(v.IsFalse(s));
+        Assert.IsTrue(v.IsFalse(s));
 
-            (s, v) = GetVar();
+        (s, v) = GetVar();
 
-            Assert.IsFalse(v.IsFalse(s));
+        Assert.IsFalse(v.IsFalse(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsFalse(v.IsFalse(s));
+        Assert.IsFalse(v.IsFalse(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsFalse(v.IsFalse(s));
-        }
+        Assert.IsFalse(v.IsFalse(s));
+    }
 
-        [TestMethod]
-        public void CanBeFalseTest()
-        {
-            var (s, v) = GetVar();
+    [TestMethod]
+    public void CanBeFalseTest()
+    {
+        var (s, v) = GetVar();
 
-            Assert.IsTrue(v.CanBeFalse(s));
+        Assert.IsTrue(v.CanBeFalse(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsTrue(v.CanBeFalse(s));
+        Assert.IsTrue(v.CanBeFalse(s));
 
-            (s, v) = GetVar();
+        (s, v) = GetVar();
 
-            Assert.IsTrue(v.CanBeFalse(s));
+        Assert.IsTrue(v.CanBeFalse(s));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsFalse(v.CanBeFalse(s));
+        Assert.IsFalse(v.CanBeFalse(s));
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsFalse(v.CanBeFalse(s));
-        }
+        Assert.IsFalse(v.CanBeFalse(s));
+    }
 
-        [TestMethod]
-        public void TryGetValueTest()
-        {
-            var (s, v) = GetVar();
+    [TestMethod]
+    public void TryGetValueTest()
+    {
+        var (s, v) = GetVar();
 
-            Assert.IsFalse(v.TryGetValue(s, out int _));
+        Assert.IsFalse(v.TryGetValue(s, out int _));
 
-            v.SetValue(s, true);
+        v.SetValue(s, true);
 
-            Assert.IsTrue(v.TryGetValue(s, out int t) && t == 1);
+        Assert.IsTrue(v.TryGetValue(s, out int t) && t == 1);
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsFalse(v.TryGetValue(s, out int _));
+        Assert.IsFalse(v.TryGetValue(s, out int _));
 
-            (s, v) = GetVar();
+        (s, v) = GetVar();
 
-            v.SetValue(s, false);
+        v.SetValue(s, false);
 
-            Assert.IsTrue(v.TryGetValue(s, out int f) && f == 0);
-        }
+        Assert.IsTrue(v.TryGetValue(s, out int f) && f == 0);
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,109 +8,112 @@ using CSPSolver.Search;
 
 using static CSPSolver.Model.ModelConstraint;
 
-namespace CSPSolverTests.Solve.Sudoku
+namespace CSPSolverTests.Solve.Sudoku;
+
+[TestClass]
+public class SudokuTests
 {
-    [TestClass]
-    public class SudokuTests
+    private static (ModelBuilder mb, ModelIntVar[,] varMatrix) BuildBaseModel()
     {
-        private static (ModelBuilder mb, ModelIntVar[,] varMatrix) BuildBaseModel()
+        var mb = new ModelBuilder(new StateBuilder());
+
+        var vars = mb.AddIntVarArray(1, 9, 9 * 9);
+
+        var varMatrix = new ModelIntVar[9, 9];
+
+        for (int i = 0; i < 9; i++)
         {
+            for (int j = 0; j < 9; j++)
+            {
+                varMatrix[i, j] = vars[i * 9 + j];
+            }
+        }
 
-            var mb = new ModelBuilder(new StateBuilder());
+        foreach (var row in Sets.Rows)
+        {
+            mb.AddConstraint(AllDiff(row.Select(c => varMatrix[c.x, c.y])));
+        }
 
-            var vars = mb.AddIntVarArray(1, 9, 9 * 9);
+        foreach (var column in Sets.Columns)
+        {
+            mb.AddConstraint(AllDiff(column.Select(c => varMatrix[c.x, c.y])));
+        }
 
-            var varMatrix = new ModelIntVar[9, 9];
+        foreach (var square in Sets.Squares)
+        {
+            mb.AddConstraint(AllDiff(square.Select(c => varMatrix[c.x, c.y])));
+        }
 
+        return (mb, varMatrix);
+    }
+
+    private static void SetInstance(ModelBuilder mb, ModelIntVar[,] varMatrix, int[,] input)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            for (int j = 0; j < 9; j++)
+            {
+                if (input[i, j] != 0) mb.AddConstraint(varMatrix[i, j] == input[i, j]);
+            }
+        }
+    }
+
+    private static void RunTest(ModelBuilder mb, ModelIntVar[,] varMatrix, int[,] input, int[,] solution)
+    {
+        SetInstance(mb, varMatrix, input);
+
+        var search = new Search(mb);
+
+        var count = 0;
+
+        while (search.MoveNext())
+        {
+            var result = search.Current;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    varMatrix[i, j] = vars[i * 9 + j];
+                    Assert.AreEqual(solution[i, j], result.GetValue(varMatrix[i, j]));
                 }
             }
 
-            foreach (var row in Sets.Rows)
-            {
-                mb.AddConstraint(AllDiff(row.Select(c => varMatrix[c.x, c.y])));
-            }
-
-            foreach (var column in Sets.Columns)
-            {
-                mb.AddConstraint(AllDiff(column.Select(c => varMatrix[c.x, c.y])));
-            }
-
-            foreach (var square in Sets.Squares)
-            {
-                mb.AddConstraint(AllDiff(square.Select(c => varMatrix[c.x, c.y])));
-            }
-
-            return (mb, varMatrix);
+            count++;
         }
 
-        private static void RunTest(ModelBuilder mb, ModelIntVar[,] varMatrix, int[,] input, int[,] solution)
+        Assert.AreEqual(1, count);
+    }
+
+    [TestMethod]
+    public void SudokuTest1()
+    {
+        var (mb, varMatrix) = BuildBaseModel();
+
+        var data = new int[,]
         {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    if (input[i, j] != 0) mb.AddConstraint(varMatrix[i, j] == input[i, j]);
-                }
-            }
+            { 3, 8, 2, 9, 0, 0, 0, 0, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 5, 2 },
+            { 0, 1, 0, 0, 2, 7, 3, 0, 0 },
+            { 0, 0, 0, 0, 4, 0, 0, 2, 7 },
+            { 8, 0, 0, 2, 0, 9, 0, 0, 5 },
+            { 2, 4, 0, 0, 6, 0, 0, 0, 0 },
+            { 0, 0, 8, 4, 7, 0, 0, 1, 0 },
+            { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+            { 7, 0, 0, 0, 0, 8, 2, 9, 4 }
+        };
 
-            var search = new Search(mb);
-
-            var count = 0;
-
-            while (search.MoveNext())
-            {
-                var result = search.Current;
-                for (int i = 0; i < 9; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        Assert.AreEqual(solution[i, j], result.GetValue(varMatrix[i, j]));
-                    }
-                }
-
-                count++;
-            }
-
-            Assert.AreEqual(1, count);
-        }
-
-        [TestMethod]
-        public void SudokuTest1()
+        var expected = new int[,]
         {
-            var (mb, varMatrix) = BuildBaseModel();
+            { 3, 8, 2, 9, 5, 4, 7, 6, 1 },
+            { 6, 9, 7, 3, 8, 1, 4, 5, 2 },
+            { 4, 1, 5, 6, 2, 7, 3, 8, 9 },
+            { 1, 5, 6, 8, 4, 3, 9, 2, 7 },
+            { 8, 7, 3, 2, 1, 9, 6, 4, 5 },
+            { 2, 4, 9, 7, 6, 5, 1, 3, 8 },
+            { 9, 3, 8, 4, 7, 2, 5, 1, 6 },
+            { 5, 2, 4, 1, 9, 6, 8, 7, 3 },
+            { 7, 6, 1, 5, 3, 8, 2, 9, 4 }
+        };
 
-            var data = new int[,]
-            {
-                { 3, 8, 2, 9, 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 5, 2 },
-                { 0, 1, 0, 0, 2, 7, 3, 0, 0 },
-                { 0, 0, 0, 0, 4, 0, 0, 2, 7 },
-                { 8, 0, 0, 2, 0, 9, 0, 0, 5 },
-                { 2, 4, 0, 0, 6, 0, 0, 0, 0 },
-                { 0, 0, 8, 4, 7, 0, 0, 1, 0 },
-                { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
-                { 7, 0, 0, 0, 0, 8, 2, 9, 4 }
-            };
-
-            var expected = new int[,]
-            {
-                { 3, 8, 2, 9, 5, 4, 7, 6, 1 },
-                { 6, 9, 7, 3, 8, 1, 4, 5, 2 },
-                { 4, 1, 5, 6, 2, 7, 3, 8, 9 },
-                { 1, 5, 6, 8, 4, 3, 9, 2, 7 },
-                { 8, 7, 3, 2, 1, 9, 6, 4, 5 },
-                { 2, 4, 9, 7, 6, 5, 1, 3, 8 },
-                { 9, 3, 8, 4, 7, 2, 5, 1, 6 },
-                { 5, 2, 4, 1, 9, 6, 8, 7, 3 },
-                { 7, 6, 1, 5, 3, 8, 2, 9, 4 }
-            };
-
-            RunTest(mb, varMatrix, data, expected);
-        }
+        RunTest(mb, varMatrix, data, expected);
     }
 }

@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSPSolver.common
+namespace CSPSolver.common;
+
+public interface IStateBuilder
 {
-    public interface IStateBuilder
-    {
-        IStateRef AddDomain(int size);
+    IStateRef AddDomain(int size);
 
-        IStateRef AddInt();
-        IStateRef AddDouble();
-        IStateRef AddFloat();
-        IStateRef AddLong();
+    IStateRef AddInt();
+    IStateRef AddDouble();
+    IStateRef AddFloat();
+    IStateRef AddLong();
 
-        IState GetState();
-        int GetSize();
-    }
+    IState GetState();
+    int GetSize();
 }

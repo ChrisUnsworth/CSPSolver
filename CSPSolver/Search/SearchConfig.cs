@@ -1,15 +1,14 @@
 ﻿using CSPSolver.common.search;
 using CSPSolver.Search.strategy;
 
-namespace CSPSolver.Search
+namespace CSPSolver.Search;
+
+public readonly struct SearchConfig
 {
-    public readonly struct SearchConfig
-    {
-        public IBranchStrategy Branching { get; }
+    public IBranchStrategy Branching { get; }
 
-        public SearchConfig(IBranchStrategy branching) => Branching = branching;
+    public SearchConfig(IBranchStrategy branching) => Branching = branching;
 
-        public static SearchConfig Default() => 
-            new(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
-    }
+    public static SearchConfig Default() => 
+        new(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
 }

@@ -1,26 +1,27 @@
 ﻿using System;
 
-namespace CSPSolver.common
+namespace CSPSolver.common;
+
+public interface IVariable<T> : IVariable
 {
-    public interface IVariable<T> : IVariable
-    {
-        bool TryGetValue(IState state, out T value);
-    }
+    bool TryGetValue(IState state, out T value);
+}
 
-    public interface IVariable
-    {
-        void Initialise(IState state);
+public interface IVariable
+{
+    void Initialise(IState state);
 
-        bool IsInstantiated(IState state);
+    bool IsInstantiated(IState state);
 
-        bool IsEmpty(IState state);
+    bool IsEmpty(IState state);
 
-        Type VariableType();
+    bool MakeEmpty(IState state);
 
-        bool SetValue(IState state, object value);
+    Type VariableType();
 
-        bool RemoveValue(IState state, object value);
+    bool SetValue(IState state, object value);
 
-        string PrettyDomain(IState state);
-    }
+    bool RemoveValue(IState state, object value);
+
+    string PrettyDomain(IState state);
 }
