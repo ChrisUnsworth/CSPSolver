@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSPSolver.common.variables
+namespace CSPSolver.common.variables;
+
+public interface ICompoundVariable
 {
-    public interface ICompoundVariable
-    {
-        IEnumerable<IVariable> GetChildren();
-    }
+    IEnumerable<IVariable> GetChildren();
 }

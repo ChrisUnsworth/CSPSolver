@@ -4,85 +4,84 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CSPSolver.State
+namespace CSPSolver.State;
+
+public class StateBuilder : IStateBuilder
 {
-    public class StateBuilder : IStateBuilder
+    private int _size;
+    private readonly List<int> _map;
+
+    public StateBuilder()
     {
-        private int _size;
-        private readonly List<int> _map;
+        _size = 0;
+        _map = new List<int>();
+    }
 
-        public StateBuilder()
+    public IStateRef AddDomain(int domainSize) => domainSize < 32 ? AddSmallDomain(domainSize) : AddLargeDomain(domainSize);
+
+    private IStateRef AddSmallDomain(int domainSize)
+    {
+        var x = _map.Select((v, i) => ((int v, int i)?)(v, i)).FirstOrDefault(x => 32 - x.Value.v >= domainSize);
+
+        if (x.HasValue)
         {
-            _size = 0;
-            _map = new List<int>();
-        }
-
-        public IStateRef AddDomain(int domainSize) => domainSize < 32 ? AddSmallDomain(domainSize) : AddLargeDomain(domainSize);
-
-        private IStateRef AddSmallDomain(int domainSize)
-        {
-            var x = _map.Select((v, i) => ((int v, int i)?)(v, i)).FirstOrDefault(x => 32 - x.Value.v >= domainSize);
-
-            if (x.HasValue)
-            {
-                var stateRef = new StateRef(x.Value.i, x.Value.v);
-                _map[x.Value.i] += domainSize;
-                return stateRef;
-            }
-            else
-            {
-                _map.Add(domainSize);
-                return new StateRef(_size++, 0);
-            }
-        }
-
-        private IStateRef AddLargeDomain(int domainSize)
-        {
-            var n = domainSize / 32;
-            var r = domainSize % 32;
-            var stateRef = new StateRef(_size, 0);
-
-            _size += n;
-            _map.AddRange(Enumerable.Repeat(32, n));
-            if (r != 0)
-            {
-                _map.Add(r);
-                _size++;
-            }
-
+            var stateRef = new StateRef(x.Value.i, x.Value.v);
+            _map[x.Value.i] += domainSize;
             return stateRef;
         }
-
-        public IStateRef AddDouble()
+        else
         {
-            _map.AddRange(new int[] { 32, 32 });
-            var idx = _size;
-            _size += 2;
-            return new StateRef(idx, 0);
-        }
-
-        public IStateRef AddFloat()
-        {
-            _map.Add(32);
+            _map.Add(domainSize);
             return new StateRef(_size++, 0);
         }
-
-        public IStateRef AddInt()
-        {
-            _map.Add(32);
-            return new StateRef(_size++, 0);
-        }
-
-        public IStateRef AddLong()
-        {
-            _map.AddRange(new int[] { 32, 32 });
-            var idx = _size;
-            _size += 2;
-            return new StateRef(idx, 0);
-        }
-
-        public IState GetState() => new IntState(_size);
-
-        public int GetSize() => _size;
     }
+
+    private IStateRef AddLargeDomain(int domainSize)
+    {
+        var n = domainSize / 32;
+        var r = domainSize % 32;
+        var stateRef = new StateRef(_size, 0);
+
+        _size += n;
+        _map.AddRange(Enumerable.Repeat(32, n));
+        if (r != 0)
+        {
+            _map.Add(r);
+            _size++;
+        }
+
+        return stateRef;
+    }
+
+    public IStateRef AddDouble()
+    {
+        _map.AddRange(new int[] { 32, 32 });
+        var idx = _size;
+        _size += 2;
+        return new StateRef(idx, 0);
+    }
+
+    public IStateRef AddFloat()
+    {
+        _map.Add(32);
+        return new StateRef(_size++, 0);
+    }
+
+    public IStateRef AddInt()
+    {
+        _map.Add(32);
+        return new StateRef(_size++, 0);
+    }
+
+    public IStateRef AddLong()
+    {
+        _map.AddRange(new int[] { 32, 32 });
+        var idx = _size;
+        _size += 2;
+        return new StateRef(idx, 0);
+    }
+
+    public IState GetState() => new IntState(_size);
+
+    public int GetSize() => _size;
 }

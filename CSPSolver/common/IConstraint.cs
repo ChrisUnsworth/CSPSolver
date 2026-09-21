@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace CSPSolver.common
+namespace CSPSolver.common;
+
+public interface IConstraint
 {
-    public interface IConstraint
-    {
-        IEnumerable<IVariable> Variables { get; }
+    IEnumerable<IVariable> Variables { get; }
 
-        IEnumerable<IVariable> Propagate(IState state);
+    IEnumerable<IVariable> Propagate(IState state);
 
-        IEnumerable<IVariable> NegativePropagate(IState state);
+    IEnumerable<IVariable> NegativePropagate(IState state);
 
 
-        bool IsMet(IState state);
+    bool IsMet(IState state);
 
-        bool CanBeMet(IState state);
-    }
+    bool CanBeMet(IState state);
 }

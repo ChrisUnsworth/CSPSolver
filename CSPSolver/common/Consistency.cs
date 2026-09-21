@@ -1,10 +1,9 @@
-﻿namespace CSPSolver.common
+﻿namespace CSPSolver.common;
+
+public enum Consistency
 {
-    public enum Consistency
-    {
-        ForwardChecking,
-        ArcConsistency,
-        PathConsistency,
-        GAC
-    }
+    ForwardChecking,
+    ArcConsistency,
+    PathConsistency,
+    GAC
 }
