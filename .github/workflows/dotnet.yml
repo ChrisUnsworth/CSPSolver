@@ -19,6 +19,8 @@ jobs:
         dotnet-version: 10.0.x
     - name: Restore dependencies
       run: dotnet restore CSPSolver
+    - name: Format check
+      run: dotnet format CSPSolver/CSPSolver.sln --no-restore --verify-no-changes
     - name: Build
       run: dotnet build CSPSolver --no-restore
     - name: Test
