@@ -3,7 +3,7 @@ using System;
 
 namespace CSPSolver.Model;
 
-public abstract class ModelVar<T>: IVariable<T>
+public abstract class ModelVar<T> : IVariable<T>
 {
     public abstract IVariable<T> GetVariable();
 

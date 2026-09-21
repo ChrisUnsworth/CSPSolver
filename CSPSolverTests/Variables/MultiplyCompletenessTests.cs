@@ -28,10 +28,10 @@ public class MultiplyCompletenessTests
     private static IEnumerable<Window> Windows()
     {
         for (var xlo = -4; xlo <= 3; xlo++)
-        for (var xhi = xlo; xhi <= Math.Min(xlo + 4, 4); xhi++)
-        for (var ylo = -3; ylo <= 2; ylo++)
-        for (var yhi = ylo; yhi <= Math.Min(ylo + 3, 3); yhi++)
-            yield return new Window(xlo, xhi, ylo, yhi);
+            for (var xhi = xlo; xhi <= Math.Min(xlo + 4, 4); xhi++)
+                for (var ylo = -3; ylo <= 2; ylo++)
+                    for (var yhi = ylo; yhi <= Math.Min(ylo + 3, 3); yhi++)
+                        yield return new Window(xlo, xhi, ylo, yhi);
     }
 
     private static ISet<(int x, int y, int z)> Expected(Window w)
@@ -39,9 +39,9 @@ public class MultiplyCompletenessTests
         var expected = new HashSet<(int, int, int)>();
 
         for (var x = w.XLo; x <= w.XHi; x++)
-        for (var y = w.YLo; y <= w.YHi; y++)
-            if (x * y >= ZLo && x * y <= ZHi)
-                expected.Add((x, y, x * y));
+            for (var y = w.YLo; y <= w.YHi; y++)
+                if (x * y >= ZLo && x * y <= ZHi)
+                    expected.Add((x, y, x * y));
 
         return expected;
     }

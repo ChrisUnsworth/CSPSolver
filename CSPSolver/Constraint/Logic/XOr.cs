@@ -18,7 +18,7 @@ public readonly struct XOr : IConstraint
 
     public IEnumerable<IVariable> Variables => _con1.Variables.Concat(_con2.Variables);
 
-    public bool CanBeMet(IState state) => 
+    public bool CanBeMet(IState state) =>
         (_con1.CanBeMet(state) || _con2.CanBeMet(state))
         && (!_con1.IsMet(state) || !_con2.IsMet(state));
 

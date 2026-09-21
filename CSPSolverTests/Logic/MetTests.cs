@@ -251,7 +251,7 @@ public class MetTests
 
         Assert.IsFalse(con2.CanBeMet(state));
         Assert.IsFalse(con2.IsMet(state));
-    }        
+    }
 
     [TestMethod]
     public void NotEqualIntVarMetTest()

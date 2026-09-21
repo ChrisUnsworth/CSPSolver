@@ -37,7 +37,7 @@ public class ModelRealVar : ModelVar<double>
         return new() { Variable = new MixedSignDivideRealVar(v1.Variable, v2.Variable) };
     }
 
-    public static ModelRealVar operator *(ModelRealVar v1, ModelRealVar v2) =>  new() { Variable = new MixedSignMultiplyRealVar(v1.Variable, v2.Variable) };
+    public static ModelRealVar operator *(ModelRealVar v1, ModelRealVar v2) => new() { Variable = new MixedSignMultiplyRealVar(v1.Variable, v2.Variable) };
 
     public static ModelRealVar operator +(ModelRealVar v1, ModelRealVar v2) => new() { Variable = new PlusRealVar(v1.Variable, v2.Variable) };
 

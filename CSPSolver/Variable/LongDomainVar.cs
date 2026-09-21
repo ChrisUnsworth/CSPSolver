@@ -11,7 +11,7 @@ using CSPSolver.utils;
 
 namespace CSPSolver.Variable;
 
-public readonly struct LongDomainVar: ILongDomainVar
+public readonly struct LongDomainVar : ILongDomainVar
 {
     public IStateRef StateRef { get; }
     public int Min { get; }

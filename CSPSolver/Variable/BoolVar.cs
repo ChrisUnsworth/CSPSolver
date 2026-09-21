@@ -6,7 +6,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable;
 
-public readonly struct BoolVar: IBoolVar
+public readonly struct BoolVar : IBoolVar
 {
     public IStateRef StateRef { get; }
 
@@ -99,7 +99,7 @@ public readonly struct BoolVar: IBoolVar
             _ => SetDomain(state, 0),
         };
 
-    public bool RemoveValue(IState state, object value) => 
+    public bool RemoveValue(IState state, object value) =>
         Convert.ToInt32(value) switch
         {
             0 => SetMin(state, 1),

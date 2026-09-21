@@ -29,11 +29,11 @@ public class DivideCompletenessTests
     private static IEnumerable<Window> Windows()
     {
         for (var xlo = -4; xlo <= 3; xlo++)
-        for (var xhi = xlo; xhi <= Math.Min(xlo + 4, 4); xhi++)
-        for (var ylo = -3; ylo <= 2; ylo++)
-        for (var yhi = ylo; yhi <= Math.Min(ylo + 3, 3); yhi++)
-            if (ylo != 0 || yhi != 0)
-                yield return new Window(xlo, xhi, ylo, yhi);
+            for (var xhi = xlo; xhi <= Math.Min(xlo + 4, 4); xhi++)
+                for (var ylo = -3; ylo <= 2; ylo++)
+                    for (var yhi = ylo; yhi <= Math.Min(ylo + 3, 3); yhi++)
+                        if (ylo != 0 || yhi != 0)
+                            yield return new Window(xlo, xhi, ylo, yhi);
     }
 
     private static ISet<(int x, int y, int z)> Expected(Window w)
@@ -41,9 +41,9 @@ public class DivideCompletenessTests
         var expected = new HashSet<(int, int, int)>();
 
         for (var x = w.XLo; x <= w.XHi; x++)
-        for (var y = w.YLo; y <= w.YHi; y++)
-            if (y != 0 && x / y >= ZLo && x / y <= ZHi)
-                expected.Add((x, y, x / y));
+            for (var y = w.YLo; y <= w.YHi; y++)
+                if (y != 0 && x / y >= ZLo && x / y <= ZHi)
+                    expected.Add((x, y, x / y));
 
         return expected;
     }

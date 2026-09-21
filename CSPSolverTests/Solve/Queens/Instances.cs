@@ -10,7 +10,7 @@ public static class Instances
     public record Instance(string[] Regions, int[] Solution);
 
     public static readonly Instance SevenBySeven = new(
-        Regions: 
+        Regions:
         [
             "AAABBBB",
             "AAABBBB",
@@ -20,5 +20,5 @@ public static class Instances
             "EEGDDDF",
             "EGGGGGF",
         ],
-        Solution: [ 1, 5, 2, 4, 0, 6, 3 ]);
+        Solution: [1, 5, 2, 4, 0, 6, 3]);
 }

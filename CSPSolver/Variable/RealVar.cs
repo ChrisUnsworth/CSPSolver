@@ -63,7 +63,7 @@ public readonly struct RealVar : IRealVar
         }
 
         return result;
-            
+
     }
 
     public bool SetMax(IState state, double max)

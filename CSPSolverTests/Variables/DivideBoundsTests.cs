@@ -27,27 +27,27 @@ public class DivideBoundsTests
         var checkedPairs = 0;
 
         for (var xlo = -6; xlo <= 5; xlo++)
-        for (var xhi = xlo; xhi <= Math.Min(xlo + 6, 6); xhi++)
-        for (var ylo = -5; ylo <= 4; ylo++)
-        for (var yhi = ylo; yhi <= Math.Min(ylo + 5, 5); yhi++)
-        {
-            if (ylo == 0 && yhi == 0) continue;
+            for (var xhi = xlo; xhi <= Math.Min(xlo + 6, 6); xhi++)
+                for (var ylo = -5; ylo <= 4; ylo++)
+                    for (var yhi = ylo; yhi <= Math.Min(ylo + 5, 5); yhi++)
+                    {
+                        if (ylo == 0 && yhi == 0) continue;
 
-            var quotients = Quotients(xlo, xhi, ylo, yhi);
-            if (quotients.Count == 0) continue;
+                        var quotients = Quotients(xlo, xhi, ylo, yhi);
+                        if (quotients.Count == 0) continue;
 
-            var (state, divide) = Divide(xlo, xhi, ylo, yhi);
-            checkedPairs++;
+                        var (state, divide) = Divide(xlo, xhi, ylo, yhi);
+                        checkedPairs++;
 
-            if (divide.GetDomainMin(state) != quotients.Min() ||
-                divide.GetDomainMax(state) != quotients.Max())
-            {
-                faults.Add(
-                    $"x[{xlo},{xhi}] y[{ylo},{yhi}] reported " +
-                    $"[{divide.GetDomainMin(state)},{divide.GetDomainMax(state)}] " +
-                    $"but the true range is [{quotients.Min()},{quotients.Max()}]");
-            }
-        }
+                        if (divide.GetDomainMin(state) != quotients.Min() ||
+                            divide.GetDomainMax(state) != quotients.Max())
+                        {
+                            faults.Add(
+                                $"x[{xlo},{xhi}] y[{ylo},{yhi}] reported " +
+                                $"[{divide.GetDomainMin(state)},{divide.GetDomainMax(state)}] " +
+                                $"but the true range is [{quotients.Min()},{quotients.Max()}]");
+                        }
+                    }
 
         Assert.AreNotEqual(0, checkedPairs);
         Assert.AreEqual(
@@ -62,8 +62,8 @@ public class DivideBoundsTests
         var quotients = new List<int>();
 
         for (var x = xlo; x <= xhi; x++)
-        for (var y = ylo; y <= yhi; y++)
-            if (y != 0) quotients.Add(x / y);
+            for (var y = ylo; y <= yhi; y++)
+                if (y != 0) quotients.Add(x / y);
 
         return quotients;
     }

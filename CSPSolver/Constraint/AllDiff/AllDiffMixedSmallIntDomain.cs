@@ -120,9 +120,9 @@ public readonly struct AllDiffMixedSmallIntDomain : IConstraint
         }
     }
 
-    private uint GetLeftShifted(IState state, int i) => 
+    private uint GetLeftShifted(IState state, int i) =>
         _variables[i].GetDomain(state).domain << (_variables[i].Min - _minMin);
 
-    private uint RightShift(uint domain, int i) => 
+    private uint RightShift(uint domain, int i) =>
         domain >> (_variables[i].Min - _minMin);
 }

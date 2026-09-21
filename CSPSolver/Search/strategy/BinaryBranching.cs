@@ -6,12 +6,12 @@ using CSPSolver.common.search;
 
 namespace CSPSolver.Search.strategy;
 
-public readonly struct  BinaryBranching : IBranchStrategy
+public readonly struct BinaryBranching : IBranchStrategy
 {
     private readonly IVariableOrderingHeuristic _variableOrdering;
     private readonly IValueOrderingHeuristic _valueOrdering;
 
-    public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) => 
+    public BinaryBranching(IVariableOrderingHeuristic variableOrdering, IValueOrderingHeuristic valueOrdering) =>
         (_variableOrdering, _valueOrdering) = (variableOrdering, valueOrdering);
 
     public IEnumerable<IState> Branch(in IModel model, in IState state, IStatePool statePool)

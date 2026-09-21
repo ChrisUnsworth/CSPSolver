@@ -47,7 +47,7 @@ public readonly struct Model : IModel
 
         while (todo.Any())
         {
-            var changedVariables = 
+            var changedVariables =
                 todo.SelectMany(c => c.Propagate(state))
                     .SelectMany(v => v is ICompoundVariable cv ? cv.GetChildren() : Enumerable.Repeat(v, 1))
                     .Distinct();

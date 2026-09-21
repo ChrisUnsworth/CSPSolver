@@ -28,7 +28,7 @@ public readonly struct IntState : IState
         return new IntState(copy);
     }
 
-    public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx , size);
+    public uint GetDomain(in IStateRef idx, in int size) => GetDomain((StateRef)idx, size);
     private uint GetDomain(in StateRef idx, in int size) => (_data[idx.Idx] >> idx.Offset) & BitMask.Small(size);
 
     public ulong GetDomainLong(in IStateRef idx, in int size) => GetLargeDomain(idx, size).Reverse().Aggregate(0ul, (r, d) => d | (r << 32));
@@ -116,7 +116,7 @@ public readonly struct IntState : IState
         _data[idx.Idx] = _data[idx.Idx] + (value << idx.Offset);
     }
 
-    public void SetDomainLong(in IStateRef idx, in int size, in ulong value) => 
+    public void SetDomainLong(in IStateRef idx, in int size, in ulong value) =>
         SetLargeDomain((StateRef)idx, size, new[] { (uint)value, (uint)(value >> 32) });
 
     public void SetLargeDomain(in IStateRef idx, in int size, in uint[] value)
@@ -147,7 +147,7 @@ public readonly struct IntState : IState
     public void SetInt(in IStateRef idx, in int value) => _data[((StateRef)idx).Idx] = BitConverter.ToUInt32(BitConverter.GetBytes(value));
 
     public long GetLong(in IStateRef idx) => ((long)_data[((StateRef)idx).Idx]) + ((long)_data[((StateRef)idx).Idx + 1] << 32);
-        
+
 
     public void SetLong(in IStateRef idx, in long value)
     {

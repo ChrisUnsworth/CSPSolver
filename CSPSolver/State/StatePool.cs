@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CSPSolver.State;
 
-public class StatePool: IStatePool
+public class StatePool : IStatePool
 {
     private readonly int _size;
     private readonly ArrayPool<uint> _arrayPool;

@@ -13,10 +13,10 @@ public readonly struct EqualIntVar : IConstraint
 
     public EqualIntVar(IIntVar var1, IIntVar var2) => (_var1, _var2) = (var1, var2);
 
-    public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2};
+    public IEnumerable<IVariable> Variables => new IVariable[] { _var1, _var2 };
 
-    public bool CanBeMet(IState state) => 
-        _var1.GetDomainMin(state) <= _var2.GetDomainMax(state) && 
+    public bool CanBeMet(IState state) =>
+        _var1.GetDomainMin(state) <= _var2.GetDomainMax(state) &&
         _var1.GetDomainMax(state) >= _var2.GetDomainMin(state);
 
     public bool IsMet(IState state) =>

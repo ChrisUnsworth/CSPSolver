@@ -29,9 +29,9 @@ public class ModelIntVarTests
         var expected = new HashSet<(int, int, int)>();
 
         for (var xv = xlo; xv <= xhi; xv++)
-        for (var yv = ylo; yv <= yhi; yv++)
-            if (yv != 0 && xv / yv >= zlo && xv / yv <= zhi)
-                expected.Add((xv, yv, xv / yv));
+            for (var yv = ylo; yv <= yhi; yv++)
+                if (yv != 0 && xv / yv >= zlo && xv / yv <= zhi)
+                    expected.Add((xv, yv, xv / yv));
 
         return expected;
     }

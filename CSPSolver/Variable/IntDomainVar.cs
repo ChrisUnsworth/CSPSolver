@@ -9,7 +9,7 @@ using CSPSolver.utils;
 
 namespace CSPSolver.Variable;
 
-public readonly struct IntDomainVar: IIntDomainVar
+public readonly struct IntDomainVar : IIntDomainVar
 {
     public IStateRef StateRef { get; }
     public int Min { get; }
@@ -195,7 +195,7 @@ public readonly struct IntDomainVar: IIntDomainVar
 
         int i = intVal < 0 ? -1 : intVal / 32;
         int r = intVal % 32;
-        uint domVal = (uint)1 << r; 
+        uint domVal = (uint)1 << r;
         var isDifferent = false;
 
         var domain = state.GetLargeDomain(StateRef, Size);

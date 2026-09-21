@@ -9,6 +9,6 @@ public readonly struct SearchConfig
 
     public SearchConfig(IBranchStrategy branching) => Branching = branching;
 
-    public static SearchConfig Default() => 
+    public static SearchConfig Default() =>
         new(new BinaryBranching(new ArbitraryVariableOrdering(), new MinValueOrdering()));
 }

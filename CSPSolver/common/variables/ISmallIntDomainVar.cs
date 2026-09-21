@@ -2,7 +2,7 @@
 
 namespace CSPSolver.common.variables;
 
-public interface ISmallIntDomainVar: IIntVar
+public interface ISmallIntDomainVar : IIntVar
 {
     (uint domain, int min, int size) GetDomain(IState state);
 

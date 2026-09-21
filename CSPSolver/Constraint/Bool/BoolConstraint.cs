@@ -7,7 +7,7 @@ namespace CSPSolver.Constraint.Bool;
 
 public readonly struct BoolConstraint(IBoolVar var) : IConstraint
 {
-    public IEnumerable<IVariable> Variables => [ var ];
+    public IEnumerable<IVariable> Variables => [var];
 
     public bool CanBeMet(IState state) => var.CanBeTrue(state);
 

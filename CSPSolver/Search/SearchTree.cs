@@ -11,7 +11,7 @@ public class SearchTree
         Before = state;
         Parent = parent;
     }
-        
+
     public SearchTree Parent { get; }
 
     public List<SearchTree> Children { get; } = new List<SearchTree>();
@@ -28,7 +28,7 @@ public class SearchTree
         {
             child = new SearchTree(state, this);
             Children.Add(child);
-        }            
+        }
 
         return child;
     }

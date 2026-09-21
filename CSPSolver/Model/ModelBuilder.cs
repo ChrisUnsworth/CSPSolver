@@ -69,7 +69,7 @@ public class ModelBuilder : IModelBuilder
         {
             <= 32 => new IntSmallDomainVar(min, size, _sb.AddDomain(size)),
             <= 64 => new LongDomainVar(min, size, _sb.AddDomain(size)),
-            _     => new IntDomainVar(min, size, _sb.AddDomain(size))
+            _ => new IntDomainVar(min, size, _sb.AddDomain(size))
         };
 
         if (isDecisionVar) _variables.Add(intVar);
@@ -95,9 +95,9 @@ public class ModelBuilder : IModelBuilder
         var minRange = min * Pow(10, dp);
         IRealVar realVar = (minRange, maxRange) switch
         {
-            ( > int.MinValue, <= int.MaxValue)   => new SmallRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
+            ( > int.MinValue, <= int.MaxValue) => new SmallRealVar(min, _sb.AddInt(), max, _sb.AddInt(), dp),
             ( > long.MinValue, <= long.MaxValue) => new LongRealVar(min, _sb.AddLong(), max, _sb.AddLong(), dp),
-            _                                    => new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), Pow(10, -dp))
+            _ => new RealVar(min, _sb.AddDouble(), max, _sb.AddDouble(), Pow(10, -dp))
         };
 
         if (isDecisionVar) _variables.Add(realVar);
@@ -117,7 +117,7 @@ public class ModelBuilder : IModelBuilder
         return realVars;
     }
 
-    public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray(), _nonDecisionVariables.ToArray(), _objective, _maximise);        
+    public IModel GetModel() => new Model(_constraints.ToArray(), _variables.ToArray(), _nonDecisionVariables.ToArray(), _objective, _maximise);
 
-    public int GetStateSize() =>_sb.GetSize();
+    public int GetStateSize() => _sb.GetSize();
 }

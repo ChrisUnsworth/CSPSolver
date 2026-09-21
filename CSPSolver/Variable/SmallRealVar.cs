@@ -95,7 +95,7 @@ public readonly struct SmallRealVar : IRealVar
         return false;
     }
 
-    public bool SetValue(IState state, object value) => 
+    public bool SetValue(IState state, object value) =>
         SetMin(state, (double)value) | SetMax(state, (double)value);
 
     public bool TryGetValue(IState state, out double value)

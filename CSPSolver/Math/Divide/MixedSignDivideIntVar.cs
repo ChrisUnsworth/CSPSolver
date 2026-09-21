@@ -161,9 +161,9 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
     }
 
     private static int Saturate(long value) =>
-        value < int.MinValue 
+        value < int.MinValue
             ? int.MinValue
-            : value > int.MaxValue 
+            : value > int.MaxValue
                 ? int.MaxValue
                 : (int)value;
 

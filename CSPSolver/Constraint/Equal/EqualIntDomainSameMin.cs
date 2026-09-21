@@ -12,13 +12,13 @@ public readonly struct EqualIntDomainSameMin : IConstraint
 
     public EqualIntDomainSameMin(ISmallIntDomainVar var1, ISmallIntDomainVar var2) => (_var1, _var2) = (var1, var2);
 
-    public IEnumerable<IVariable> Variables => new List<IVariable>() { _var1, _var2};
+    public IEnumerable<IVariable> Variables => new List<IVariable>() { _var1, _var2 };
 
     public bool CanBeMet(IState state)
     {
         var (d1, _, _) = _var1.GetDomain(state);
         var (d2, _, _) = _var2.GetDomain(state);
-        return  (d1 & d2) != 0;
+        return (d1 & d2) != 0;
     }
 
     public bool IsMet(IState state) =>

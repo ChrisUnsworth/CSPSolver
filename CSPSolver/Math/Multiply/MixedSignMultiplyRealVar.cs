@@ -9,7 +9,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Math.Multiply;
 
-public readonly struct MixedSignMultiplyRealVar: IRealVar, ICompoundVariable
+public readonly struct MixedSignMultiplyRealVar : IRealVar, ICompoundVariable
 {
     private readonly IRealVar _v1;
     private readonly IRealVar _v2;

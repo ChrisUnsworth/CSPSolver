@@ -29,7 +29,7 @@ public readonly struct Cardinality : IConstraint
     public Cardinality(IEnumerable<IBoolVar> vars, int count)
     {
         _count = count;
-        _vars = [ ..vars ];
+        _vars = [.. vars];
         _invCount = _vars.Length - count;
     }
 
@@ -39,7 +39,7 @@ public readonly struct Cardinality : IConstraint
     {
         var areTrue = 0;
         var canBeTrue = 0;
-        
+
         for (int i = 0; i < _vars.Length; i++)
         {
             if (_vars[i].IsTrue(state))
@@ -108,7 +108,7 @@ public readonly struct Cardinality : IConstraint
                 {
                     return [];
                 }
-                
+
                 undecided = _vars[i];
             }
         }
@@ -146,7 +146,7 @@ public readonly struct Cardinality : IConstraint
                 return false;
             }
         }
-        
+
         return trueCount == _count;
     }
 
@@ -165,7 +165,7 @@ public readonly struct Cardinality : IConstraint
                 falseCount++;
             }
         }
-        
+
         return trueCount >= _count && falseCount >= _invCount;
     }
 }

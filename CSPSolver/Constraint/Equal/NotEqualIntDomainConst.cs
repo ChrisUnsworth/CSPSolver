@@ -11,10 +11,10 @@ public readonly struct NotEqualIntDomainConst : IConstraint
     private readonly IIntVar _var;
     private readonly int _con;
 
-    public NotEqualIntDomainConst(IIntVar var, int con) => 
+    public NotEqualIntDomainConst(IIntVar var, int con) =>
         (_var, _con) = (var, con);
 
-    public IEnumerable<IVariable> Variables => 
+    public IEnumerable<IVariable> Variables =>
         new List<IVariable>() { _var };
 
     public bool CanBeMet(IState state) =>
@@ -26,6 +26,6 @@ public readonly struct NotEqualIntDomainConst : IConstraint
     public IEnumerable<IVariable> NegativePropagate(IState state) =>
         _var.SetValue(state, _con) ? new IVariable[] { _var } : Enumerable.Empty<IVariable>();
 
-    public IEnumerable<IVariable> Propagate(IState state) => 
+    public IEnumerable<IVariable> Propagate(IState state) =>
         _var.RemoveValue(state, _con) ? new IVariable[] { _var } : Enumerable.Empty<IVariable>();
 }

@@ -103,7 +103,8 @@ public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
                 {
                     _frontier.Push(branch);
                 }
-            } else
+            }
+            else
             {
                 _statePool.Return(state);
             }

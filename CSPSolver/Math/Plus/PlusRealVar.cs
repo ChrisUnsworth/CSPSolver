@@ -66,7 +66,7 @@ public readonly struct PlusRealVar : IRealVar, ICompoundVariable
     public bool TryGetValue(IState state, out double value)
     {
         if (_v1.TryGetValue(state, out double v1) && _v2.TryGetValue(state, out double v2))
-        {                
+        {
             value = v1 + v2;
             return true;
         }

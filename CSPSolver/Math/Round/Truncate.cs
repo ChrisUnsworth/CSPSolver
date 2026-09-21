@@ -47,7 +47,7 @@ public readonly struct Truncate : IIntVar, ICompoundVariable
             ? _realVar.SetMax(state, max + 1 - _realVar.Epsilon)
             : _realVar.SetMax(state, max);
 
-    public bool SetMin(IState state, int min) => 
+    public bool SetMin(IState state, int min) =>
         min >= 0
             ? _realVar.SetMin(state, min)
             : _realVar.SetMin(state, -1 + _realVar.Epsilon);
