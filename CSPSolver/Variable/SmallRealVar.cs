@@ -33,8 +33,8 @@ public readonly struct SmallRealVar : IRealVar
 
     public void Initialise(IState state)
     {
-        state.SetInt(MaxStateRef, (int)Round(Max / Epsilon));
-        state.SetInt(MinStateRef, (int)Round(Min / Epsilon));
+        state.SetInt(MaxStateRef, AsFloorInt(Max));
+        state.SetInt(MinStateRef, AsCeilInt(Min));
     }
 
     public bool IsEmpty(IState state) => state.GetInt(MaxStateRef) < state.GetInt(MinStateRef);
@@ -67,7 +67,9 @@ public readonly struct SmallRealVar : IRealVar
 
     public bool SetMax(IState state, double max)
     {
-        var maxInt = AsInt(max);
+        // Floor, not nearest: rounding a shrinking max up onto the grid could
+        // keep a point that's actually above the real bound just narrowed to.
+        var maxInt = AsFloorInt(max);
 
         if (maxInt < state.GetInt(MaxStateRef))
         {
@@ -80,7 +82,9 @@ public readonly struct SmallRealVar : IRealVar
 
     public bool SetMin(IState state, double min)
     {
-        var minInt = AsInt(min);
+        // Ceiling, not nearest: rounding a growing min down onto the grid could
+        // keep a point that's actually below the real bound just narrowed to.
+        var minInt = AsCeilInt(min);
 
         if (minInt > state.GetInt(MinStateRef))
         {
@@ -103,4 +107,13 @@ public readonly struct SmallRealVar : IRealVar
     public Type VariableType() => typeof(double);
 
     private int AsInt(double val) => (int)Round((double)val / Epsilon);
+
+    // val / Epsilon lands a tick off the intended integer for values that are
+    // exact grid points (e.g. 6.6 / 0.1 == 65.99999999999999), so floor/ceiling
+    // alone would knock a real grid point off the domain. Nudging by a tolerance
+    // tiny next to a single grid step corrects that without blunting the
+    // directional rounding true non-grid values still need.
+    private int AsFloorInt(double val) => (int)Floor(val / Epsilon + 1e-9);
+
+    private int AsCeilInt(double val) => (int)Ceiling(val / Epsilon - 1e-9);
 }
