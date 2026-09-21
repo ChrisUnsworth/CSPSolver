@@ -95,4 +95,46 @@ public class SearchTests
 
         Assert.AreEqual(5, count);
     }
+
+    [TestMethod]
+    public void AConstraintOverOnlyConstantsThatCannotHoldFailsImmediately()
+    {
+        var mb = new ModelBuilder();
+        ModelIntVar five = 5;
+        ModelIntVar six = 6;
+        mb.AddConstraint(five == six);
+        var search = new Search(mb);
+
+        // No decision variables means IsSolved is vacuously true, and MakeEmpty
+        // on a constant is a no-op, so nothing but an upfront CanBeMet check
+        // catches this.
+        Assert.IsFalse(search.MoveNext());
+    }
+
+    [TestMethod]
+    public void AConstraintOverOnlyConstantsThatCanHoldStillSucceeds()
+    {
+        var mb = new ModelBuilder();
+        ModelIntVar five = 5;
+        ModelIntVar alsoFive = 5;
+        mb.AddConstraint(five == alsoFive);
+        var search = new Search(mb);
+
+        Assert.IsTrue(search.MoveNext());
+        Assert.IsFalse(search.MoveNext());
+    }
+
+    [TestMethod]
+    public void ResetReappliesTheFeasibilityGuard()
+    {
+        var mb = new ModelBuilder();
+        ModelIntVar five = 5;
+        ModelIntVar six = 6;
+        mb.AddConstraint(five == six);
+        var search = new Search(mb);
+
+        Assert.IsFalse(search.MoveNext());
+        search.Reset();
+        Assert.IsFalse(search.MoveNext());
+    }
 }
