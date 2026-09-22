@@ -15,6 +15,7 @@ namespace CSPSolver.Math.Sum;
 public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 {
     private readonly IIntVar[] _vars;
+    private readonly int[] _extremes;
 
     public int Min { get; }
 
@@ -25,6 +26,7 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
     public SumOfIntVar(IEnumerable<IIntVar> vars)
     {
         _vars = vars.ToArray();
+        _extremes = new int[_vars.Length];
         Min = _vars.Sum(v => v.Min);
         Max = _vars.Sum(v => v.Max);
         Size = Max - Min + 1;
@@ -68,19 +70,18 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 
     public bool SetMax(IState state, int max)
     {
-        var mins = new int[_vars.Length];
         var sumMin = 0;
 
         for (var i = 0; i < _vars.Length; i++)
         {
-            mins[i] = _vars[i].GetDomainMin(state);
-            sumMin += mins[i];
+            _extremes[i] = _vars[i].GetDomainMin(state);
+            sumMin += _extremes[i];
         }
 
         var changed = false;
         for (var i = 0; i < _vars.Length; i++)
         {
-            changed |= _vars[i].SetMax(state, max - (sumMin - mins[i]));
+            changed |= _vars[i].SetMax(state, max - (sumMin - _extremes[i]));
         }
 
         return changed;
@@ -88,19 +89,18 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 
     public bool SetMin(IState state, int min)
     {
-        var maxes = new int[_vars.Length];
         var sumMax = 0;
 
         for (var i = 0; i < _vars.Length; i++)
         {
-            maxes[i] = _vars[i].GetDomainMax(state);
-            sumMax += maxes[i];
+            _extremes[i] = _vars[i].GetDomainMax(state);
+            sumMax += _extremes[i];
         }
 
         var changed = false;
         for (var i = 0; i < _vars.Length; i++)
         {
-            changed |= _vars[i].SetMin(state, min - (sumMax - maxes[i]));
+            changed |= _vars[i].SetMin(state, min - (sumMax - _extremes[i]));
         }
 
         return changed;

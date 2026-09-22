@@ -14,6 +14,7 @@ namespace CSPSolver.Math.Sum;
 public readonly struct SumOfRealVar : IRealVar, ICompoundVariable
 {
     private readonly IRealVar[] _vars;
+    private readonly double[] _extremes;
 
     public double Min { get; }
 
@@ -24,6 +25,7 @@ public readonly struct SumOfRealVar : IRealVar, ICompoundVariable
     public SumOfRealVar(IEnumerable<IRealVar> vars)
     {
         _vars = vars.ToArray();
+        _extremes = new double[_vars.Length];
         Min = _vars.Sum(v => v.Min);
         Max = _vars.Sum(v => v.Max);
     }
@@ -64,19 +66,18 @@ public readonly struct SumOfRealVar : IRealVar, ICompoundVariable
 
     public bool SetMax(IState state, double max)
     {
-        var mins = new double[_vars.Length];
         var sumMin = 0d;
 
         for (var i = 0; i < _vars.Length; i++)
         {
-            mins[i] = _vars[i].GetDomainMin(state);
-            sumMin += mins[i];
+            _extremes[i] = _vars[i].GetDomainMin(state);
+            sumMin += _extremes[i];
         }
 
         var changed = false;
         for (var i = 0; i < _vars.Length; i++)
         {
-            changed |= _vars[i].SetMax(state, max - (sumMin - mins[i]));
+            changed |= _vars[i].SetMax(state, max - (sumMin - _extremes[i]));
         }
 
         return changed;
@@ -84,19 +85,18 @@ public readonly struct SumOfRealVar : IRealVar, ICompoundVariable
 
     public bool SetMin(IState state, double min)
     {
-        var maxes = new double[_vars.Length];
         var sumMax = 0d;
 
         for (var i = 0; i < _vars.Length; i++)
         {
-            maxes[i] = _vars[i].GetDomainMax(state);
-            sumMax += maxes[i];
+            _extremes[i] = _vars[i].GetDomainMax(state);
+            sumMax += _extremes[i];
         }
 
         var changed = false;
         for (var i = 0; i < _vars.Length; i++)
         {
-            changed |= _vars[i].SetMin(state, min - (sumMax - maxes[i]));
+            changed |= _vars[i].SetMin(state, min - (sumMax - _extremes[i]));
         }
 
         return changed;
