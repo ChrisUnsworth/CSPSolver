@@ -38,13 +38,15 @@ public readonly struct CardinalityIntVar : IConstraint
 
         for (int i = 0; i < _vars.Length; i++)
         {
-            if (_vars[i].IsTrue(state))
+            switch (_vars[i].GetState(state))
             {
-                areTrue++;
-            }
-            if (_vars[i].CanBeTrue(state))
-            {
-                canBeTrue++;
+                case BoolState.True:
+                    areTrue++;
+                    canBeTrue++;
+                    break;
+                case BoolState.Undecided:
+                    canBeTrue++;
+                    break;
             }
         }
 
@@ -95,18 +97,19 @@ public readonly struct CardinalityIntVar : IConstraint
         IBoolVar undecided = null;
         for (int i = 0; i < _vars.Length; i++)
         {
-            if (_vars[i].IsTrue(state))
+            switch (_vars[i].GetState(state))
             {
-                trueCount++;
-            }
-            else if (!_vars[i].IsFalse(state))
-            {
-                if (undecided != null)
-                {
-                    return [];
-                }
+                case BoolState.True:
+                    trueCount++;
+                    break;
+                case BoolState.Undecided:
+                    if (undecided != null)
+                    {
+                        return [];
+                    }
 
-                undecided = _vars[i];
+                    undecided = _vars[i];
+                    break;
             }
         }
 
@@ -149,13 +152,13 @@ public readonly struct CardinalityIntVar : IConstraint
         var trueCount = 0;
         for (int i = 0; i < _vars.Length; i++)
         {
-            if (_vars[i].IsTrue(state))
+            switch (_vars[i].GetState(state))
             {
-                trueCount++;
-            }
-            else if (!_vars[i].IsFalse(state))
-            {
-                return false;
+                case BoolState.True:
+                    trueCount++;
+                    break;
+                case BoolState.Undecided:
+                    return false;
             }
         }
 
@@ -168,13 +171,15 @@ public readonly struct CardinalityIntVar : IConstraint
         var canBeTrue = 0;
         for (int i = 0; i < _vars.Length; i++)
         {
-            if (_vars[i].IsTrue(state))
+            switch (_vars[i].GetState(state))
             {
-                areTrue++;
-            }
-            if (_vars[i].CanBeTrue(state))
-            {
-                canBeTrue++;
+                case BoolState.True:
+                    areTrue++;
+                    canBeTrue++;
+                    break;
+                case BoolState.Undecided:
+                    canBeTrue++;
+                    break;
             }
         }
 

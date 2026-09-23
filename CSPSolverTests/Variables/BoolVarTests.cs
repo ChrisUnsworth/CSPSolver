@@ -2,6 +2,7 @@
 
 using CSPSolver.Variable;
 using CSPSolver.common;
+using CSPSolver.common.variables;
 using CSPSolver.State;
 
 namespace CSPSolverTests.Variables;
@@ -121,6 +122,29 @@ public class BoolVarTests
         v.SetValue(s, false);
 
         Assert.IsFalse(v.CanBeFalse(s));
+    }
+
+    [TestMethod]
+    public void GetStateTest()
+    {
+        var (s, v) = GetVar();
+
+        Assert.AreEqual(BoolState.Undecided, v.GetState(s));
+
+        v.SetValue(s, true);
+
+        Assert.AreEqual(BoolState.True, v.GetState(s));
+
+        (s, v) = GetVar();
+
+        v.SetValue(s, false);
+
+        Assert.AreEqual(BoolState.False, v.GetState(s));
+
+        // Conflicting SetValue calls leave no valid value in the domain.
+        v.SetValue(s, true);
+
+        Assert.AreEqual(BoolState.Empty, v.GetState(s));
     }
 
     [TestMethod]

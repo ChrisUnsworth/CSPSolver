@@ -26,6 +26,8 @@ public readonly struct TrueVar : IBoolVar
 
     public bool CanBeFalse(IState state) => false;
 
+    public BoolState GetState(IState state) => IsEmpty(state) ? BoolState.Empty : BoolState.True;
+
     public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
     public bool SetDomain(IState state, uint domain)
