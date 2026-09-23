@@ -14,7 +14,7 @@ using static CSPSolver.Model.ModelConstraint;
 namespace CSPSolverTests.Constraint;
 
 [TestClass]
-public class CardinalityVarTests
+public class CardinalityIntVarTests
 {
     private static (IState state, IBoolVar[] vars, IIntVar count) GetVars(int size, int countLo, int countHi)
     {
@@ -34,7 +34,7 @@ public class CardinalityVarTests
     public void SetsCountBoundsFromTheTrueAndUndecidedSplit()
     {
         var (state, vars, count) = GetVars(4, 0, 4);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, false);
@@ -49,7 +49,7 @@ public class CardinalityVarTests
     public void ForcesRemainingFalseOnceCountsMaxIsReached()
     {
         var (state, vars, count) = GetVars(4, 0, 1);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         constraint.Propagate(state);
@@ -63,7 +63,7 @@ public class CardinalityVarTests
     public void ForcesRemainingTrueOnceCountsMinLeavesNoSlack()
     {
         var (state, vars, count) = GetVars(4, 3, 4);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, false);
         constraint.Propagate(state);
@@ -77,7 +77,7 @@ public class CardinalityVarTests
     public void EmptiesCountWhenAlreadyTooManyAreTrue()
     {
         var (state, vars, count) = GetVars(3, 0, 1);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, true);
@@ -90,7 +90,7 @@ public class CardinalityVarTests
     public void EmptiesCountWhenTooFewCanStillBecomeTrue()
     {
         var (state, vars, count) = GetVars(3, 3, 3);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, false);
         vars[1].SetValue(state, false);
@@ -103,7 +103,7 @@ public class CardinalityVarTests
     public void IsMetOnlyOnceEveryVarIsDecidedAndCountIsInstantiatedToMatch()
     {
         var (state, vars, count) = GetVars(3, 0, 3);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, true);
@@ -118,7 +118,7 @@ public class CardinalityVarTests
     public void CanBeMetReflectsOverlapBetweenTheAchievableRangeAndCountsDomain()
     {
         var (state, vars, count) = GetVars(3, 2, 3);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         Assert.IsTrue(constraint.CanBeMet(state));
 
@@ -131,7 +131,7 @@ public class CardinalityVarTests
     public void NegativePropagateForcesTheLastVarAwayFromCompletingAFixedCount()
     {
         var (state, vars, count) = GetVars(3, 2, 2);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, false);
@@ -145,7 +145,7 @@ public class CardinalityVarTests
     public void NegativePropagateRemovesTheMatchingValueFromCountWhenVarsAreAllDecided()
     {
         var (state, vars, count) = GetVars(2, 0, 2);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, false);
@@ -159,7 +159,7 @@ public class CardinalityVarTests
     public void NegativePropagateEmptiesCountWhenItAlreadyMatchesExactly()
     {
         var (state, vars, count) = GetVars(2, 1, 1);
-        var constraint = new CardinalityVar(vars, count);
+        var constraint = new CardinalityIntVar(vars, count);
 
         vars[0].SetValue(state, true);
         vars[1].SetValue(state, false);

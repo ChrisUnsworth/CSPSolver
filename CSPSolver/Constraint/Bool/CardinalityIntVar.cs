@@ -11,12 +11,12 @@ namespace CSPSolver.Constraint.Bool;
 /// true/undecided split over the bools narrows count's own bounds, and count's
 /// bounds narrow which bools must still be forced.
 /// </summary>
-public readonly struct CardinalityVar : IConstraint
+public readonly struct CardinalityIntVar : IConstraint
 {
     private readonly IBoolVar[] _vars;
     private readonly IIntVar _count;
 
-    public CardinalityVar(IEnumerable<IBoolVar> vars, IIntVar count)
+    public CardinalityIntVar(IEnumerable<IBoolVar> vars, IIntVar count)
     {
         _vars = [.. vars];
         _count = count;
@@ -141,6 +141,11 @@ public readonly struct CardinalityVar : IConstraint
 
     public bool IsMet(IState state)
     {
+        if (!_count.TryGetValue(state, out int countVal))
+        {
+            return false;
+        }
+
         var trueCount = 0;
         for (int i = 0; i < _vars.Length; i++)
         {
@@ -154,7 +159,7 @@ public readonly struct CardinalityVar : IConstraint
             }
         }
 
-        return _count.TryGetValue(state, out int countVal) && trueCount == countVal;
+        return trueCount == countVal;
     }
 
     public bool CanBeMet(IState state)

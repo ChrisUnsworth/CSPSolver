@@ -50,7 +50,7 @@ public class ModelConstraint
 
     public static ModelConstraint Cardinality(IEnumerable<ModelBoolVar> vars, int count) => new(new Cardinality(vars.Select(v => v.Variable), count));
 
-    public static ModelConstraint Cardinality(IEnumerable<ModelBoolVar> vars, ModelIntVar count) => new(new CardinalityVar(vars.Select(v => v.Variable), count.Variable));
+    public static ModelConstraint Cardinality(IEnumerable<ModelBoolVar> vars, ModelIntVar count) => new(new CardinalityIntVar(vars.Select(v => v.Variable), count.Variable));
 
     public static ModelConstraint AllDiff(IEnumerable<ModelIntVar> vars) => AllDiff(vars.ToArray());
 
