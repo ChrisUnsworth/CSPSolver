@@ -148,6 +148,38 @@ public class BoolVarTests
     }
 
     [TestMethod]
+    public void GetStateMatchesTheIndependentIsAndCanBeChecks()
+    {
+        // GetState casts the raw domain rather than deriving it from
+        // IsTrue/IsFalse/IsEmpty, so it has no shared code path with them --
+        // if BoolVar's domain encoding and the BoolState enum values ever
+        // drift apart, this is what would catch it.
+        var (s, v) = GetVar();
+        AssertStateMatchesIndependentChecks(s, v);
+
+        v.SetValue(s, true);
+        AssertStateMatchesIndependentChecks(s, v);
+
+        (s, v) = GetVar();
+        v.SetValue(s, false);
+        AssertStateMatchesIndependentChecks(s, v);
+
+        v.SetValue(s, true);
+        AssertStateMatchesIndependentChecks(s, v);
+    }
+
+    private static void AssertStateMatchesIndependentChecks(IState state, BoolVar v)
+    {
+        var expected =
+            v.IsEmpty(state) ? BoolState.Empty :
+            v.IsTrue(state) ? BoolState.True :
+            v.IsFalse(state) ? BoolState.False :
+            BoolState.Undecided;
+
+        Assert.AreEqual(expected, v.GetState(state));
+    }
+
+    [TestMethod]
     public void TryGetValueTest()
     {
         var (s, v) = GetVar();
