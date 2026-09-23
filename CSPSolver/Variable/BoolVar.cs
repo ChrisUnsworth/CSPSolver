@@ -26,7 +26,6 @@ public readonly struct BoolVar : IBoolVar
 
     public bool CanBeFalse(IState state) => GetDomainMin(state) == 0;
 
-    // The raw domain value already is the BoolState -- see the enum's doc comment.
     public BoolState GetState(IState state) => (BoolState)state.GetDomain(StateRef, Size);
 
     public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
