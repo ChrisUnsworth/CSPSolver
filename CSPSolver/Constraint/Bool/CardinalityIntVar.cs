@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-
 using CSPSolver.common;
 using CSPSolver.common.variables;
 
@@ -50,42 +49,54 @@ public readonly struct CardinalityIntVar : IConstraint
             }
         }
 
-        var changed = new List<IVariable>();
         var countChanged = _count.SetMin(state, areTrue);
         countChanged |= _count.SetMax(state, canBeTrue);
-        if (countChanged)
-        {
-            changed.Add(_count);
-        }
 
         if (_count.IsEmpty(state))
         {
-            return changed;
+            return countChanged
+                ? [_count]
+                : [];
         }
 
         var countMin = _count.GetDomainMin(state);
         var countMax = _count.GetDomainMax(state);
 
-        if (canBeTrue == countMin)
+        if (canBeTrue != areTrue && canBeTrue == countMin)
         {
-            for (int i = 0; i < _vars.Length; i++)
+            return ForceTo(state, true, canBeTrue - areTrue, countChanged);
+        }
+
+        if (areTrue != canBeTrue && areTrue == countMax)
+        {
+            return ForceTo(state, false, canBeTrue - areTrue, countChanged);
+        }
+
+        return countChanged
+            ? [_count]
+            : [];
+    }
+
+    // maxForced is the number of undecided vars (canBeTrue - areTrue), the
+    // most that could possibly change either way -- already-decided vars
+    // that reach the matching SetValue call below are always a no-op.
+    private IVariable[] ForceTo(IState state, bool value, int maxForced, bool countChanged)
+    {
+        var changed = new IVariable[maxForced + (countChanged ? 1 : 0)];
+        var j = 0;
+
+        for (int i = 0; i < _vars.Length; i++)
+        {
+            var canBe = value ? _vars[i].CanBeTrue(state) : _vars[i].CanBeFalse(state);
+            if (canBe && _vars[i].SetValue(state, value))
             {
-                if (_vars[i].CanBeTrue(state) && _vars[i].SetValue(state, true))
-                {
-                    changed.Add(_vars[i]);
-                }
+                changed[j++] = _vars[i];
             }
         }
 
-        if (areTrue == countMax)
+        if (countChanged)
         {
-            for (int i = 0; i < _vars.Length; i++)
-            {
-                if (_vars[i].CanBeFalse(state) && _vars[i].SetValue(state, false))
-                {
-                    changed.Add(_vars[i]);
-                }
-            }
+            changed[j] = _count;
         }
 
         return changed;
