@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using CSPSolver.common;
 using CSPSolver.Constraint.Equal;
@@ -7,6 +8,7 @@ using CSPSolver.Math.Minus;
 using CSPSolver.Math.Plus;
 using CSPSolver.Math.Multiply;
 using CSPSolver.Math.Divide;
+using CSPSolver.Math.Sum;
 using CSPSolver.Variable;
 using CSPSolver.Constraint.Inequality;
 using CSPSolver.common.variables;
@@ -26,6 +28,8 @@ public class ModelIntVar : ModelVar<int>
     public override int GetHashCode() => HashCode.Combine(Variable);
 
     public static implicit operator ModelIntVar(int i) => new() { Variable = new IntConstVar(i) };
+
+    public static ModelIntVar SumOf(IEnumerable<ModelIntVar> vars) => new() { Variable = new SumOfIntVar(vars.Select(v => v.Variable)) };
 
     public static ModelIntVar operator +(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new PlusIntVar(v1.Variable, v2.Variable) };
     public static ModelIntVar operator -(ModelIntVar v1, ModelIntVar v2) => new() { Variable = new MinusIntDomain(v1.Variable, v2.Variable) };

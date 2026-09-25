@@ -2,6 +2,7 @@
 
 using CSPSolver.Variable;
 using CSPSolver.common;
+using CSPSolver.common.variables;
 using CSPSolver.State;
 
 namespace CSPSolverTests.Variables;
@@ -121,6 +122,61 @@ public class BoolVarTests
         v.SetValue(s, false);
 
         Assert.IsFalse(v.CanBeFalse(s));
+    }
+
+    [TestMethod]
+    public void GetStateTest()
+    {
+        var (s, v) = GetVar();
+
+        Assert.AreEqual(BoolState.Undecided, v.GetState(s));
+
+        v.SetValue(s, true);
+
+        Assert.AreEqual(BoolState.True, v.GetState(s));
+
+        (s, v) = GetVar();
+
+        v.SetValue(s, false);
+
+        Assert.AreEqual(BoolState.False, v.GetState(s));
+
+        // Conflicting SetValue calls leave no valid value in the domain.
+        v.SetValue(s, true);
+
+        Assert.AreEqual(BoolState.Empty, v.GetState(s));
+    }
+
+    [TestMethod]
+    public void GetStateMatchesTheIndependentIsAndCanBeChecks()
+    {
+        // GetState casts the raw domain rather than deriving it from
+        // IsTrue/IsFalse/IsEmpty, so it has no shared code path with them --
+        // if BoolVar's domain encoding and the BoolState enum values ever
+        // drift apart, this is what would catch it.
+        var (s, v) = GetVar();
+        AssertStateMatchesIndependentChecks(s, v);
+
+        v.SetValue(s, true);
+        AssertStateMatchesIndependentChecks(s, v);
+
+        (s, v) = GetVar();
+        v.SetValue(s, false);
+        AssertStateMatchesIndependentChecks(s, v);
+
+        v.SetValue(s, true);
+        AssertStateMatchesIndependentChecks(s, v);
+    }
+
+    private static void AssertStateMatchesIndependentChecks(IState state, BoolVar v)
+    {
+        var expected =
+            v.IsEmpty(state) ? BoolState.Empty :
+            v.IsTrue(state) ? BoolState.True :
+            v.IsFalse(state) ? BoolState.False :
+            BoolState.Undecided;
+
+        Assert.AreEqual(expected, v.GetState(state));
     }
 
     [TestMethod]

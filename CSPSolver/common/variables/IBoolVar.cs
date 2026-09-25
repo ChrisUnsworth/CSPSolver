@@ -9,4 +9,6 @@ public interface IBoolVar : ISmallIntDomainVar, IVariable<bool>
     public bool IsFalse(IState state);
 
     public bool CanBeFalse(IState state);
+
+    public BoolState GetState(IState state);
 }

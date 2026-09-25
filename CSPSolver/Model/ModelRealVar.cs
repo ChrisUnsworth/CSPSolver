@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -10,6 +11,7 @@ using CSPSolver.Math.Minus;
 using CSPSolver.Math.Multiply;
 using CSPSolver.Math.Plus;
 using CSPSolver.Math.Round;
+using CSPSolver.Math.Sum;
 using CSPSolver.Variable;
 
 namespace CSPSolver.Model;
@@ -28,6 +30,11 @@ public class ModelRealVar : ModelVar<double>
     public override int GetHashCode() => HashCode.Combine(Variable);
 
     public static implicit operator ModelRealVar(ModelIntVar i) => new() { Variable = new RealVarIntWrapper(i.Variable) };
+
+    // A mixed collection of ModelIntVar and ModelRealVar works here for free:
+    // each ModelIntVar element converts via the implicit operator above when the
+    // caller builds the IEnumerable<ModelRealVar>.
+    public static ModelRealVar SumOf(IEnumerable<ModelRealVar> vars) => new() { Variable = new SumOfRealVar(vars.Select(v => v.Variable)) };
 
     public static ModelRealVar operator /(ModelRealVar v1, ModelRealVar v2)
     {
