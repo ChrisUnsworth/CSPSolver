@@ -63,9 +63,12 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
             }
         }
 
-        // Only forced when every other var is already fixed -- otherwise there's
-        // more than one way to avoid this exact sum, so nothing can be removed.
-        return undecided != -1 && _vars[undecided].RemoveValue(state, (int)value - sum);
+        return undecided switch
+        {
+            -1 when sum != (int)value => false,
+            -1 => _vars[0].MakeEmpty(state),
+            _ => _vars[undecided].RemoveValue(state, (int)value - sum)
+        };
     }
 
     public bool SetMax(IState state, int max)

@@ -72,6 +72,36 @@ public class SumOfIntVarTests
     }
 
     [TestMethod]
+    public void RemoveValueEmptiesAVarWhenAllAreFixedAndSumMatches()
+    {
+        var (state, vars) = GetVars(3, 0, 5);
+        var sum = new SumOfIntVar(vars);
+
+        vars[0].SetValue(state, 2);
+        vars[1].SetValue(state, 3);
+        vars[2].SetValue(state, 5);
+
+        // Every var is fixed and they sum to 10; removing 10 has no other
+        // var left to absorb the change, so it must empty one of them.
+        Assert.IsTrue(sum.RemoveValue(state, 10));
+        Assert.IsTrue(sum.IsEmpty(state));
+    }
+
+    [TestMethod]
+    public void RemoveValueDoesNothingWhenAllAreFixedAndSumDiffers()
+    {
+        var (state, vars) = GetVars(3, 0, 5);
+        var sum = new SumOfIntVar(vars);
+
+        vars[0].SetValue(state, 2);
+        vars[1].SetValue(state, 3);
+        vars[2].SetValue(state, 5);
+
+        Assert.IsFalse(sum.RemoveValue(state, 11));
+        Assert.IsFalse(sum.IsEmpty(state));
+    }
+
+    [TestMethod]
     public void MatchesBruteForceWithAConstantTarget()
     {
         for (var target = -2; target <= 10; target++)
