@@ -7,10 +7,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Math.Sum;
 
-/// <summary>
-/// The sum of an arbitrary number of real vars, generalising PlusRealVar's
-/// pairwise bounds consistency to N terms the same way SumOfIntVar does for ints.
-/// </summary>
+/// <summary>The sum of an arbitrary number of real vars; see SumOfIntVar for the int equivalent.</summary>
 public readonly struct SumOfRealVar : IRealVar, ICompoundVariable
 {
     private readonly IRealVar[] _vars;

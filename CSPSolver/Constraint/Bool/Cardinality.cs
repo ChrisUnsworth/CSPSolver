@@ -5,26 +5,13 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Bool;
 
-/// <summary>
-/// Exactly `count` of the given bool vars are true. Propagates in a single
-/// O(N) pass over the group: once enough are already true to reach the count,
-/// every remaining undecided var is forced false; once there aren't enough
-/// undecided vars left to reach the count, every remaining undecided var is
-/// forced true.
-/// </summary>
+/// <summary>Exactly `count` of the given bool vars are true.</summary>
 public readonly struct Cardinality : IConstraint
 {
     private readonly IBoolVar[] _vars;
     private readonly int _invCount;
     private readonly int _count;
 
-    /// <summary>
-    /// Exactly `count` of the given bool vars are true. Propagates in a single
-    /// O(N) pass over the group: once enough are already true to reach the count,
-    /// every remaining undecided var is forced false; once there aren't enough
-    /// undecided vars left to reach the count, every remaining undecided var is
-    /// forced true.
-    /// </summary>
     public Cardinality(IEnumerable<IBoolVar> vars, int count)
     {
         _count = count;

@@ -4,12 +4,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Constraint.Bool;
 
-/// <summary>
-/// Exactly `count` of the given bool vars are true, where `count` is itself an
-/// int var rather than a fixed constant. Narrows in both directions: the
-/// true/undecided split over the bools narrows count's own bounds, and count's
-/// bounds narrow which bools must still be forced.
-/// </summary>
+/// <summary>Like Cardinality, but `count` is itself an int var rather than a fixed constant.</summary>
 public readonly struct CardinalityIntVar : IConstraint
 {
     private readonly IBoolVar[] _vars;
@@ -77,9 +72,7 @@ public readonly struct CardinalityIntVar : IConstraint
             : [];
     }
 
-    // maxForced is the number of undecided vars (canBeTrue - areTrue), the
-    // most that could possibly change either way -- already-decided vars
-    // that reach the matching SetValue call below are always a no-op.
+    // maxForced (canBeTrue - areTrue) safely bounds changed: already-decided vars are no-ops below.
     private IVariable[] ForceTo(IState state, bool value, int maxForced, bool countChanged)
     {
         var changed = new IVariable[maxForced + (countChanged ? 1 : 0)];

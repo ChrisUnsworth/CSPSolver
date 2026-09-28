@@ -7,11 +7,7 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Math.Sum;
 
-/// <summary>
-/// The sum of an arbitrary number of int vars, generalising PlusIntVar's pairwise
-/// bounds consistency to N terms: each var's own bound is narrowed from the
-/// target range with the other vars' contributions subtracted out.
-/// </summary>
+/// <summary>The sum of an arbitrary number of int vars, generalising PlusIntVar's pairwise bounds consistency to N terms.</summary>
 public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 {
     private readonly IIntVar[] _vars;

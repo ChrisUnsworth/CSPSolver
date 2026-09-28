@@ -22,24 +22,19 @@ public class ModelRealVar : ModelVar<double>
 
     public override IVariable<double> GetVariable() => Variable;
 
-    // == and != build constraints rather than comparing, so they deliberately
-    // do not agree with Equals. Equals answers whether two model vars stand for
-    // the same underlying variable; == asks the solver to make them equal.
+    // == builds a solver constraint, not a comparison, so it deliberately disagrees with Equals.
     public override bool Equals(object obj) => obj is ModelRealVar var && EqualityComparer<IRealVar>.Default.Equals(Variable, var.Variable);
 
     public override int GetHashCode() => HashCode.Combine(Variable);
 
     public static implicit operator ModelRealVar(ModelIntVar i) => new() { Variable = new RealVarIntWrapper(i.Variable) };
 
-    // A mixed collection of ModelIntVar and ModelRealVar works here for free:
-    // each ModelIntVar element converts via the implicit operator above when the
-    // caller builds the IEnumerable<ModelRealVar>.
+    // ModelIntVar elements convert via the implicit operator above, so a mixed collection works for free.
     public static ModelRealVar SumOf(IEnumerable<ModelRealVar> vars) => new() { Variable = new SumOfRealVar(vars.Select(v => v.Variable)) };
 
     public static ModelRealVar operator /(ModelRealVar v1, ModelRealVar v2)
     {
-        // DividePositiveRealVar has no zero-exclusion of its own, unlike its int
-        // counterpart -- the denominator must already be strictly positive.
+        // Unlike its int counterpart, DividePositiveRealVar requires the denominator already be strictly positive.
         if (v1.Variable.Min >= 0 && v2.Variable.Min > 0) return new() { Variable = new DividePositiveRealVar(v1.Variable, v2.Variable) };
         return new() { Variable = new MixedSignDivideRealVar(v1.Variable, v2.Variable) };
     }
