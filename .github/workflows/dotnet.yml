@@ -18,7 +18,11 @@ jobs:
       with:
         dotnet-version: 10.0.x
     - name: Restore dependencies
-      run: dotnet restore CSPSolver
+      # PerformanceTests is in the solution but excluded from its build, so the
+      # solution restore skips it; format still loads it, so restore it explicitly.
+      run: |
+        dotnet restore CSPSolver
+        dotnet restore PerformanceTests
     - name: Format check
       # MSTEST0032 is a pre-existing, deliberate marker in a known-failing test
       # (see #18) -- not a formatting issue, and it has no code fix, so
