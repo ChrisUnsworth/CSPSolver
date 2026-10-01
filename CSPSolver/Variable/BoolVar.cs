@@ -6,17 +6,13 @@ using CSPSolver.common.variables;
 
 namespace CSPSolver.Variable;
 
-public readonly struct BoolVar : IBoolVar
+public readonly struct BoolVar(IStateRef stateRef) : IBoolVar
 {
-    public IStateRef StateRef { get; }
-
     public int Min => 0;
 
     public int Size => 2;
 
     public int Max => 1;
-
-    public BoolVar(IStateRef stateRef) => StateRef = stateRef;
 
     public bool IsTrue(IState state) => GetDomainMin(state) == 1;
 
@@ -26,24 +22,24 @@ public readonly struct BoolVar : IBoolVar
 
     public bool CanBeFalse(IState state) => GetDomainMin(state) == 0;
 
-    public BoolState GetState(IState state) => (BoolState)state.GetDomain(StateRef, Size);
+    public BoolState GetState(IState state) => (BoolState)state.GetDomain(stateRef, Size);
 
-    public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
+    public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(stateRef, Size), Min, Size);
 
     public bool SetDomain(IState state, uint domain)
     {
-        var oldDom = state.GetDomain(StateRef, Size);
+        var oldDom = state.GetDomain(stateRef, Size);
         domain &= oldDom;
         if (domain != oldDom)
         {
-            state.SetDomain(StateRef, Size, domain);
+            state.SetDomain(stateRef, Size, domain);
             return true;
         }
 
         return false;
     }
 
-    public bool DomainMinus(IState state, uint domain) => SetDomain(state, state.GetDomain(StateRef, Size) & ~domain);
+    public bool DomainMinus(IState state, uint domain) => SetDomain(state, state.GetDomain(stateRef, Size) & ~domain);
 
     public IEnumerable<int> EnumerateDomain(IState state)
     {
@@ -51,16 +47,16 @@ public readonly struct BoolVar : IBoolVar
         if (CanBeTrue(state)) yield return 1;
     }
 
-    public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size);
+    public int GetDomainMax(IState state) => state.GetDomainMax(stateRef, Size);
 
-    public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size);
+    public int GetDomainMin(IState state) => state.GetDomainMin(stateRef, Size);
 
     public bool SetMax(IState state, int max)
     {
         if (max >= 1) return false;
         if (max < 0) return SetDomain(state, 0);
 
-        var newDom = state.GetDomain(StateRef, Size) & 1;
+        var newDom = state.GetDomain(stateRef, Size) & 1;
         return SetDomain(state, newDom);
     }
 
@@ -69,29 +65,31 @@ public readonly struct BoolVar : IBoolVar
         if (min <= 0) return false;
         if (min > 1) return SetDomain(state, 0);
 
-        var newDom = state.GetDomain(StateRef, Size) & 2;
+        var newDom = state.GetDomain(stateRef, Size) & 2;
         return SetDomain(state, newDom);
     }
 
     public bool TryGetValue(IState state, out int value)
     {
-        value = GetDomainMin(state);
-        return value == GetDomainMax(state);
+        var s = GetState(state);
+        value = s == BoolState.True ? 1 : 0;
+        return s is BoolState.True or BoolState.False;
     }
 
     public bool TryGetValue(IState state, out bool value)
     {
-        value = IsTrue(state);
-        return value || IsFalse(state);
+        var s = GetState(state);
+        value = s == BoolState.True;
+        return s is BoolState.True or BoolState.False;
     }
 
-    public void Initialise(IState state) => state.SetDomain(StateRef, Size, 3);
+    public void Initialise(IState state) => state.SetDomain(stateRef, Size, 3);
 
-    public bool IsInstantiated(IState state) => IsTrue(state) || IsFalse(state);
+    public bool IsInstantiated(IState state) => GetState(state) is BoolState.True or BoolState.False;
 
-    public int Id => StateRef.Id;
+    public int Id => stateRef.Id;
 
-    public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
+    public bool IsEmpty(IState state) => state.GetDomain(stateRef, Size) == 0;
 
     public Type VariableType() => typeof(bool);
 
