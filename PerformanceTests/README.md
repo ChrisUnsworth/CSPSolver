@@ -1,7 +1,8 @@
 # Performance Tests
 
-[BenchmarkDotNet](https://benchmarkdotnet.org/) benchmarks for CSPSolver. This project has its own
-solution (`PerformanceTests.sln`) so it is not built or run as part of the main solution or CI.
+[BenchmarkDotNet](https://benchmarkdotnet.org/) benchmarks for CSPSolver. It appears in `CSPSolver.sln` under the
+`Performance` folder for editing, but is excluded from that solution's build, so it does not build or run in CI.
+`PerformanceTests.sln` can also be opened on its own.
 
 Run everything (always use Release):
 
