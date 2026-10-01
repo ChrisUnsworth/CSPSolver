@@ -25,3 +25,4 @@ Results are written to `BenchmarkDotNet.Artifacts/`.
 | `SudokuBenchmarks` | AllDiff propagation on an easy and a hard puzzle, including proving uniqueness |
 | `SendMoreMoneyBenchmarks` | AllDiff combined with a wide linear equation |
 | `OptimisationBenchmarks` | Objective-driven search on a small bounded knapsack |
+| `LogicAllDiffBenchmarks` | AllDiff inside `Not` (`NegativePropagate`) and `Or` (`IsMet` / `CanBeMet`) |
