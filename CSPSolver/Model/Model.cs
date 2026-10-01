@@ -25,8 +25,14 @@ public readonly struct Model : IModel
     // Indexed by variable Id: the indices of the constraints that variable appears in.
     private readonly int[][] _constraintsByVariable;
 
-    // Scratch space for Propagate, so a constraint is only queued once per round.
+    // Every constraint index, for the first round of Propagate.
+    private readonly int[] _allConstraints;
+
+    // Scratch space for Propagate, so it is neither thread-safe nor re-entrant; each Search gets its own Model.
+    // _queued keeps a constraint to once per round, so a round never holds more than Constraints.Length entries.
     private readonly bool[] _queued;
+    private readonly int[] _roundA;
+    private readonly int[] _roundB;
 
     public Model(IConstraint[] constraints, IVariable[] variables, IVariable[] nonDecisionVariables, IVariable objective = null, bool? maximise = null)
     {
@@ -35,7 +41,10 @@ public readonly struct Model : IModel
         Variables = variables;
         NonDecisionVariables = nonDecisionVariables;
         Constraints = constraints;
+        _allConstraints = Enumerable.Range(0, constraints.Length).ToArray();
         _queued = new bool[constraints.Length];
+        _roundA = new int[constraints.Length];
+        _roundB = new int[constraints.Length];
 
         var ids = constraints
             .Select(c => c.Variables.SelectMany(GetStateIds).Where(id => id >= 0).Distinct().ToArray())
@@ -59,23 +68,42 @@ public readonly struct Model : IModel
 
     public void Propagate(IState state)
     {
-        var todo = Enumerable.Range(0, Constraints.Length).ToList();
-        var next = new List<int>();
+        var todo = _allConstraints;
+        var todoCount = todo.Length;
+        var next = _roundA;
 
-        while (todo.Count > 0)
+        while (todoCount > 0)
         {
-            foreach (var c in todo)
+            var nextCount = 0;
+
+            for (int i = 0; i < todoCount; i++)
             {
-                foreach (var v in Constraints[c].Propagate(state)) Enqueue(v, next);
+                var changed = Constraints[todo[i]].Propagate(state);
+
+                // Concrete types rather than IReadOnlyList: casting an array to a generic interface is slow.
+                if (changed is IVariable[] array)
+                {
+                    for (int j = 0; j < array.Length; j++) Enqueue(array[j], next, ref nextCount);
+                }
+                else if (changed is List<IVariable> list)
+                {
+                    for (int j = 0; j < list.Count; j++) Enqueue(list[j], next, ref nextCount);
+                }
+                else
+                {
+                    foreach (var v in changed) Enqueue(v, next, ref nextCount);
+                }
             }
 
-            foreach (var c in next) _queued[c] = false;
-            (todo, next) = (next, todo);
-            next.Clear();
+            for (int i = 0; i < nextCount; i++) _queued[next[i]] = false;
+
+            todo = next;
+            todoCount = nextCount;
+            next = next == _roundA ? _roundB : _roundA;
         }
     }
 
-    private void Enqueue(IVariable v, List<int> next)
+    private void Enqueue(IVariable v, int[] next, ref int nextCount)
     {
         if (v.Id >= 0)
         {
@@ -86,13 +114,13 @@ public readonly struct Model : IModel
                 if (!_queued[c])
                 {
                     _queued[c] = true;
-                    next.Add(c);
+                    next[nextCount++] = c;
                 }
             }
         }
         else if (v is ICompoundVariable cv)
         {
-            foreach (var child in cv.GetChildren()) Enqueue(child, next);
+            foreach (var child in cv.GetChildren()) Enqueue(child, next, ref nextCount);
         }
     }
 
