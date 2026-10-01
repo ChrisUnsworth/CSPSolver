@@ -7,38 +7,33 @@ namespace CSPSolver.State;
 public class StateBuilder : IStateBuilder
 {
     private int _size;
-    private readonly List<int> _map;
-
-    public StateBuilder()
-    {
-        _size = 0;
-        _map = new List<int>();
-    }
+    private int _nextId;
+    private readonly List<int> _map = [];
 
     public IStateRef AddDomain(int domainSize) => domainSize < 32 ? AddSmallDomain(domainSize) : AddLargeDomain(domainSize);
 
-    private IStateRef AddSmallDomain(int domainSize)
+    private StateRef AddSmallDomain(int domainSize)
     {
         var x = _map.Select((v, i) => ((int v, int i)?)(v, i)).FirstOrDefault(x => 32 - x.Value.v >= domainSize);
 
         if (x.HasValue)
         {
-            var stateRef = new StateRef(x.Value.i, x.Value.v);
+            var stateRef = new StateRef(x.Value.i, x.Value.v, _nextId++);
             _map[x.Value.i] += domainSize;
             return stateRef;
         }
         else
         {
             _map.Add(domainSize);
-            return new StateRef(_size++, 0);
+            return new StateRef(_size++, 0, _nextId++);
         }
     }
 
-    private IStateRef AddLargeDomain(int domainSize)
+    private StateRef AddLargeDomain(int domainSize)
     {
         var n = domainSize / 32;
         var r = domainSize % 32;
-        var stateRef = new StateRef(_size, 0);
+        var stateRef = new StateRef(_size, 0, _nextId++);
 
         _size += n;
         _map.AddRange(Enumerable.Repeat(32, n));
@@ -53,30 +48,30 @@ public class StateBuilder : IStateBuilder
 
     public IStateRef AddDouble()
     {
-        _map.AddRange(new int[] { 32, 32 });
+        _map.AddRange([32, 32]);
         var idx = _size;
         _size += 2;
-        return new StateRef(idx, 0);
+        return new StateRef(idx, 0, _nextId++);
     }
 
     public IStateRef AddFloat()
     {
         _map.Add(32);
-        return new StateRef(_size++, 0);
+        return new StateRef(_size++, 0, _nextId++);
     }
 
     public IStateRef AddInt()
     {
         _map.Add(32);
-        return new StateRef(_size++, 0);
+        return new StateRef(_size++, 0, _nextId++);
     }
 
     public IStateRef AddLong()
     {
-        _map.AddRange(new int[] { 32, 32 });
+        _map.AddRange([32, 32]);
         var idx = _size;
         _size += 2;
-        return new StateRef(idx, 0);
+        return new StateRef(idx, 0, _nextId++);
     }
 
     public IState GetState() => new IntState(_size);
