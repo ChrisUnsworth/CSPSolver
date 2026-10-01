@@ -144,6 +144,24 @@ public class CardinalityTests
     }
 
     [TestMethod]
+    public void PropagateNeverReturnsANullWhenAnUnrelatedVarIsAlreadyEmpty()
+    {
+        var (state, vars) = GetVars(3);
+        var constraint = new Cardinality(vars, 3);
+
+        // Conflicting SetValue calls leave vars[0] with no valid value, distinct
+        // from vars[1]/vars[2], which are still genuinely undecided. GetState
+        // must not conflate the two, or canBeTrue is overcounted and the
+        // changed-var array comes back oversized with a trailing null.
+        vars[0].SetValue(state, false);
+        vars[0].SetValue(state, true);
+
+        var changed = constraint.Propagate(state).ToList();
+
+        Assert.IsTrue(changed.All(v => v != null));
+    }
+
+    [TestMethod]
     public void MatchesBruteForceAcrossEveryCountAndSize()
     {
         for (var size = 1; size <= 5; size++)
