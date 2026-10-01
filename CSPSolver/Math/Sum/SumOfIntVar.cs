@@ -34,6 +34,8 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 
     public void Initialise(IState state) { /* holds no state */ }
 
+    public int Id => -1;
+
     public bool IsEmpty(IState state) => _vars.Any(v => v.IsEmpty(state));
 
     public bool IsInstantiated(IState state) => _vars.All(v => v.IsInstantiated(state));

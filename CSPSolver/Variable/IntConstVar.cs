@@ -31,6 +31,8 @@ public readonly struct IntConstVar : ISmallIntDomainVar
 
     public void Initialise(IState state) { }
 
+    public int Id => -1;
+
     public bool IsEmpty(IState state) => false;
 
     public bool IsInstantiated(IState state) => true;

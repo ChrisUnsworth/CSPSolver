@@ -37,6 +37,8 @@ public readonly struct SmallRealVar : IRealVar
         state.SetInt(MinStateRef, AsCeilInt(Min));
     }
 
+    public int Id => MinStateRef.Id;
+
     public bool IsEmpty(IState state) => state.GetInt(MaxStateRef) < state.GetInt(MinStateRef);
 
     public bool IsInstantiated(IState state) => state.GetInt(MaxStateRef) == state.GetInt(MinStateRef);

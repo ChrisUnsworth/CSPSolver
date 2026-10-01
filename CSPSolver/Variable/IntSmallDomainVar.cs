@@ -57,6 +57,8 @@ public readonly struct IntSmallDomainVar : ISmallIntDomainVar
         return dom != 0 && (dom & (dom - 1)) == 0;
     }
 
+    public int Id => StateRef.Id;
+
     public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(int);

@@ -31,6 +31,8 @@ public readonly struct MinusRealVar : IRealVar, ICompoundVariable
 
     public void Initialise(IState state) { /* holds no state */ }
 
+    public int Id => -1;
+
     public bool IsEmpty(IState state) => _v1.IsEmpty(state) || _v2.IsEmpty(state);
 
     public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) && _v2.IsInstantiated(state);

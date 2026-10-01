@@ -37,6 +37,8 @@ public readonly struct RealVar : IRealVar
         state.SetDouble(MinStateRef, Min);
     }
 
+    public int Id => MinStateRef.Id;
+
     public bool IsEmpty(IState state) => GetDomainMax(state) < GetDomainMin(state);
 
     public bool IsInstantiated(IState state) => GetDomainMax(state) - GetDomainMin(state) <= Epsilon;

@@ -37,6 +37,8 @@ public readonly struct LongRealVar : IRealVar
         state.SetLong(MinStateRef, AsCeilLong(Min));
     }
 
+    public int Id => MinStateRef.Id;
+
     public bool IsEmpty(IState state) => state.GetLong(MaxStateRef) < state.GetLong(MinStateRef);
 
     public bool IsInstantiated(IState state) => state.GetLong(MaxStateRef) == state.GetLong(MinStateRef);

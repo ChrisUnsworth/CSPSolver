@@ -82,6 +82,8 @@ public readonly struct TrueVar : IBoolVar
 
     public bool IsInstantiated(IState state) => IsTrue(state);
 
+    public int Id => StateRef.Id;
+
     public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(bool);

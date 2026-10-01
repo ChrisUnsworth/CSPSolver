@@ -9,6 +9,8 @@ public abstract class ModelVar<T> : IVariable<T>
 
     public void Initialise(IState state) => GetVariable().Initialise(state);
 
+    public int Id => GetVariable().Id;
+
     public bool IsEmpty(IState state) => GetVariable().IsEmpty(state);
 
     public bool MakeEmpty(IState state) => GetVariable().MakeEmpty(state);

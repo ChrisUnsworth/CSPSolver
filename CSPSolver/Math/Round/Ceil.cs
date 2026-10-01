@@ -28,6 +28,8 @@ public readonly struct Ceil : IIntVar, ICompoundVariable
 
     public void Initialise(IState state) => _realVar.Initialise(state);
 
+    public int Id => -1;
+
     public bool IsEmpty(IState state) => _realVar.IsEmpty(state);
 
     public bool IsInstantiated(IState state) => GetDomainMax(state) == GetDomainMin(state);

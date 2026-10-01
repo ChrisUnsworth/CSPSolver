@@ -177,6 +177,8 @@ public readonly struct IntDomainVar : IIntDomainVar
         return bits == 1;
     }
 
+    public int Id => StateRef.Id;
+
     public bool IsEmpty(IState state)
     {
         foreach (var subdom in state.GetLargeDomain(StateRef, Size))

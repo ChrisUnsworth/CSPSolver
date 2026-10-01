@@ -103,6 +103,8 @@ public readonly struct LongDomainVar : ILongDomainVar
         return dom != 0 && (dom & (dom - 1)) == 0;
     }
 
+    public int Id => StateRef.Id;
+
     public bool IsEmpty(IState state) => state.GetDomainLong(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(int);
