@@ -31,6 +31,16 @@ public readonly struct RealVar : IRealVar
 
     public double GetDomainMin(IState state) => state.GetDouble(MinStateRef);
 
+    public RealBounds GetBounds(IState state)
+    {
+        var min = GetDomainMin(state);
+        var max = GetDomainMax(state);
+        var domainState = max < min ? DomainState.Empty
+            : max - min <= Epsilon ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new RealBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state)
     {
         state.SetDouble(MaxStateRef, Max);

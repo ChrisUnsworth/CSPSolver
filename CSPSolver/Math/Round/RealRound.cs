@@ -25,6 +25,17 @@ public readonly struct RealRound : IRealVar, ICompoundVariable
 
     public double GetDomainMin(IState state) => System.Math.Round(_realVar.GetDomainMin(state), _dp);
 
+    public RealBounds GetBounds(IState state)
+    {
+        var real = _realVar.GetBounds(state);
+        var min = System.Math.Round(real.Min, _dp);
+        var max = System.Math.Round(real.Max, _dp);
+        var domainState = real.State == DomainState.Empty ? DomainState.Empty
+            : min == max ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new RealBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state) => _realVar.Initialise(state);
 
     public int Id => -1;

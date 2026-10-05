@@ -30,6 +30,13 @@ public readonly struct MinusIntDomain : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => _v1.GetDomainMin(state) - _v2.GetDomainMax(state);
 
+    public IntBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return new IntBounds(a.Min - b.Max, a.Max - b.Min, DomainStates.Combine(a.State, b.State));
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;

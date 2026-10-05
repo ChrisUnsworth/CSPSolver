@@ -83,6 +83,22 @@ public readonly struct IntDomainVar : IIntDomainVar
 
     public int GetDomainMin(IState state) => state.GetLargeDomainMin(StateRef, Size) + Min;
 
+    public IntBounds GetBounds(IState state)
+    {
+        var domain = state.GetLargeDomain(StateRef, Size);
+
+        var lo = 0;
+        while (lo < domain.Length && domain[lo] == 0) lo++;
+        if (lo == domain.Length) return new IntBounds(GetDomainMin(state), GetDomainMax(state), DomainState.Empty);
+
+        var hi = domain.Length - 1;
+        while (domain[hi] == 0) hi--;
+
+        var min = BitOperations.TrailingZeroCount(domain[lo]) + 32 * lo + Min;
+        var max = BitOperations.Log2(domain[hi]) + 32 * hi + Min;
+        return new IntBounds(min, max, min == max ? DomainState.Instantiated : DomainState.Undecided);
+    }
+
     public bool SetMax(IState state, int max)
     {
         if (max >= Max) return false;

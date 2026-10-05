@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -27,6 +28,17 @@ public readonly struct IntSmallDomainVar : ISmallIntDomainVar
     public int GetDomainMax(IState state) => state.GetDomainMax(StateRef, Size) + Min;
 
     public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size) + Min;
+
+    public IntBounds GetBounds(IState state)
+    {
+        var dom = state.GetDomain(StateRef, Size);
+        if (dom == 0) return new IntBounds(GetDomainMin(state), GetDomainMax(state), DomainState.Empty);
+
+        return new IntBounds(
+            BitOperations.TrailingZeroCount(dom) + Min,
+            BitOperations.Log2(dom) + Min,
+            (dom & (dom - 1)) == 0 ? DomainState.Instantiated : DomainState.Undecided);
+    }
 
     public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 

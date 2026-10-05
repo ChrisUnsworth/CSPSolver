@@ -54,6 +54,11 @@ public readonly struct TrueVar : IBoolVar
 
     public int GetDomainMin(IState state) => state.GetDomainMin(StateRef, Size) + 1;
 
+    public IntBounds GetBounds(IState state) =>
+        state.GetDomain(StateRef, Size) == 0
+            ? new IntBounds(GetDomainMin(state), GetDomainMax(state), DomainState.Empty)
+            : new IntBounds(1, 1, DomainState.Instantiated);
+
     public bool SetMax(IState state, int max)
     {
         if (max >= 1) return false;

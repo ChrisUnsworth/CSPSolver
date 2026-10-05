@@ -31,6 +31,17 @@ public readonly struct LongRealVar : IRealVar
 
     public double GetDomainMin(IState state) => Round(state.GetLong(MinStateRef) * Epsilon, (int)Abs(Log10(Epsilon)));
 
+    public RealBounds GetBounds(IState state)
+    {
+        var min = state.GetLong(MinStateRef);
+        var max = state.GetLong(MaxStateRef);
+        var decimals = (int)Abs(Log10(Epsilon));
+        var domainState = max < min ? DomainState.Empty
+            : max == min ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new RealBounds(Round(min * Epsilon, decimals), Round(max * Epsilon, decimals), domainState);
+    }
+
     public void Initialise(IState state)
     {
         state.SetLong(MaxStateRef, AsFloorLong(Max));

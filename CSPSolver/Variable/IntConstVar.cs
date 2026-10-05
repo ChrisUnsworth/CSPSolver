@@ -29,6 +29,8 @@ public readonly struct IntConstVar : ISmallIntDomainVar
 
     public int GetDomainMin(IState state) => Min;
 
+    public IntBounds GetBounds(IState state) => new(_value, _value, DomainState.Instantiated);
+
     public void Initialise(IState state) { }
 
     public int Id => -1;

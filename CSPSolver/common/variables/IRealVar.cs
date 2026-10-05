@@ -12,6 +12,9 @@ public interface IRealVar : IVariable<double>
 
     double GetDomainMin(IState state);
 
+    /// <summary>Min, max and state in one pass, for callers that need more than one of them.</summary>
+    RealBounds GetBounds(IState state);
+
     double Epsilon { get; }
 
     bool SetMax(IState state, double max);

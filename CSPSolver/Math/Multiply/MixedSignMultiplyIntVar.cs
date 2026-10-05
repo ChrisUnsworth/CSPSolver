@@ -36,6 +36,14 @@ public readonly struct MixedSignMultiplyIntVar : IIntVar, ICompoundVariable
     public int GetDomainMin(IState state)
         => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
 
+    public IntBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        var (min, max) = Bounds(a.Min, a.Max, b.Min, b.Max);
+        return new IntBounds(min, max, DomainStates.Combine(a.State, b.State));
+    }
+
     /// <summary>
     /// A product is monotonic in each operand, so over a pair of ranges its
     /// extremes sit on the corners.

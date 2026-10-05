@@ -33,6 +33,14 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
     public int GetDomainMin(IState state)
         => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
 
+    public IntBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        var (min, max) = Bounds(a.Min, a.Max, b.Min, b.Max);
+        return new IntBounds(min, max, DomainStates.Combine(a.State, b.State));
+    }
+
     /// <summary>
     /// The denominator is never zero, so it covers at most two sign constant
     /// ranges: [v2Min, -1] and [1, v2Max]. Over either one the quotient is

@@ -33,6 +33,13 @@ public readonly struct PositiveMultiplyIntVar : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => _v1.GetDomainMin(state) * _v2.GetDomainMin(state);
 
+    public IntBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return new IntBounds(a.Min * b.Min, a.Max * b.Max, DomainStates.Combine(a.State, b.State));
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;

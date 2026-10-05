@@ -26,6 +26,17 @@ public readonly struct Ceil : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => (int)Ceiling(_realVar.GetDomainMin(state));
 
+    public IntBounds GetBounds(IState state)
+    {
+        var real = _realVar.GetBounds(state);
+        var min = (int)Ceiling(real.Min);
+        var max = (int)Ceiling(real.Max);
+        var domainState = real.State == DomainState.Empty ? DomainState.Empty
+            : min == max ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new IntBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state) => _realVar.Initialise(state);
 
     public int Id => -1;

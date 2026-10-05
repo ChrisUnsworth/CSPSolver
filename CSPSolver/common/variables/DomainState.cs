@@ -10,7 +10,10 @@ public enum DomainState
 public static class DomainStates
 {
     public static DomainState Combine(IVariable v1, IVariable v2, IState state) =>
-        (v1.GetDomainState(state), v2.GetDomainState(state)) switch
+        Combine(v1.GetDomainState(state), v2.GetDomainState(state));
+
+    public static DomainState Combine(DomainState s1, DomainState s2) =>
+        (s1, s2) switch
         {
             (DomainState.Empty, _) => DomainState.Empty,
             (_, DomainState.Empty) => DomainState.Empty,

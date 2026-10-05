@@ -26,6 +26,17 @@ public readonly struct Floor : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => (int)Floor(_realVar.GetDomainMin(state));
 
+    public IntBounds GetBounds(IState state)
+    {
+        var real = _realVar.GetBounds(state);
+        var min = (int)Floor(real.Min);
+        var max = (int)Floor(real.Max);
+        var domainState = real.State == DomainState.Empty ? DomainState.Empty
+            : min == max ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new IntBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state) => _realVar.Initialise(state);
 
     public int Id => -1;

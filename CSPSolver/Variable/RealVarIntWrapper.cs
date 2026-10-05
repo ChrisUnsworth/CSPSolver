@@ -23,6 +23,12 @@ public readonly struct RealVarIntWrapper : IRealVar
 
     public double GetDomainMin(IState state) => _intVar.GetDomainMin(state);
 
+    public RealBounds GetBounds(IState state)
+    {
+        var bounds = _intVar.GetBounds(state);
+        return new RealBounds(bounds.Min, bounds.Max, bounds.State);
+    }
+
     public void Initialise(IState state) => _intVar.Initialise(state);
 
     public int Id => _intVar.Id;

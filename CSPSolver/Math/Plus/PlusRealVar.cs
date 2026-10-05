@@ -31,6 +31,13 @@ public readonly struct PlusRealVar : IRealVar, ICompoundVariable
 
     public double GetDomainMin(IState state) => _v1.GetDomainMin(state) + _v2.GetDomainMin(state);
 
+    public RealBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return new RealBounds(a.Min + b.Min, a.Max + b.Max, DomainStates.Combine(a.State, b.State));
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;

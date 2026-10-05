@@ -14,6 +14,9 @@ public interface IIntVar : IVariable<int>
 
     int GetDomainMin(IState state);
 
+    /// <summary>Min, max and state in one pass, for callers that need more than one of them.</summary>
+    IntBounds GetBounds(IState state);
+
     bool SetMax(IState state, int max);
 
     bool SetMin(IState state, int min);

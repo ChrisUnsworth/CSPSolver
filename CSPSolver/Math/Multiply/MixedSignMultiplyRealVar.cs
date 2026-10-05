@@ -42,6 +42,21 @@ public readonly struct MixedSignMultiplyRealVar : IRealVar, ICompoundVariable
 
     public double GetDomainMin(IState state) => GetDomainExtremes(state).Min();
 
+    /// <summary>A product's extremes over a pair of ranges sit on the corners.</summary>
+    public RealBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        var p1 = a.Max * b.Max;
+        var p2 = a.Max * b.Min;
+        var p3 = a.Min * b.Max;
+        var p4 = a.Min * b.Min;
+        return new RealBounds(
+            System.Math.Min(System.Math.Min(p1, p2), System.Math.Min(p3, p4)),
+            System.Math.Max(System.Math.Max(p1, p2), System.Math.Max(p3, p4)),
+            DomainStates.Combine(a.State, b.State));
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;

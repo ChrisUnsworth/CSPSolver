@@ -33,6 +33,13 @@ public readonly struct NegativeDivideIntVar : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => _v1.GetDomainMax(state) / _v2.GetDomainMin(state);
 
+    public IntBounds GetBounds(IState state)
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return new IntBounds(a.Max / b.Min, a.Min / b.Max, DomainStates.Combine(a.State, b.State));
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;

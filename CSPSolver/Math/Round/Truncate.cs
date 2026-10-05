@@ -24,6 +24,17 @@ public readonly struct Truncate : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => (int)_realVar.GetDomainMin(state);
 
+    public IntBounds GetBounds(IState state)
+    {
+        var real = _realVar.GetBounds(state);
+        var min = (int)real.Min;
+        var max = (int)real.Max;
+        var domainState = real.State == DomainState.Empty ? DomainState.Empty
+            : min == max ? DomainState.Instantiated
+            : DomainState.Undecided;
+        return new IntBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state) => _realVar.Initialise(state);
 
     public int Id => -1;

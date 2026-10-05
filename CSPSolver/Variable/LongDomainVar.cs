@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using CSPSolver.common;
 using CSPSolver.common.variables;
@@ -60,6 +61,17 @@ public readonly struct LongDomainVar : ILongDomainVar
     public int GetDomainMax(IState state) => state.GetDomainMaxLong(StateRef, Size) + Min;
 
     public int GetDomainMin(IState state) => state.GetDomainMinLong(StateRef, Size) + Min;
+
+    public IntBounds GetBounds(IState state)
+    {
+        var dom = state.GetDomainLong(StateRef, Size);
+        if (dom == 0) return new IntBounds(GetDomainMin(state), GetDomainMax(state), DomainState.Empty);
+
+        return new IntBounds(
+            BitOperations.TrailingZeroCount(dom) + Min,
+            BitOperations.Log2(dom) + Min,
+            (dom & (dom - 1)) == 0 ? DomainState.Instantiated : DomainState.Undecided);
+    }
 
     public bool SetMax(IState state, int max)
     {

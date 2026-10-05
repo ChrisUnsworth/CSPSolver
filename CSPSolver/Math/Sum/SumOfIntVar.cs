@@ -32,6 +32,22 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 
     public int GetDomainMin(IState state) => _vars.Sum(v => v.GetDomainMin(state));
 
+    public IntBounds GetBounds(IState state)
+    {
+        int min = 0, max = 0;
+        var domainState = DomainState.Instantiated;
+
+        for (var i = 0; i < _vars.Length; i++)
+        {
+            var bounds = _vars[i].GetBounds(state);
+            min += bounds.Min;
+            max += bounds.Max;
+            domainState = DomainStates.Combine(domainState, bounds.State);
+        }
+
+        return new IntBounds(min, max, domainState);
+    }
+
     public void Initialise(IState state) { /* holds no state */ }
 
     public int Id => -1;
