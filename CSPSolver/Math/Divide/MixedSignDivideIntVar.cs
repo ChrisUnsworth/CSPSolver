@@ -27,11 +27,9 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
         Size = Max - Min + 1;
     }
 
-    public int GetDomainMax(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).max;
+    public int GetDomainMax(IState state) => GetBounds(state).Max;
 
-    public int GetDomainMin(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
+    public int GetDomainMin(IState state) => GetBounds(state).Min;
 
     public IntBounds GetBounds(IState state)
     {
@@ -100,12 +98,12 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
     private bool Restrict(IState state, int lo, int hi)
     {
         var result = ExcludeZeroDenominator(state);
-        if (_v2.GetDomainState(state) == DomainState.Empty || _v1.GetDomainState(state) == DomainState.Empty) return result;
+        var b2 = _v2.GetBounds(state);
+        if (b2.State == DomainState.Empty) return result;
+        var b1 = _v1.GetBounds(state);
+        if (b1.State == DomainState.Empty) return result;
 
-        var v1Min = _v1.GetDomainMin(state);
-        var v1Max = _v1.GetDomainMax(state);
-        var v2Min = _v2.GetDomainMin(state);
-        var v2Max = _v2.GetDomainMax(state);
+        var (v1Min, v1Max, v2Min, v2Max) = (b1.Min, b1.Max, b2.Min, b2.Max);
 
         // Only quotients the operands can actually produce are worth considering,
         // and clamping here keeps the unbounded end of SetMin and SetMax finite.

@@ -29,18 +29,16 @@ public readonly struct MixedSignMultiplyRealVar : IRealVar, ICompoundVariable
         Max = extremes.Max();
     }
 
-    private double[] GetDomainExtremes(IState state)
+    private (double v1Min, double v1Max, double v2Min, double v2Max) GetVariableDomainExtremes(IState state)
     {
-        (double v1Min, double v1Max, double v2Min, double v2Max) = GetVariableDomainExtremes(state);
-        return new double[] { v1Max * v2Max, v1Max * v2Min, v1Min * v2Max, v1Min * v2Min };
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return (a.Min, a.Max, b.Min, b.Max);
     }
 
-    private (double v1Min, double v1Max, double v2Min, double v2Max) GetVariableDomainExtremes(IState state)
-        => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
+    public double GetDomainMax(IState state) => GetBounds(state).Max;
 
-    public double GetDomainMax(IState state) => GetDomainExtremes(state).Max();
-
-    public double GetDomainMin(IState state) => GetDomainExtremes(state).Min();
+    public double GetDomainMin(IState state) => GetBounds(state).Min;
 
     /// <summary>A product's extremes over a pair of ranges sit on the corners.</summary>
     public RealBounds GetBounds(IState state)

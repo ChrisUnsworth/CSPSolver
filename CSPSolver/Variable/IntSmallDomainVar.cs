@@ -59,8 +59,9 @@ public readonly struct IntSmallDomainVar : ISmallIntDomainVar
 
     public bool TryGetValue(IState state, out int value)
     {
-        value = GetDomainMin(state);
-        return value == GetDomainMax(state);
+        var dom = state.GetDomain(StateRef, Size);
+        value = BitOperations.TrailingZeroCount(dom) + Min;
+        return dom != 0 && (dom & (dom - 1)) == 0;
     }
 
     public DomainState GetDomainState(IState state)

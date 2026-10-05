@@ -20,9 +20,12 @@ public readonly struct NotEqualIntVar : IConstraint
           _var2.TryGetValue(state, out int val2) &&
           val1 == val2);
 
-    public bool IsMet(IState state) =>
-        _var1.GetDomainMax(state) < _var2.GetDomainMin(state) ||
-        _var1.GetDomainMin(state) > _var2.GetDomainMax(state);
+    public bool IsMet(IState state)
+    {
+        var b1 = _var1.GetBounds(state);
+        var b2 = _var2.GetBounds(state);
+        return b1.Max < b2.Min || b1.Min > b2.Max;
+    }
 
     public IEnumerable<IVariable> NegativePropagate(IState state)
     {

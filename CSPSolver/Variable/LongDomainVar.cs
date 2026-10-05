@@ -103,8 +103,9 @@ public readonly struct LongDomainVar : ILongDomainVar
 
     public bool TryGetValue(IState state, out int value)
     {
-        value = GetDomainMin(state);
-        return value == GetDomainMax(state);
+        var dom = state.GetDomainLong(StateRef, Size);
+        value = BitOperations.TrailingZeroCount(dom) + Min;
+        return dom != 0 && (dom & (dom - 1)) == 0;
     }
 
     public void Initialise(IState state) => state.SetDomainLong(StateRef, Size, BitMask.Long(Size));

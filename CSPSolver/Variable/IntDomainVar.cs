@@ -157,8 +157,9 @@ public readonly struct IntDomainVar : IIntDomainVar
 
     public bool TryGetValue(IState state, out int value)
     {
-        value = GetDomainMin(state);
-        return value == GetDomainMax(state);
+        var bounds = GetBounds(state);
+        value = bounds.Min;
+        return bounds.State == DomainState.Instantiated;
     }
 
     public void Initialise(IState state)

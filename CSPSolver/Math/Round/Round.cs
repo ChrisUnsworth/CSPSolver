@@ -39,10 +39,7 @@ public readonly struct Round : IIntVar, ICompoundVariable
 
     public int Id => -1;
 
-    public DomainState GetDomainState(IState state) =>
-        _realVar.GetDomainState(state) == DomainState.Empty ? DomainState.Empty
-        : GetDomainMax(state) == GetDomainMin(state) ? DomainState.Instantiated
-        : DomainState.Undecided;
+    public DomainState GetDomainState(IState state) => GetBounds(state).State;
 
     public string PrettyDomain(IState state)
     {

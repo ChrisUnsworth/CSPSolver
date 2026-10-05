@@ -28,13 +28,15 @@ public readonly struct MixedSignMultiplyIntVar : IIntVar, ICompoundVariable
     }
 
     private (int v1Min, int v1Max, int v2Min, int v2Max) GetVariableDomainExtremes(IState state)
-        => (_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state));
+    {
+        var a = _v1.GetBounds(state);
+        var b = _v2.GetBounds(state);
+        return (a.Min, a.Max, b.Min, b.Max);
+    }
 
-    public int GetDomainMax(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).max;
+    public int GetDomainMax(IState state) => GetBounds(state).Max;
 
-    public int GetDomainMin(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state)).min;
+    public int GetDomainMin(IState state) => GetBounds(state).Min;
 
     public IntBounds GetBounds(IState state)
     {

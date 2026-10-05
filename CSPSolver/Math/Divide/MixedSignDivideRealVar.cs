@@ -27,11 +27,9 @@ public readonly struct MixedSignDivideRealVar : IRealVar, ICompoundVariable
         (Min, Max) = Bounds(v1.Min, v1.Max, v2.Min, v2.Max, epsilon);
     }
 
-    public double GetDomainMax(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state), Epsilon).max;
+    public double GetDomainMax(IState state) => GetBounds(state).Max;
 
-    public double GetDomainMin(IState state)
-        => Bounds(_v1.GetDomainMin(state), _v1.GetDomainMax(state), _v2.GetDomainMin(state), _v2.GetDomainMax(state), Epsilon).min;
+    public double GetDomainMin(IState state) => GetBounds(state).Min;
 
     public RealBounds GetBounds(IState state)
     {
@@ -98,12 +96,12 @@ public readonly struct MixedSignDivideRealVar : IRealVar, ICompoundVariable
     private bool Restrict(IState state, double lo, double hi)
     {
         var result = ExcludeZeroDenominator(state);
-        if (_v2.GetDomainState(state) == DomainState.Empty || _v1.GetDomainState(state) == DomainState.Empty) return result;
+        var b2 = _v2.GetBounds(state);
+        if (b2.State == DomainState.Empty) return result;
+        var b1 = _v1.GetBounds(state);
+        if (b1.State == DomainState.Empty) return result;
 
-        var v1Min = _v1.GetDomainMin(state);
-        var v1Max = _v1.GetDomainMax(state);
-        var v2Min = _v2.GetDomainMin(state);
-        var v2Max = _v2.GetDomainMax(state);
+        var (v1Min, v1Max, v2Min, v2Max) = (b1.Min, b1.Max, b2.Min, b2.Max);
 
         // Only quotients the operands can actually produce are worth considering.
         var (qMin, qMax) = Bounds(v1Min, v1Max, v2Min, v2Max, Epsilon);

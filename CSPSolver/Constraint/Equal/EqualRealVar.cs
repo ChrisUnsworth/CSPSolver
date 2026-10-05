@@ -21,9 +21,12 @@ public readonly struct EqualRealVar : IConstraint
 
     private bool IsEqual(double v1, double v2) => Abs(v1 - v2) < Epsilon;
 
-    public bool CanBeMet(IState state) =>
-        _var1.GetDomainMin(state) < _var2.GetDomainMax(state) + Epsilon &&
-        _var1.GetDomainMax(state) > _var2.GetDomainMin(state) - Epsilon;
+    public bool CanBeMet(IState state)
+    {
+        var b1 = _var1.GetBounds(state);
+        var b2 = _var2.GetBounds(state);
+        return b1.Min < b2.Max + Epsilon && b1.Max > b2.Min - Epsilon;
+    }
 
     public bool IsMet(IState state) =>
         _var1.TryGetValue(state, out double val1) &&
