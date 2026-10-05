@@ -83,7 +83,7 @@ public class CardinalityIntVarTests
         vars[1].SetValue(state, true);
         constraint.Propagate(state);
 
-        Assert.IsTrue(count.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, count.GetDomainState(state));
     }
 
     [TestMethod]
@@ -96,7 +96,7 @@ public class CardinalityIntVarTests
         vars[1].SetValue(state, false);
         constraint.Propagate(state);
 
-        Assert.IsTrue(count.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, count.GetDomainState(state));
     }
 
     [TestMethod]
@@ -165,7 +165,7 @@ public class CardinalityIntVarTests
         vars[1].SetValue(state, false);
         constraint.NegativePropagate(state);
 
-        Assert.IsTrue(vars.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(vars.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -206,5 +206,30 @@ public class CardinalityIntVarTests
             expected.ToList(),
             found.ToList(),
             $"size {size}, count range [{countLo},{countHi}]");
+    }
+
+    // CardinalityIntVar fails by emptying its count. When the count is a non-decision variable and every
+    // decision variable is already fixed, the search used to accept that state as a solution.
+    [TestMethod]
+    public void SearchRejectsAStateWhereANonDecisionCountWasEmptied()
+    {
+        const int size = 4;
+        var mb = new ModelBuilder();
+        var board = mb.AddBoolVarArray(size * size);
+
+        for (var i = 0; i < size; i++)
+        {
+            mb.AddConstraint(Cardinality(Enumerable.Range(0, size).Select(c => board[i * size + c]), 1));
+            mb.AddConstraint(Cardinality(Enumerable.Range(0, size).Select(r => board[r * size + i]), 1));
+        }
+
+        var diagonal = Enumerable.Range(0, size).Select(i => board[i * size + i]).ToArray();
+        mb.AddConstraint(Cardinality(diagonal, mb.AddIntDomainVar(0, 1, isDecisionVar: false)));
+
+        var solutions = mb.Search().ToList();
+
+        // Permutations of 4 with at most one fixed point: 9 derangements + 8 with exactly one.
+        Assert.AreEqual(17, solutions.Count);
+        Assert.IsTrue(solutions.All(s => diagonal.Count(d => s.GetValue(d)) <= 1));
     }
 }

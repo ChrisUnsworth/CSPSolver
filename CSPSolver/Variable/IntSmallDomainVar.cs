@@ -51,15 +51,14 @@ public readonly struct IntSmallDomainVar : ISmallIntDomainVar
         return value == GetDomainMax(state);
     }
 
-    public bool IsInstantiated(IState state)
+    public DomainState GetDomainState(IState state)
     {
         var dom = state.GetDomain(StateRef, Size);
-        return dom != 0 && (dom & (dom - 1)) == 0;
+        if (dom == 0) return DomainState.Empty;
+        return (dom & (dom - 1)) == 0 ? DomainState.Instantiated : DomainState.Undecided;
     }
 
     public int Id => StateRef.Id;
-
-    public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(int);
 

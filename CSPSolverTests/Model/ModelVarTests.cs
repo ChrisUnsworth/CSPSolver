@@ -30,7 +30,7 @@ public class ModelVarTests
 
         x.Initialise(state);
 
-        Assert.IsFalse(x.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, x.GetDomainState(state));
         Assert.AreEqual(x.Variable.PrettyDomain(state), x.PrettyDomain(state));
     }
 
@@ -39,11 +39,11 @@ public class ModelVarTests
     {
         var (state, _, x) = IntVar(1, 5);
 
-        Assert.IsFalse(x.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, x.GetDomainState(state));
 
         x.Variable.SetMin(state, 99);
 
-        Assert.IsTrue(x.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, x.GetDomainState(state));
     }
 
     [TestMethod]
@@ -51,11 +51,11 @@ public class ModelVarTests
     {
         var (state, _, x) = IntVar(1, 5);
 
-        Assert.IsFalse(x.IsInstantiated(state));
+        Assert.AreNotEqual(DomainState.Instantiated, x.GetDomainState(state));
 
         x.Variable.SetMax(state, 1);
 
-        Assert.IsTrue(x.IsInstantiated(state));
+        Assert.AreEqual(DomainState.Instantiated, x.GetDomainState(state));
     }
 
     [TestMethod]

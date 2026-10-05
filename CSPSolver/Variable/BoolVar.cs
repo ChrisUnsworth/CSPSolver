@@ -85,11 +85,14 @@ public readonly struct BoolVar(IStateRef stateRef) : IBoolVar
 
     public void Initialise(IState state) => state.SetDomain(stateRef, Size, 3);
 
-    public bool IsInstantiated(IState state) => GetState(state) is BoolState.True or BoolState.False;
+    public DomainState GetDomainState(IState state) => GetState(state) switch
+    {
+        BoolState.Empty => DomainState.Empty,
+        BoolState.Undecided => DomainState.Undecided,
+        _ => DomainState.Instantiated
+    };
 
     public int Id => stateRef.Id;
-
-    public bool IsEmpty(IState state) => state.GetDomain(stateRef, Size) == 0;
 
     public Type VariableType() => typeof(bool);
 

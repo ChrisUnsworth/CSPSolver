@@ -34,26 +34,26 @@ public class SmallRealVarTests
         var (s, v) = GetVar(min, max, 4);
 
         Assert.IsFalse(v.SetMax(s, max + 10));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         max -= 100;
 
         Assert.IsTrue(v.SetMax(s, max));
         Assert.AreEqual(max, v.GetDomainMax(s));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
         Assert.IsFalse(v.SetMax(s, max));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         Assert.IsTrue(v.SetMax(s, min));
         Assert.AreEqual(min, v.GetDomainMax(s));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsTrue(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         Assert.IsTrue(v.SetMax(s, min - 10));
-        Assert.IsTrue(v.IsEmpty(s));
+        Assert.AreEqual(DomainState.Empty, v.GetDomainState(s));
     }
 
     [TestMethod]
@@ -64,26 +64,26 @@ public class SmallRealVarTests
         var (s, v) = GetVar(min, max, 4);
 
         Assert.IsFalse(v.SetMin(s, min - 10));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         min += 100;
 
         Assert.IsTrue(v.SetMin(s, min));
         Assert.AreEqual(min, v.GetDomainMin(s));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
         Assert.IsFalse(v.SetMin(s, min));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsFalse(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreNotEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         Assert.IsTrue(v.SetMin(s, max));
         Assert.AreEqual(max, v.GetDomainMin(s));
-        Assert.IsFalse(v.IsEmpty(s));
-        Assert.IsTrue(v.IsInstantiated(s));
+        Assert.AreNotEqual(DomainState.Empty, v.GetDomainState(s));
+        Assert.AreEqual(DomainState.Instantiated, v.GetDomainState(s));
 
         Assert.IsTrue(v.SetMin(s, max + 10));
-        Assert.IsTrue(v.IsEmpty(s));
+        Assert.AreEqual(DomainState.Empty, v.GetDomainState(s));
     }
 
     [TestMethod]

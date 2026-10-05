@@ -97,15 +97,14 @@ public readonly struct LongDomainVar : ILongDomainVar
 
     public void Initialise(IState state) => state.SetDomainLong(StateRef, Size, BitMask.Long(Size));
 
-    public bool IsInstantiated(IState state)
+    public DomainState GetDomainState(IState state)
     {
         var dom = state.GetDomainLong(StateRef, Size);
-        return dom != 0 && (dom & (dom - 1)) == 0;
+        if (dom == 0) return DomainState.Empty;
+        return (dom & (dom - 1)) == 0 ? DomainState.Instantiated : DomainState.Undecided;
     }
 
     public int Id => StateRef.Id;
-
-    public bool IsEmpty(IState state) => state.GetDomainLong(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(int);
 

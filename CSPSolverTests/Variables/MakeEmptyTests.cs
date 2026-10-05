@@ -28,9 +28,9 @@ public class MakeEmptyTests
         var x = mb.AddIntDomainVar(1, 5);
         var state = GetState(mb);
 
-        Assert.IsFalse(x.Variable.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, x.Variable.GetDomainState(state));
         Assert.IsTrue(x.Variable.MakeEmpty(state));
-        Assert.IsTrue(x.Variable.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, x.Variable.GetDomainState(state));
     }
 
     [TestMethod]
@@ -55,8 +55,8 @@ public class MakeEmptyTests
         IIntVar plus = new PlusIntVar(x.Variable, y.Variable);
 
         Assert.IsTrue(plus.MakeEmpty(state));
-        Assert.IsTrue(plus.IsEmpty(state));
-        Assert.IsTrue(x.Variable.IsEmpty(state) || y.Variable.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, plus.GetDomainState(state));
+        Assert.IsTrue(x.Variable.GetDomainState(state) == DomainState.Empty || y.Variable.GetDomainState(state) == DomainState.Empty);
     }
 
     [TestMethod]
@@ -67,7 +67,7 @@ public class MakeEmptyTests
         IIntVar five = new IntConstVar(5);
 
         Assert.IsFalse(five.MakeEmpty(state));
-        Assert.IsFalse(five.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, five.GetDomainState(state));
     }
 
     [TestMethod]
@@ -78,6 +78,6 @@ public class MakeEmptyTests
         var state = GetState(mb);
 
         Assert.IsTrue(x.MakeEmpty(state));
-        Assert.IsTrue(x.Variable.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, x.Variable.GetDomainState(state));
     }
 }

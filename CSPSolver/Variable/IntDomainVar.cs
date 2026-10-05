@@ -162,32 +162,26 @@ public readonly struct IntDomainVar : IIntDomainVar
         state.SetLargeDomain(StateRef, Size, domain);
     }
 
-    public bool IsInstantiated(IState state)
+    public DomainState GetDomainState(IState state)
     {
         var bits = 0;
         var domain = state.GetLargeDomain(StateRef, Size);
 
-        // Instantiated means a single value left, so a single bit across the
-        // whole domain. Two is as far as this needs to count.
+        // A single bit across the whole domain is instantiated, so two is as far as this needs to count.
         for (var i = 0; i < domain.Length && bits < 2; i++)
         {
             bits += BitOperations.PopCount(domain[i]);
         }
 
-        return bits == 1;
+        return bits switch
+        {
+            0 => DomainState.Empty,
+            1 => DomainState.Instantiated,
+            _ => DomainState.Undecided
+        };
     }
 
     public int Id => StateRef.Id;
-
-    public bool IsEmpty(IState state)
-    {
-        foreach (var subdom in state.GetLargeDomain(StateRef, Size))
-        {
-            if (subdom != 0) return false;
-        }
-
-        return true;
-    }
 
     public Type VariableType() => typeof(int);
 

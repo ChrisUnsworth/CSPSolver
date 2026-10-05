@@ -39,9 +39,13 @@ public readonly struct SmallRealVar : IRealVar
 
     public int Id => MinStateRef.Id;
 
-    public bool IsEmpty(IState state) => state.GetInt(MaxStateRef) < state.GetInt(MinStateRef);
-
-    public bool IsInstantiated(IState state) => state.GetInt(MaxStateRef) == state.GetInt(MinStateRef);
+    public DomainState GetDomainState(IState state)
+    {
+        var min = state.GetInt(MinStateRef);
+        var max = state.GetInt(MaxStateRef);
+        if (max < min) return DomainState.Empty;
+        return max == min ? DomainState.Instantiated : DomainState.Undecided;
+    }
 
     public string PrettyDomain(IState state) => $"{GetDomainMin(state)} ... {GetDomainMax(state)}";
 

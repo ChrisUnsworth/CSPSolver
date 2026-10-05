@@ -63,7 +63,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.Propagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -137,7 +137,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.NegativePropagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -179,7 +179,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.Propagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -222,7 +222,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.Propagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -341,7 +341,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.NegativePropagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -385,7 +385,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.Propagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -435,7 +435,7 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.Propagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -568,6 +568,6 @@ public class AllDiff
 
         Assert.AreNotEqual(0, constraint.NegativePropagate(state).Count());
 
-        Assert.IsTrue(variables.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(variables.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 }

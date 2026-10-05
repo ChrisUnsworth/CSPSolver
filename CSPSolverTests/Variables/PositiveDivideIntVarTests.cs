@@ -62,20 +62,20 @@ public class PositiveDivideIntVarTests
         Assert.IsFalse(divide.SetMax(state, 3));
         Assert.AreEqual(10, v1.GetDomainMax(state));
         Assert.AreEqual(2, v2.GetDomainMin(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMax(state, 1));
         Assert.AreEqual(9, v1.GetDomainMax(state));
         Assert.AreEqual(4, v2.GetDomainMin(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsFalse(divide.SetMax(state, 1));
         Assert.AreEqual(9, v1.GetDomainMax(state));
         Assert.AreEqual(4, v2.GetDomainMin(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMax(state, 0));
-        Assert.IsTrue(divide.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, divide.GetDomainState(state));
     }
 
     [TestMethod]
@@ -87,30 +87,30 @@ public class PositiveDivideIntVarTests
         Assert.IsFalse(divide.SetMin(state, 1));
         Assert.AreEqual(1, v1.GetDomainMin(state));
         Assert.AreEqual(10, v2.GetDomainMax(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMin(state, 2));
         Assert.AreEqual(2, v1.GetDomainMin(state));
         Assert.AreEqual(5, v2.GetDomainMax(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMin(state, 5));
         Assert.AreEqual(5, v1.GetDomainMin(state));
         Assert.AreEqual(2, v2.GetDomainMax(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsFalse(divide.SetMin(state, 5));
         Assert.AreEqual(5, v1.GetDomainMin(state));
         Assert.AreEqual(2, v2.GetDomainMax(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMin(state, 10));
         Assert.AreEqual(10, v1.GetDomainMin(state));
         Assert.AreEqual(1, v2.GetDomainMax(state));
-        Assert.IsFalse(divide.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, divide.GetDomainState(state));
 
         Assert.IsTrue(divide.SetMin(state, 11));
-        Assert.IsTrue(divide.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, divide.GetDomainState(state));
     }
     [TestMethod]
     public void DenominatorContainingZeroIsRejected()
@@ -140,7 +140,7 @@ public class PositiveDivideIntVarTests
         // -1 is the case that used to divide by (max + 1).
         divide.SetMax(state, -1);
 
-        Assert.IsTrue(v1.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, v1.GetDomainState(state));
     }
 
     [TestMethod]
@@ -153,6 +153,6 @@ public class PositiveDivideIntVarTests
         divide.SetMax(state, 0); // quotient 0 means v1 < v2
 
         Assert.AreEqual(2, v1.GetDomainMax(state));
-        Assert.IsFalse(v1.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, v1.GetDomainState(state));
     }
 }

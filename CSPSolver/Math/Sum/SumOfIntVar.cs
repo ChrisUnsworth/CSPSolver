@@ -36,9 +36,7 @@ public readonly struct SumOfIntVar : IIntVar, ICompoundVariable
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => _vars.Any(v => v.IsEmpty(state));
-
-    public bool IsInstantiated(IState state) => _vars.All(v => v.IsInstantiated(state));
+    public DomainState GetDomainState(IState state) => DomainStates.Combine(_vars, state);
 
     public bool RemoveValue(IState state, object value)
     {

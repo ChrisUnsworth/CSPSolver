@@ -33,9 +33,7 @@ public readonly struct IntConstVar : ISmallIntDomainVar
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => false;
-
-    public bool IsInstantiated(IState state) => true;
+    public DomainState GetDomainState(IState state) => DomainState.Instantiated;
 
     public string PrettyDomain(IState state) => $"{_value}";
 

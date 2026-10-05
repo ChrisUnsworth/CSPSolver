@@ -98,6 +98,6 @@ public class MixedSignDivideRealVarTests
 
         // The achievable quotient range is [1/3, 5], so asking for max < 1/3 is unreachable.
         Assert.IsTrue(divide.SetMax(state, 0));
-        Assert.IsTrue(divide.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, divide.GetDomainState(state));
     }
 }

@@ -60,20 +60,20 @@ public class PositiveMultiplyIntVarTests
         multiply.SetMax(state, 3);
         Assert.AreEqual(3, v1.GetDomainMax(state));
         Assert.AreEqual(3, v2.GetDomainMax(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         multiply.SetMax(state, 2);
         Assert.AreEqual(2, v1.GetDomainMax(state));
         Assert.AreEqual(2, v2.GetDomainMax(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         multiply.SetMax(state, 1);
         Assert.AreEqual(1, v1.GetDomainMax(state));
         Assert.AreEqual(1, v2.GetDomainMax(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         multiply.SetMax(state, 0);
-        Assert.IsTrue(multiply.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, multiply.GetDomainState(state));
     }
 
     [TestMethod]
@@ -85,24 +85,24 @@ public class PositiveMultiplyIntVarTests
         Assert.IsFalse(multiply.SetMin(state, 1));
         Assert.AreEqual(1, v1.GetDomainMin(state));
         Assert.AreEqual(1, v2.GetDomainMin(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         Assert.IsFalse(multiply.SetMin(state, 3));
         Assert.AreEqual(1, v1.GetDomainMin(state));
         Assert.AreEqual(1, v2.GetDomainMin(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         Assert.IsTrue(multiply.SetMin(state, 4));
         Assert.AreEqual(2, v1.GetDomainMin(state));
         Assert.AreEqual(2, v2.GetDomainMin(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         Assert.IsTrue(multiply.SetMin(state, 9));
         Assert.AreEqual(3, v1.GetDomainMin(state));
         Assert.AreEqual(3, v2.GetDomainMin(state));
-        Assert.IsFalse(multiply.IsEmpty(state));
+        Assert.AreNotEqual(DomainState.Empty, multiply.GetDomainState(state));
 
         Assert.IsTrue(multiply.SetMin(state, 10));
-        Assert.IsTrue(multiply.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, multiply.GetDomainState(state));
     }
 }

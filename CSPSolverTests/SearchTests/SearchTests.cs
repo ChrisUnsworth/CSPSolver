@@ -105,7 +105,7 @@ public class SearchTests
         mb.AddConstraint(five == six);
         var search = new Search(mb);
 
-        // No decision variables means IsSolved is vacuously true, and MakeEmpty
+        // No decision variables means GetDomainState is vacuously Instantiated, and MakeEmpty
         // on a constant is a no-op, so nothing but an upfront CanBeMet check
         // catches this.
         Assert.IsFalse(search.MoveNext());

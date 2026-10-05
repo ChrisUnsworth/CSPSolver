@@ -69,7 +69,7 @@ public class PlusIntDomainTests
         Assert.AreEqual(1, v2.GetDomainMax(state));
 
         plus.SetMax(state, 1);
-        Assert.IsTrue(plus.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, plus.GetDomainState(state));
     }
 
     [TestMethod]
@@ -95,6 +95,6 @@ public class PlusIntDomainTests
         Assert.AreEqual(3, v2.GetDomainMin(state));
 
         Assert.IsTrue(plus.SetMin(state, 7));
-        Assert.IsTrue(plus.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, plus.GetDomainState(state));
     }
 }

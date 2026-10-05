@@ -69,9 +69,7 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
-
-    public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+    public DomainState GetDomainState(IState state) => DomainStates.Combine(_v1, _v2, state);
 
     public bool RemoveValue(IState state, object value) =>
         (_v2.TryGetValue(state, out int v2) && _v1.RemoveValue(state, (int)value * v2))
@@ -94,7 +92,7 @@ public readonly struct MixedSignDivideIntVar : IIntVar, ICompoundVariable
     private bool Restrict(IState state, int lo, int hi)
     {
         var result = ExcludeZeroDenominator(state);
-        if (_v2.IsEmpty(state) || _v1.IsEmpty(state)) return result;
+        if (_v2.GetDomainState(state) == DomainState.Empty || _v1.GetDomainState(state) == DomainState.Empty) return result;
 
         var v1Min = _v1.GetDomainMin(state);
         var v1Max = _v1.GetDomainMax(state);

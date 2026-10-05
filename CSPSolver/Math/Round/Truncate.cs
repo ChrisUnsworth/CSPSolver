@@ -28,9 +28,10 @@ public readonly struct Truncate : IIntVar, ICompoundVariable
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => _realVar.IsEmpty(state);
-
-    public bool IsInstantiated(IState state) => GetDomainMax(state) == GetDomainMin(state);
+    public DomainState GetDomainState(IState state) =>
+        _realVar.GetDomainState(state) == DomainState.Empty ? DomainState.Empty
+        : GetDomainMax(state) == GetDomainMin(state) ? DomainState.Instantiated
+        : DomainState.Undecided;
 
     public string PrettyDomain(IState state)
     {

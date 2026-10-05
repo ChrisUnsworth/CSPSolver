@@ -63,9 +63,7 @@ public readonly struct MixedSignMultiplyIntVar : IIntVar, ICompoundVariable
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
-
-    public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+    public DomainState GetDomainState(IState state) => DomainStates.Combine(_v1, _v2, state);
 
     public bool RemoveValue(IState state, object value)
     {

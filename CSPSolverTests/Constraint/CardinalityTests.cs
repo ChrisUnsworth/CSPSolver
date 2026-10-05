@@ -69,7 +69,7 @@ public class CardinalityTests
         vars[1].SetValue(state, true);
         constraint.Propagate(state);
 
-        Assert.IsTrue(vars.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(vars.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class CardinalityTests
         vars[1].SetValue(state, false);
         constraint.Propagate(state);
 
-        Assert.IsTrue(vars.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(vars.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]
@@ -140,7 +140,7 @@ public class CardinalityTests
         vars[1].SetValue(state, false);
         constraint.NegativePropagate(state);
 
-        Assert.IsTrue(vars.Any(v => v.IsEmpty(state)));
+        Assert.IsTrue(vars.Any(v => v.GetDomainState(state) == DomainState.Empty));
     }
 
     [TestMethod]

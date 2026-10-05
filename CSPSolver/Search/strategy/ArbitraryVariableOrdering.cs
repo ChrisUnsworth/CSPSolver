@@ -9,7 +9,7 @@ public readonly struct ArbitraryVariableOrdering : IVariableOrderingHeuristic
     {
         foreach (var v in model.Variables)
         {
-            if (!v.IsInstantiated(state)) return v;
+            if (v.GetDomainState(state) != DomainState.Instantiated) return v;
         }
 
         return null;

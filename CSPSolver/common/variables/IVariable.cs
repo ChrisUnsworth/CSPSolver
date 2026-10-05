@@ -9,14 +9,12 @@ public interface IVariable<T> : IVariable
 
 public interface IVariable
 {
-    /// <summary>The Id of the variable's own state, or -1 for constants and expressions, which have none.</summary>
+    /// <summary>The Id of the variable state, or -1 if no state.</summary>
     int Id { get; }
 
     void Initialise(IState state);
 
-    bool IsInstantiated(IState state);
-
-    bool IsEmpty(IState state);
+    DomainState GetDomainState(IState state);
 
     bool MakeEmpty(IState state);
 

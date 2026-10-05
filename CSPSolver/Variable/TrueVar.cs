@@ -18,15 +18,15 @@ public readonly struct TrueVar : IBoolVar
 
     public TrueVar(IStateRef stateRef) => StateRef = stateRef;
 
-    public bool IsTrue(IState state) => !IsEmpty(state);
+    public bool IsTrue(IState state) => GetDomainState(state) != DomainState.Empty;
 
-    public bool CanBeTrue(IState state) => !IsEmpty(state);
+    public bool CanBeTrue(IState state) => GetDomainState(state) != DomainState.Empty;
 
     public bool IsFalse(IState state) => false;
 
     public bool CanBeFalse(IState state) => false;
 
-    public BoolState GetState(IState state) => IsEmpty(state) ? BoolState.Empty : BoolState.True;
+    public BoolState GetState(IState state) => GetDomainState(state) == DomainState.Empty ? BoolState.Empty : BoolState.True;
 
     public (uint domain, int min, int size) GetDomain(IState state) => (state.GetDomain(StateRef, Size), Min, Size);
 
@@ -69,7 +69,7 @@ public readonly struct TrueVar : IBoolVar
     public bool TryGetValue(IState state, out int value)
     {
         value = 1;
-        return !IsEmpty(state);
+        return GetDomainState(state) != DomainState.Empty;
     }
 
     public bool TryGetValue(IState state, out bool value)
@@ -80,11 +80,10 @@ public readonly struct TrueVar : IBoolVar
 
     public void Initialise(IState state) => state.SetDomain(StateRef, Size, 1);
 
-    public bool IsInstantiated(IState state) => IsTrue(state);
+    public DomainState GetDomainState(IState state) =>
+        state.GetDomain(StateRef, Size) == 0 ? DomainState.Empty : DomainState.Instantiated;
 
     public int Id => StateRef.Id;
-
-    public bool IsEmpty(IState state) => state.GetDomain(StateRef, Size) == 0;
 
     public Type VariableType() => typeof(bool);
 

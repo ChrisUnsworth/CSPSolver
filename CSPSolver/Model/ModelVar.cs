@@ -11,11 +11,9 @@ public abstract class ModelVar<T> : IVariable<T>
 
     public int Id => GetVariable().Id;
 
-    public bool IsEmpty(IState state) => GetVariable().IsEmpty(state);
+    public DomainState GetDomainState(IState state) => GetVariable().GetDomainState(state);
 
     public bool MakeEmpty(IState state) => GetVariable().MakeEmpty(state);
-
-    public bool IsInstantiated(IState state) => GetVariable().IsInstantiated(state);
 
     public string PrettyDomain(IState state) => GetVariable().PrettyDomain(state);
 

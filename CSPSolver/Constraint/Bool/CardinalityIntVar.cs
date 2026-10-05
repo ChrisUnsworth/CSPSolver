@@ -47,7 +47,7 @@ public readonly struct CardinalityIntVar : IConstraint
         var countChanged = _count.SetMin(state, areTrue);
         countChanged |= _count.SetMax(state, canBeTrue);
 
-        if (_count.IsEmpty(state))
+        if (_count.GetDomainState(state) == DomainState.Empty)
         {
             return countChanged
                 ? [_count]

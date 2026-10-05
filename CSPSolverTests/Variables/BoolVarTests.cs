@@ -171,7 +171,7 @@ public class BoolVarTests
     private static void AssertStateMatchesIndependentChecks(IState state, BoolVar v)
     {
         var expected =
-            v.IsEmpty(state) ? BoolState.Empty :
+            v.GetDomainState(state) == DomainState.Empty ? BoolState.Empty :
             v.IsTrue(state) ? BoolState.True :
             v.IsFalse(state) ? BoolState.False :
             BoolState.Undecided;

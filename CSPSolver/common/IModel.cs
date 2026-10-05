@@ -14,9 +14,10 @@ public interface IModel
 
     void Propagate(IState state);
 
-    bool IsSolved(IState state);
-
-    bool HasEmptyDomain(IState state);
+    /// <summary>
+    /// Empty if any variable is empty, Instantiated if every decision variable is fixed (a solution), otherwise Undecided.
+    /// </summary>
+    DomainState GetDomainState(IState state);
 
     string PrettyDomains(IState state);
 

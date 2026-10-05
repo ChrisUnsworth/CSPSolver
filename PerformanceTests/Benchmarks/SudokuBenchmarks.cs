@@ -44,6 +44,8 @@ public class SudokuBenchmarks
         { 0, 9, 0, 0, 0, 0, 4, 0, 0 }
     };
 
+    internal static ModelBuilder BuildModel(string puzzle) => BuildModel(puzzle == "Hard" ? Hard : Easy);
+
     private static ModelBuilder BuildModel(int[,] givens)
     {
         var mb = new ModelBuilder();
@@ -70,5 +72,5 @@ public class SudokuBenchmarks
 
     // Enumerates the whole tree so the time includes proving the solution unique.
     [Benchmark]
-    public int Solve() => BuildModel(Puzzle == "Hard" ? Hard : Easy).Search().Count();
+    public int Solve() => BuildModel(Puzzle).Search().Count();
 }

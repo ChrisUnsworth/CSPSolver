@@ -17,7 +17,7 @@ public class NQueensBenchmarks
     [Params(6, 8, 10)]
     public int N { get; set; }
 
-    private static ModelBuilder BuildModel(int n)
+    internal static ModelBuilder BuildModel(int n)
     {
         var mb = new ModelBuilder();
         var queens = mb.AddIntVarArray(0, n - 1, n);

@@ -69,9 +69,7 @@ public readonly struct MixedSignDivideRealVar : IRealVar, ICompoundVariable
 
     public int Id => -1;
 
-    public bool IsEmpty(IState state) => _v1.IsEmpty(state) | _v2.IsEmpty(state);
-
-    public bool IsInstantiated(IState state) => _v1.IsInstantiated(state) & _v2.IsInstantiated(state);
+    public DomainState GetDomainState(IState state) => DomainStates.Combine(_v1, _v2, state);
 
     public bool RemoveValue(IState state, object value) =>
         (_v2.TryGetValue(state, out double v2) && _v1.RemoveValue(state, (double)value * v2))
@@ -92,7 +90,7 @@ public readonly struct MixedSignDivideRealVar : IRealVar, ICompoundVariable
     private bool Restrict(IState state, double lo, double hi)
     {
         var result = ExcludeZeroDenominator(state);
-        if (_v2.IsEmpty(state) || _v1.IsEmpty(state)) return result;
+        if (_v2.GetDomainState(state) == DomainState.Empty || _v1.GetDomainState(state) == DomainState.Empty) return result;
 
         var v1Min = _v1.GetDomainMin(state);
         var v1Max = _v1.GetDomainMax(state);
@@ -112,7 +110,7 @@ public readonly struct MixedSignDivideRealVar : IRealVar, ICompoundVariable
         result |= _v1.SetMin(state, productMin);
         result |= _v1.SetMax(state, productMax);
 
-        if (_v1.IsEmpty(state)) return result;
+        if (_v1.GetDomainState(state) == DomainState.Empty) return result;
 
         // y = x / q exactly, the same relation as the forward bounds with the
         // quotient window standing in for the denominator. This only holds while

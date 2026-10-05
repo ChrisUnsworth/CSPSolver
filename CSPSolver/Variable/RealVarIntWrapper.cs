@@ -27,9 +27,7 @@ public readonly struct RealVarIntWrapper : IRealVar
 
     public int Id => _intVar.Id;
 
-    public bool IsEmpty(IState state) => _intVar.IsEmpty(state);
-
-    public bool IsInstantiated(IState state) => _intVar.IsInstantiated(state);
+    public DomainState GetDomainState(IState state) => _intVar.GetDomainState(state);
 
     public string PrettyDomain(IState state) => _intVar.PrettyDomain(state);
 

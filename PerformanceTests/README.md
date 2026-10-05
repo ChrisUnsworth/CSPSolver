@@ -26,3 +26,4 @@ Results are written to `BenchmarkDotNet.Artifacts/`.
 | `SendMoreMoneyBenchmarks` | AllDiff combined with a wide linear equation |
 | `OptimisationBenchmarks` | Objective-driven search on a small bounded knapsack |
 | `LogicAllDiffBenchmarks` | AllDiff inside `Not` (`NegativePropagate`) and `Or` (`IsMet` / `CanBeMet`) |
+| `NodeCheckBenchmarks` | The per-node `GetDomainState` check on a propagated state, isolated from search |

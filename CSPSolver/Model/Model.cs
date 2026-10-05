@@ -136,9 +136,30 @@ public readonly struct Model : IModel
         return sb.ToString();
     }
 
-    public bool IsSolved(IState state) => Variables.All(v => v.IsInstantiated(state));
+    public DomainState GetDomainState(IState state)
+    {
+        var result = DomainState.Instantiated;
 
-    public bool HasEmptyDomain(IState state) => Variables.Concat(NonDecisionVariables).Any(v => v.IsEmpty(state));
+        foreach (var v in Variables)
+        {
+            switch (v.GetDomainState(state))
+            {
+                case DomainState.Empty:
+                    return DomainState.Empty;
+                case DomainState.Undecided:
+                    result = DomainState.Undecided;
+                    break;
+            }
+        }
+
+        // Non-decision variables need not be fixed for a solution, but a constraint can fail by emptying one.
+        foreach (var v in NonDecisionVariables)
+        {
+            if (v.GetDomainState(state) == DomainState.Empty) return DomainState.Empty;
+        }
+
+        return result;
+    }
 
     public void Initialise(IState state)
     {

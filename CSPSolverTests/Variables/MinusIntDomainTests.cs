@@ -71,7 +71,7 @@ public class MinusIntDomainTests
         Assert.AreEqual("{ 5 }", v2.PrettyDomain(state));
 
         minus.SetMax(state, -5);
-        Assert.IsTrue(minus.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, minus.GetDomainState(state));
     }
 
     [TestMethod]
@@ -93,6 +93,6 @@ public class MinusIntDomainTests
         Assert.AreEqual("{ 1 }", v2.PrettyDomain(state));
 
         Assert.IsTrue(minus.SetMin(state, 5));
-        Assert.IsTrue(minus.IsEmpty(state));
+        Assert.AreEqual(DomainState.Empty, minus.GetDomainState(state));
     }
 }

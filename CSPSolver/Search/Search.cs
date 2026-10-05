@@ -30,7 +30,7 @@ public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
 
     // A constraint built entirely from constants (e.g. TrueVar == FalseVar) can
     // never be pruned by propagation -- constants never change, so MakeEmpty on
-    // them is a no-op, and there are no decision variables for HasEmptyDomain to
+    // them is a no-op, and there are no decision variables for GetDomainState to
     // catch either. CanBeMet only needs checking once: if it's false on the
     // initial state, it stays false for the rest of the run.
     private void PushIfFeasible(IState state)
@@ -83,7 +83,7 @@ public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
                 if (_model.Maximise) objective.SetMin(state, best + 1);
                 else objective.SetMax(state, best - 1);
 
-                if (_model.Objective.IsEmpty(state))
+                if (_model.Objective.GetDomainState(state) == DomainState.Empty)
                 {
                     _statePool.Return(state);
                     break;
@@ -91,13 +91,14 @@ public class Search : IEnumerator<ISolution>, IEnumerable<ISolution>
             }
 
             _model.Propagate(state);
-            if (_model.IsSolved(state))
+            var domainState = _model.GetDomainState(state);
+            if (domainState == DomainState.Instantiated)
             {
                 Current = new Solution(_statePool.Copy(state));
                 _statePool.Return(state);
                 return true;
             }
-            else if (!_model.HasEmptyDomain(state))
+            else if (domainState == DomainState.Undecided)
             {
                 foreach (var branch in _searchConfig.Branching.Branch(_model, state, _statePool).Reverse())
                 {

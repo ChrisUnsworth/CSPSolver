@@ -60,19 +60,20 @@ public class DebugSearch : IEnumerator<ISolution>, IEnumerable<ISolution>
                 if (_model.Maximise) objective.SetMin(node.Before, best + 1);
                 else objective.SetMax(node.Before, best - 1);
 
-                if (_model.Objective.IsEmpty(node.Before)) break;
+                if (_model.Objective.GetDomainState(node.Before) == DomainState.Empty) break;
             }
 
             if (node.After != null) _statePool.Return(node.After);
             node.After = _statePool.Copy(node.Before);
 
             _model.Propagate(node.After);
-            if (_model.IsSolved(node.After))
+            var domainState = _model.GetDomainState(node.After);
+            if (domainState == DomainState.Instantiated)
             {
                 Current = new Solution(_statePool.Copy(node.After));
                 return true;
             }
-            else if (!_model.HasEmptyDomain(node.After))
+            else if (domainState == DomainState.Undecided)
             {
                 foreach (var branch in _searchConfig.Branching.Branch(_model, node.After, _statePool).Reverse())
                 {
